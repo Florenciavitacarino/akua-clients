@@ -313,76 +313,54 @@ function ActivityPanel({ logs }) {
   )
 }
 
-/* ─── Lock Toggle + Status Dropdown ─── */
+/* ─── Status Dropdown (standalone) ─── */
 const STATUS_OPTIONS = [
   { value: 'not_started', label: 'No iniciado' },
   { value: 'in_progress', label: 'En progreso' },
   { value: 'completed', label: 'Completado' },
 ]
 
-function LockToggle({ isLocked, onToggle, deptStatus, onStatusChange }) {
+function StatusDropdown({ deptStatus, onStatusChange, disabled }) {
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const current = STATUS_OPTIONS.find(o => o.value === deptStatus) || STATUS_OPTIONS[0]
 
-  const borderColor = isLocked ? '#D1D5DB' : '#5a6dd7'
-  const textColor = isLocked ? '#9CA3AF' : '#5a6dd7'
+  const borderColor = disabled ? '#D1D5DB' : '#5a6dd7'
+  const textColor = disabled ? '#9CA3AF' : '#5a6dd7'
 
   return (
-    <div className="flex items-center gap-3 shrink-0">
-      {/* Lock button */}
-      <div className="relative group">
-        <button
-          onClick={onToggle}
-          className="w-[36px] h-[36px] rounded-full flex items-center justify-center cursor-pointer border-none bg-[#EDF0FF] transition-colors hover:bg-[#dde3fc]"
-        >
-          {isLocked
-            ? <Lock size={18} className="text-[#5a6dd7]" />
-            : <LockOpen size={18} className="text-[#5a6dd7]" />
-          }
-        </button>
-        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1 bg-[#1F2937] text-white text-[11px] rounded-[6px] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-          {isLocked ? 'Bloqueado' : 'Desbloqueado'}
-          <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[4px] border-x-transparent border-t-[4px] border-t-[#1F2937]" />
-        </div>
-      </div>
+    <div className="relative">
+      <button
+        onClick={() => !disabled && setDropdownOpen(!dropdownOpen)}
+        className={`text-[13px] font-normal h-[28px] inline-flex items-center gap-1.5 px-3 rounded-[18px] border transition-colors ${
+          disabled ? 'cursor-default' : 'cursor-pointer'
+        }`}
+        style={{ borderColor, color: textColor }}
+      >
+        {current.label} <ChevronDown size={12} />
+      </button>
 
-      {/* Status dropdown */}
-      <div className="relative">
-        <button
-          onClick={() => !isLocked && setDropdownOpen(!dropdownOpen)}
-          className={`text-[13px] font-normal h-[32px] inline-flex items-center gap-1.5 px-4 rounded-[18px] border transition-colors ${
-            isLocked ? 'cursor-default' : 'cursor-pointer'
-          }`}
-          style={{ borderColor, color: textColor }}
-        >
-          {current.label}
-          {!isLocked && (dropdownOpen ? <ChevronUp size={12} /> : <ChevronDown size={12} />)}
-          {isLocked && <ChevronDown size={12} />}
-        </button>
-
-        {dropdownOpen && !isLocked && (
-          <>
-            <div className="fixed inset-0 z-20" onClick={() => setDropdownOpen(false)} />
-            <div className="absolute right-0 top-full mt-1 bg-white border border-[#E5E7EB] rounded-[12px] shadow-[0_4px_16px_rgba(0,0,0,0.12)] py-1 z-30 min-w-[180px]">
-              {STATUS_OPTIONS.map((opt) => (
-                <button
-                  key={opt.value}
-                  onClick={() => {
-                    onStatusChange(opt.value)
-                    setDropdownOpen(false)
-                  }}
-                  className="flex items-center justify-between w-full px-4 py-3 text-[14px] text-[#1F2937] bg-transparent border-none cursor-pointer hover:bg-[#F9FAFB] text-left"
-                >
-                  {opt.label}
-                  {deptStatus === opt.value && (
-                    <svg width="16" height="16" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                  )}
-                </button>
-              ))}
-            </div>
-          </>
-        )}
-      </div>
+      {dropdownOpen && !disabled && (
+        <>
+          <div className="fixed inset-0 z-20" onClick={() => setDropdownOpen(false)} />
+          <div className="absolute right-0 top-full mt-1 bg-white border border-[#E5E7EB] rounded-[12px] shadow-[0_4px_16px_rgba(0,0,0,0.12)] py-1 z-30 min-w-[180px]">
+            {STATUS_OPTIONS.map((opt) => (
+              <button
+                key={opt.value}
+                onClick={() => {
+                  onStatusChange(opt.value)
+                  setDropdownOpen(false)
+                }}
+                className="flex items-center justify-between w-full px-4 py-3 text-[14px] text-[#1F2937] bg-transparent border-none cursor-pointer hover:bg-[#F9FAFB] text-left"
+              >
+                {opt.label}
+                {deptStatus === opt.value && (
+                  <svg width="16" height="16" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                )}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   )
 }
@@ -1108,7 +1086,8 @@ export default function ClientDetailPage() {
   const { id } = useParams()
   const [activeTab, setActiveTab] = useState('Revisión por áreas')
   const [activeDept, setActiveDept] = useState('compliance')
-  const [isEditing, setIsEditing] = useState(false)
+  const [isEditing, setIsEditingRaw] = useState(false)
+  const setIsEditing = (val) => { setIsEditingRaw(val); if (!val) setHasChanges(false) }
   const [checkedItems, setCheckedItems] = useState({ compliance: new Set(), fraud: new Set(), finances: new Set(), sales: new Set(), legal: new Set(), kickoff: new Set() })
   const [waivedItems, setWaivedItems] = useState({ compliance: new Set(), fraud: new Set(), finances: new Set(), sales: new Set(), legal: new Set(), kickoff: new Set() })
   const [deptStatuses, setDeptStatuses] = useState({
@@ -1134,10 +1113,13 @@ export default function ClientDetailPage() {
     }))
   }
 
+  const [hasChanges, setHasChanges] = useState(false)
+
   const handleStatusChange = (status) => {
     const label = STATUS_OPTIONS.find(o => o.value === status)?.label
     addLog(`Cambio de estado del departamento a "${label}"`)
     setDeptStatuses(prev => ({ ...prev, [activeDept]: status }))
+    setHasChanges(true)
   }
 
   const CHECKLISTS = { compliance: COMPLIANCE_CHECKLIST, fraud: FRAUD_CHECKLIST, finances: FINANCES_CHECKLIST, sales: SALES_CHECKLIST, legal: LEGAL_CHECKLIST, kickoff: KICKOFF_CHECKLIST }
@@ -1147,6 +1129,7 @@ export default function ClientDetailPage() {
     const wasChecked = (checkedItems[activeDept] || new Set()).has(idx)
     const label = list[idx] || ''
     addLog(wasChecked ? `'${label}' desmarcado` : `'${label}' se ha marcado como lista`)
+    setHasChanges(true)
     setCheckedItems(prev => {
       const next = new Set(prev[activeDept] || [])
       if (next.has(idx)) next.delete(idx); else next.add(idx)
@@ -1159,6 +1142,7 @@ export default function ClientDetailPage() {
     const wasWaived = (waivedItems[activeDept] || new Set()).has(idx)
     const label = list[idx] || ''
     addLog(wasWaived ? `'${label}' waive revertido` : `'${label}' marcado como waived`)
+    setHasChanges(true)
     setWaivedItems(prev => {
       const next = new Set(prev[activeDept] || [])
       if (next.has(idx)) next.delete(idx); else next.add(idx)
@@ -1235,16 +1219,40 @@ export default function ClientDetailPage() {
 
             {/* Department content */}
             <div className="flex-1 min-w-0 border border-[#E5E7EB] rounded-[12px] p-5">
-              {/* Header */}
-              <div className="flex items-center justify-between mb-5">
+              {/* Header: Title + Edit/Save button */}
+              <div className="flex items-center justify-between mb-4">
                 <h2 className="text-[16px] font-semibold text-[#0A0B0D] m-0">
                   {currentDept?.name === 'Compliance' ? 'Compliance Review' : currentDept?.name}
                 </h2>
-                <LockToggle
-                  isLocked={!isEditing}
-                  onToggle={() => setIsEditing(!isEditing)}
+                {!isEditing ? (
+                  <button
+                    onClick={() => setIsEditing(true)}
+                    className="text-[13px] font-medium text-white bg-[#180047] px-5 py-2 rounded-full border-none cursor-pointer hover:bg-[#2a0066] transition-colors"
+                  >
+                    Editar
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => { setIsEditing(false); addLog('Cambios guardados') }}
+                    disabled={!hasChanges}
+                    className={`text-[13px] font-medium px-5 py-2 rounded-full border-none transition-colors ${
+                      hasChanges
+                        ? 'text-white bg-[#180047] cursor-pointer hover:bg-[#2a0066]'
+                        : 'text-white bg-[#180047] opacity-50 cursor-not-allowed'
+                    }`}
+                  >
+                    Guardar cambios
+                  </button>
+                )}
+              </div>
+
+              {/* Tareas + Status dropdown row */}
+              <div className="flex items-center justify-between mb-4">
+                <p className="text-[14px] font-medium text-[#0A0B0D] m-0">Tareas</p>
+                <StatusDropdown
                   deptStatus={deptStatuses[activeDept]}
                   onStatusChange={handleStatusChange}
+                  disabled={!isEditing}
                 />
               </div>
 
