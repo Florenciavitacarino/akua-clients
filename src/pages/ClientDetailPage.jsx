@@ -1234,12 +1234,7 @@ export default function ClientDetailPage() {
                 ) : (
                   <button
                     onClick={() => { setIsEditing(false); addLog('Cambios guardados') }}
-                    disabled={!hasChanges}
-                    className={`text-[13px] font-medium px-5 py-2 rounded-full border-none transition-colors ${
-                      hasChanges
-                        ? 'text-white bg-[#180047] cursor-pointer hover:bg-[#2a0066]'
-                        : 'text-white bg-[#180047] opacity-50 cursor-not-allowed'
-                    }`}
+                    className="text-[13px] font-medium px-5 py-2 rounded-full border-none text-white bg-[#180047] cursor-pointer hover:bg-[#2a0066] transition-colors"
                   >
                     Guardar cambios
                   </button>
