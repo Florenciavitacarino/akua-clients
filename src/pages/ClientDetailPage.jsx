@@ -561,7 +561,7 @@ function FraudEdit({ checkedItems, onCheck, waivedItems, onWaive, logs, addLog }
 
       {/* Perfil Transaccional Esperado */}
       <div className="mt-4 border border-[#E5E7EB] rounded-[8px] p-4 bg-white">
-        <div className="flex items-center gap-2 mb-4">
+        <div className="flex items-center gap-2 mb-1">
           <p className="text-[14px] font-semibold text-[#0A0B0D]">Perfil Transaccional Esperado</p>
           <span className="relative group/pte shrink-0">
             <Info size={14} className="text-[#9CA3AF] cursor-pointer" />
@@ -571,6 +571,7 @@ function FraudEdit({ checkedItems, onCheck, waivedItems, onWaive, logs, addLog }
             </div>
           </span>
         </div>
+        <p className="text-[12px] text-[#6B7280] mb-4">Esta sección permite calibrar los umbrales de monto y el mix de tarjetas.</p>
         <div className="grid grid-cols-3 gap-x-6 gap-y-4">
           <TextInput label="Volumen mensual" placeholder="Text" info tooltip="Estimado por cantidad de transacciones" />
           <TextInput label="Monto procesado mensual" placeholder="Text" info tooltip="Estimado en USD" />
@@ -698,6 +699,7 @@ function FraudView({ checkedItems, waivedItems, logs }) {
             <div className="absolute top-full left-6 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-[#1F2937]" />
           </div>
         </div>
+        <p className="text-[12px] text-[#6B7280] mb-4">Esta sección permite calibrar los umbrales de monto y el mix de tarjetas.</p>
         <div className="grid grid-cols-3 gap-x-6 gap-y-4">
           <InfoField label="Volumen mensual" value="Text" info tooltip="Estimado por cantidad de transacciones" />
           <InfoField label="Monto procesado mensual" value="Text" info tooltip="Estimado en USD" />
