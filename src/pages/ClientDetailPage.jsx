@@ -701,9 +701,9 @@ function FraudView({ checkedItems, waivedItems, logs }) {
 const FINANCES_CHECKLIST = [
   { label: "Text here" },
   { label: "Text here" },
-  { label: "Text here", tag: "FRAUD" },
   { label: "Text here" },
-  { label: "Text here", tag: "FRAUD" },
+  { label: "Text here" },
+  { label: "Text here" },
   { label: "Text here" },
   { label: "Perfil Transaccional Esperado", tag: "FRAUD", sharedId: "perfil_transaccional" },
   { label: "Historial de Riesgo", tag: "FRAUD", sharedId: "historial_riesgo" },
