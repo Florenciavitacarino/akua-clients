@@ -232,12 +232,18 @@ function ChecklistItemView({ label, tag, checked, waived }) {
 }
 
 /* ─── Info Field (View mode) - label + value stacked ─── */
-function InfoField({ label, value, info }) {
+function InfoField({ label, value, info, tooltip }) {
   return (
     <div className="min-w-0">
-      <div className="flex items-center gap-1 mb-1">
+      <div className="flex items-center gap-1 mb-1 relative group/if">
         <span className="text-[12px] text-[#6B7280]">{label}</span>
-        {info && <Info size={12} className="text-[#D1D5DB] shrink-0" />}
+        {info && <Info size={12} className="text-[#D1D5DB] shrink-0 cursor-pointer" />}
+        {tooltip && (
+          <div className="absolute left-0 bottom-full mb-2 px-3 py-2 bg-[#1F2937] text-white text-[12px] rounded-[8px] whitespace-nowrap opacity-0 group-hover/if:opacity-100 transition-opacity pointer-events-none z-20">
+            {tooltip}
+            <div className="absolute top-full left-6 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-[#1F2937]" />
+          </div>
+        )}
       </div>
       <p className="text-[13px] text-[#0A0B0D] font-medium">{value || '—'}</p>
     </div>
@@ -685,12 +691,12 @@ function FraudView({ checkedItems, waivedItems, logs }) {
           </div>
         </div>
         <div className="grid grid-cols-3 gap-x-6 gap-y-4">
-          <InfoField label="Volumen mensual" value="Text" info />
-          <InfoField label="Monto procesado mensual" value="Text" info />
+          <InfoField label="Volumen mensual" value="Text" info tooltip="Estimado por cantidad de transacciones" />
+          <InfoField label="Monto procesado mensual" value="Text" info tooltip="Estimado en USD" />
           <InfoField label="Ticket promedio USD" value="1000 usd" />
           <InfoField label="Ticket mínimo USD" value="400 usd" />
           <InfoField label="Ticket máximo USD" value="1000 usd" />
-          <InfoField label="Mix estimado" value="Text" info />
+          <InfoField label="Mix estimado" value="Text" info tooltip="Tarjetas domésticas vs. internacionales" />
           <InfoField label="Países de origen de tarjetas frecuentes" value="Colombia" info />
           <InfoField label="Monedas de transacción" value="Text" />
         </div>
@@ -702,7 +708,7 @@ function FraudView({ checkedItems, waivedItems, logs }) {
         <p className="text-[12px] text-[#6B7280] mb-4">Indicar cómo el cliente procesa sus pagos. Esta sección determina si aplica el Perfil D (recurrencia) y cómo se trata el primer cobro.</p>
         <div className="grid grid-cols-3 gap-x-6 gap-y-4">
           <InfoField label="Pagos únicos" value="Si" />
-          <InfoField label="Pagos recurrentes" value="Si" info />
+          <InfoField label="Pagos recurrentes" value="Si" info tooltip="Suscripciones / cobros automáticos" />
           <InfoField label="Frecuencia de cobro" value="Mensual" />
           <InfoField label="Tarjetahabiente presente en el momento" value="Si" />
           <InfoField label="Tokenización de tarjetas" value="Si" />
@@ -721,7 +727,7 @@ function FraudView({ checkedItems, waivedItems, logs }) {
         </div>
         <div className="grid grid-cols-3 gap-x-6 gap-y-4">
           <InfoField label="Historial de procesamiento" value="Si" />
-          <InfoField label="Tasa de chargebacks" value="Si" info />
+          <InfoField label="Tasa de chargebacks" value="Si" info tooltip="Entre Visa o Mastercard (VAMP, ECP, FMP)" />
           <InfoField label="Chargebacks > 0.9%" value="Si" />
           <InfoField label="Fecha" value="01/12/2023" />
           <InfoField label="Participación de monitoreo" value="Si" info />
@@ -734,16 +740,22 @@ function FraudView({ checkedItems, waivedItems, logs }) {
 
       {/* Apetito de Riesgo del Cliente */}
       <div className="mt-4 border border-[#E5E7EB] rounded-[8px] p-4 bg-white">
-        <p className="text-[14px] font-semibold text-[#0A0B0D] mb-1">Apetito de Riesgo del Cliente</p>
+        <div className="relative group/arv mb-1">
+          <p className="text-[14px] font-semibold text-[#0A0B0D]">Apetito de Riesgo del Cliente</p>
+          <div className="absolute left-[210px] bottom-full mb-2 px-3 py-2 bg-[#1F2937] text-white text-[12px] rounded-[8px] max-w-[320px] opacity-0 group-hover/arv:opacity-100 transition-opacity pointer-events-none z-20 leading-relaxed">
+            Máxima protección (acepta menor conversión) / Balance protección-conversión / Máxima conversión (acepta mayor riesgo)
+            <div className="absolute top-full left-6 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-[#1F2937]" />
+          </div>
+        </div>
         <p className="text-[12px] text-[#6B7280] mb-4">Indicar cómo el cliente prioriza entre seguridad y conversión, el Perfil D (recurrencia) y cómo se trata el primer cobro.</p>
         <div className="grid grid-cols-3 gap-x-6 gap-y-4">
           <InfoField label="Prioridad del cliente" value="Máxima protección (acepta menor conversión)" info />
           <InfoField label="Restricciones contractuales o regulatorias" value="No" info />
-          <InfoField label="Detalles" value="Detalles de las restricciones" />
+          <InfoField label="Detalles" value="Detalles de las restricciones" info tooltip="TRA, low-value, whitelist" />
           <InfoField label="Exención específica" value="No" info />
           <InfoField label="Cuál" value="Detalle de las restricciones" />
           <div />
-          <InfoField label="Fallo de autenticación (fail-closed)" value="No" info />
+          <InfoField label="Fallo de autenticación (fail-closed)" value="No" info tooltip="Si falla la autenticación, se declina la transacción" />
           <InfoField label="Observaciones adicionales" value="Más observaciones del cliente sobre pagos" />
         </div>
       </div>
