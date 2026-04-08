@@ -276,7 +276,7 @@ function ActivityPanel({ logs }) {
       <div className="bg-white border border-[#E5E7EB] rounded-[8px] w-full h-full flex flex-col">
         <div className="flex items-center gap-2 px-4 pt-4 pb-2">
           {activityIcon}
-          <p className="text-[14px] font-semibold text-[#0A0B0D]">Activity</p>
+          <p className="text-[14px] font-semibold text-[#0A0B0D]">Actividad</p>
         </div>
         <div className="flex-1 flex flex-col items-center justify-center px-4 pb-6">
           <img src="/empty-activity.svg" alt="No activity" className="w-full max-w-[200px]" />
@@ -291,7 +291,7 @@ function ActivityPanel({ logs }) {
     <div className="bg-white border border-[#E5E7EB] rounded-[8px] w-full h-full">
       <div className="flex items-center gap-2 px-4 pt-4 pb-2">
         {activityIcon}
-        <p className="text-[14px] font-semibold text-[#0A0B0D]">Activity</p>
+        <p className="text-[14px] font-semibold text-[#0A0B0D]">Actividad</p>
       </div>
       <div className="px-4 pb-3 max-h-[500px] overflow-y-auto">
         {logs.map((item, i) => (
@@ -1121,12 +1121,17 @@ export default function ClientDetailPage() {
     golive: 'not_started',
     review: 'not_started',
   })
-  const [activityLogs, setActivityLogs] = useState([])
+  const [activityLogs, setActivityLogs] = useState({
+    compliance: [], fraud: [], finances: [], sales: [], legal: [], kickoff: [], golive: [], review: [],
+  })
 
   const USER_NAME = 'Agustina Romagnoli'
 
   const addLog = (text) => {
-    setActivityLogs(prev => [{ text, user: USER_NAME, date: formatNow() }, ...prev])
+    setActivityLogs(prev => ({
+      ...prev,
+      [activeDept]: [{ text, user: USER_NAME, date: formatNow() }, ...(prev[activeDept] || [])],
+    }))
   }
 
   const handleStatusChange = (status) => {
@@ -1245,28 +1250,28 @@ export default function ClientDetailPage() {
 
               {/* Department content */}
               {activeDept === 'compliance' && (isEditing
-                ? <ComplianceEdit checkedItems={checkedItems.compliance} onCheck={handleCheck} waivedItems={waivedItems.compliance} onWaive={handleWaive} logs={activityLogs} addLog={addLog} />
-                : <ComplianceView checkedItems={checkedItems.compliance} waivedItems={waivedItems.compliance} logs={activityLogs} />
+                ? <ComplianceEdit checkedItems={checkedItems.compliance} onCheck={handleCheck} waivedItems={waivedItems.compliance} onWaive={handleWaive} logs={activityLogs[activeDept]} addLog={addLog} />
+                : <ComplianceView checkedItems={checkedItems.compliance} waivedItems={waivedItems.compliance} logs={activityLogs[activeDept]} />
               )}
               {activeDept === 'fraud' && (isEditing
-                ? <FraudEdit checkedItems={checkedItems.fraud} onCheck={handleCheck} waivedItems={waivedItems.fraud} onWaive={handleWaive} logs={activityLogs} addLog={addLog} />
-                : <FraudView checkedItems={checkedItems.fraud} waivedItems={waivedItems.fraud} logs={activityLogs} />
+                ? <FraudEdit checkedItems={checkedItems.fraud} onCheck={handleCheck} waivedItems={waivedItems.fraud} onWaive={handleWaive} logs={activityLogs[activeDept]} addLog={addLog} />
+                : <FraudView checkedItems={checkedItems.fraud} waivedItems={waivedItems.fraud} logs={activityLogs[activeDept]} />
               )}
               {activeDept === 'finances' && (isEditing
-                ? <FinancesEdit checkedItems={checkedItems.finances} onCheck={handleCheck} waivedItems={waivedItems.finances} onWaive={handleWaive} logs={activityLogs} addLog={addLog} />
-                : <FinancesView checkedItems={checkedItems.finances} waivedItems={waivedItems.finances} logs={activityLogs} />
+                ? <FinancesEdit checkedItems={checkedItems.finances} onCheck={handleCheck} waivedItems={waivedItems.finances} onWaive={handleWaive} logs={activityLogs[activeDept]} addLog={addLog} />
+                : <FinancesView checkedItems={checkedItems.finances} waivedItems={waivedItems.finances} logs={activityLogs[activeDept]} />
               )}
               {activeDept === 'sales' && (isEditing
-                ? <SalesEdit checkedItems={checkedItems.sales} onCheck={handleCheck} waivedItems={waivedItems.sales} onWaive={handleWaive} logs={activityLogs} addLog={addLog} />
-                : <SalesView checkedItems={checkedItems.sales} waivedItems={waivedItems.sales} logs={activityLogs} />
+                ? <SalesEdit checkedItems={checkedItems.sales} onCheck={handleCheck} waivedItems={waivedItems.sales} onWaive={handleWaive} logs={activityLogs[activeDept]} addLog={addLog} />
+                : <SalesView checkedItems={checkedItems.sales} waivedItems={waivedItems.sales} logs={activityLogs[activeDept]} />
               )}
               {activeDept === 'legal' && (isEditing
-                ? <LegalEdit checkedItems={checkedItems.legal} onCheck={handleCheck} waivedItems={waivedItems.legal} onWaive={handleWaive} logs={activityLogs} addLog={addLog} />
-                : <LegalView checkedItems={checkedItems.legal} waivedItems={waivedItems.legal} logs={activityLogs} />
+                ? <LegalEdit checkedItems={checkedItems.legal} onCheck={handleCheck} waivedItems={waivedItems.legal} onWaive={handleWaive} logs={activityLogs[activeDept]} addLog={addLog} />
+                : <LegalView checkedItems={checkedItems.legal} waivedItems={waivedItems.legal} logs={activityLogs[activeDept]} />
               )}
               {activeDept === 'kickoff' && (isEditing
-                ? <KickoffEdit checkedItems={checkedItems.kickoff} onCheck={handleCheck} waivedItems={waivedItems.kickoff} onWaive={handleWaive} logs={activityLogs} addLog={addLog} />
-                : <KickoffView checkedItems={checkedItems.kickoff} waivedItems={waivedItems.kickoff} logs={activityLogs} />
+                ? <KickoffEdit checkedItems={checkedItems.kickoff} onCheck={handleCheck} waivedItems={waivedItems.kickoff} onWaive={handleWaive} logs={activityLogs[activeDept]} addLog={addLog} />
+                : <KickoffView checkedItems={checkedItems.kickoff} waivedItems={waivedItems.kickoff} logs={activityLogs[activeDept]} />
               )}
               {!['compliance','fraud','finances','sales','legal','kickoff'].includes(activeDept) && <PlaceholderDept name={currentDept?.name} isEditing={isEditing} />}
             </div>
@@ -1405,7 +1410,10 @@ export default function ClientDetailPage() {
             { title: "Se agregó nota a 'Validación de la estructura accionaria'", user: "Ingrith Velandia", dept: "Compliance", date: "Mar 15, 08:45" },
             { title: "Se subió contrato firmado", user: "Santiago Reez", dept: "Sales", date: "Mar 15, 16:30" },
           ]
-          const realLogs = activityLogs.map(l => ({ title: l.text, user: l.user, dept: '', date: l.date }))
+          const deptNames = { compliance: 'Compliance', fraud: 'Fraud', finances: 'Finances', sales: 'Sales', legal: 'Legal and Contract', kickoff: 'Kickoff & Integration' }
+          const realLogs = Object.entries(activityLogs).flatMap(([dept, logs]) =>
+            logs.map(l => ({ title: l.text, user: l.user, dept: deptNames[dept] || dept, date: l.date }))
+          ).sort((a, b) => b.date.localeCompare(a.date))
           const items = [...realLogs, ...defaultTimeline]
 
           return (
