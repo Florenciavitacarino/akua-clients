@@ -393,9 +393,10 @@ const COMPLIANCE_CHECKLIST = [
   { label: "Validación de la estructura accionaria y UBO" },
   { label: "Screening de sanciones, PEP y Adverse Media (Noto)" },
   { label: "Ballerine -Evaluación del sitio web" },
-  { label: "Evaluación del perfil de riesgo del negocio", tag: "FRAUD" },
+  { label: "Evaluación del perfil de riesgo del negocio" },
   { label: "Revisión del programa de compliance del cliente" },
   { label: "Inscripción del cliente en Mastercard y Visa como Pay..." },
+  { label: "Apetito de Riesgo del Cliente", tag: "FRAUD" },
 ]
 
 function ComplianceEdit({ checkedItems, onCheck, waivedItems, onWaive, logs, addLog }) {
