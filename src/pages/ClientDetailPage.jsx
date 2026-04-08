@@ -486,9 +486,9 @@ function ComplianceView({ checkedItems, waivedItems, logs }) {
 const FRAUD_CHECKLIST = [
   { label: "Datos de equipo de riesgo/prevención de fraude 1" },
   { label: "Vertical de negocio" },
-  { label: "Perfil Transaccional Esperado", tag: "FINANCE" },
+  { label: "Perfil Transaccional Esperado", tag: "FINANCE", sharedId: "perfil_transaccional" },
   { label: "Tipo de Operatoria" },
-  { label: "Historial de Riesgo", tag: "FINANCE" },
+  { label: "Historial de Riesgo", tag: "FINANCE", sharedId: "historial_riesgo" },
   { label: "Apetito de Riesgo del Cliente", tag: "COMPLIANCE" },
 ]
 
@@ -705,6 +705,8 @@ const FINANCES_CHECKLIST = [
   { label: "Text here" },
   { label: "Text here", tag: "FRAUD" },
   { label: "Text here" },
+  { label: "Perfil Transaccional Esperado", tag: "FRAUD", sharedId: "perfil_transaccional" },
+  { label: "Historial de Riesgo", tag: "FRAUD", sharedId: "historial_riesgo" },
 ]
 
 const FINANCES_DOC_LABELS = ['EEFF', 'Balance sheet', 'Income Statement', 'Histórico transaccional', 'Modelo transaccional']
@@ -1148,15 +1150,49 @@ export default function ClientDetailPage() {
 
   const handleCheck = (idx) => {
     const list = CHECKLISTS[activeDept] || []
-    const wasChecked = (checkedItems[activeDept] || new Set()).has(idx)
     const item = list[idx] || ''
     const label = typeof item === 'string' ? item : item.label
-    addLog(wasChecked ? `'${label}' desmarcado` : `'${label}' se ha marcado como lista`)
+    const sharedId = typeof item === 'object' ? item.sharedId : null
+    const wasChecked = (checkedItems[activeDept] || new Set()).has(idx)
+    const logText = wasChecked ? `'${label}' desmarcado` : `'${label}' se ha marcado como lista`
+    addLog(logText)
     setHasChanges(true)
+
     setCheckedItems(prev => {
+      const result = { ...prev }
+      // Update current dept
       const next = new Set(prev[activeDept] || [])
       if (next.has(idx)) next.delete(idx); else next.add(idx)
-      return { ...prev, [activeDept]: next }
+      result[activeDept] = next
+
+      // Sync shared items across departments
+      if (sharedId) {
+        Object.entries(CHECKLISTS).forEach(([dept, deptList]) => {
+          if (dept === activeDept) return
+          deptList.forEach((deptItem, deptIdx) => {
+            const dId = typeof deptItem === 'object' ? deptItem.sharedId : null
+            if (dId === sharedId) {
+              const deptSet = new Set(result[dept] || [])
+              if (wasChecked) deptSet.delete(deptIdx); else deptSet.add(deptIdx)
+              result[dept] = deptSet
+            }
+          })
+        })
+        // Add log to shared department too
+        Object.entries(CHECKLISTS).forEach(([dept, deptList]) => {
+          if (dept === activeDept) return
+          deptList.forEach((deptItem) => {
+            const dId = typeof deptItem === 'object' ? deptItem.sharedId : null
+            if (dId === sharedId) {
+              setActivityLogs(p => ({
+                ...p,
+                [dept]: [{ text: logText, user: USER_NAME, date: formatNow() }, ...(p[dept] || [])],
+              }))
+            }
+          })
+        })
+      }
+      return result
     })
   }
 
