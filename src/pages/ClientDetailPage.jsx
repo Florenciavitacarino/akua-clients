@@ -22,7 +22,7 @@ const DEPT_ICONS = {
 const DEPARTMENTS = [
   { key: 'compliance', name: 'Compliance', status: 'complete' },
   { key: 'fraud', name: 'Fraud', status: 'complete' },
-  { key: 'finances', name: 'Finances', status: 'complete' },
+  { key: 'finances', name: 'Finance', status: 'complete' },
   { key: 'sales', name: 'Sales', status: 'complete' },
   { key: 'legal', name: 'Legal and Contract', status: 'complete' },
   { key: 'kickoff', name: 'Kickoff & Integration', status: 'complete' },
@@ -68,6 +68,25 @@ function StatusDot({ status }) {
   )
 }
 
+/* Department tag badge for checklist items */
+const DEPT_TAG_STYLES = {
+  FINANCE: { bg: '#e0f2fe', text: '#0369a1', border: '#7dd3fc' },
+  FRAUD: { bg: '#ede9fe', text: '#6d28d9', border: '#c4b5fd' },
+  COMPLIANCE: { bg: '#fef3c7', text: '#b45309', border: '#fcd34d' },
+  SALES: { bg: '#d1fae5', text: '#047857', border: '#6ee7b7' },
+  LEGAL: { bg: '#fce7f3', text: '#be185d', border: '#f9a8d4' },
+}
+
+function DeptTag({ dept }) {
+  const style = DEPT_TAG_STYLES[dept] || DEPT_TAG_STYLES.FINANCE
+  return (
+    <span className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full shrink-0" style={{ background: style.bg, color: style.text, border: `1px solid ${style.border}` }}>
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      {dept}
+    </span>
+  )
+}
+
 /* Department icon: 32px circle with border, icon image inside */
 function DeptIcon({ deptKey }) {
   const src = DEPT_ICONS[deptKey]
@@ -83,7 +102,7 @@ function DeptIcon({ deptKey }) {
 }
 
 /* ─── Checklist Item (Edit mode) - pill shape, expandable ─── */
-function ChecklistItemEdit({ label, checked, isOpen, onToggle, onMarkDone, waived, onWaive, addLog }) {
+function ChecklistItemEdit({ label, tag, checked, isOpen, onToggle, onMarkDone, waived, onWaive, addLog }) {
   const [linkValue, setLinkValue] = useState('')
   const [noteValue, setNoteValue] = useState('')
   const [linkSaved, setLinkSaved] = useState(false)
@@ -111,6 +130,7 @@ function ChecklistItemEdit({ label, checked, isOpen, onToggle, onMarkDone, waive
           {checked && !waived && <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
         </div>
         <span className={`text-[14px] ${checked ? 'text-[#374151]' : 'text-[#1F2937]'}`}>{label}</span>
+        {tag && <DeptTag dept={tag} />}
         {waived && (
           <span className="text-[11px] font-semibold text-[#5a6dd7] bg-[#EDF0FF] px-2.5 py-0.5 rounded-full uppercase tracking-wide">WAIVED</span>
         )}
@@ -192,7 +212,7 @@ function ChecklistItemEdit({ label, checked, isOpen, onToggle, onMarkDone, waive
 }
 
 /* ─── Checklist Item (View mode) - pill shape, grayed out ─── */
-function ChecklistItemView({ label, checked, waived }) {
+function ChecklistItemView({ label, tag, checked, waived }) {
   return (
     <div className="flex items-center gap-3 border border-[#E5E7EB] rounded-[8px] px-4 py-2.5 mb-2 bg-white">
       <div className={`w-[20px] h-[20px] rounded-[5px] shrink-0 flex items-center justify-center ${
@@ -201,6 +221,7 @@ function ChecklistItemView({ label, checked, waived }) {
         {checked && <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
       </div>
       <span className={`text-[14px] ${checked ? 'text-[#374151]' : 'text-[#9CA3AF]'}`}>{label}</span>
+      {tag && <DeptTag dept={tag} />}
       {waived && (
         <span className="text-[11px] font-semibold text-[#5a6dd7] bg-[#EDF0FF] px-2.5 py-0.5 rounded-full uppercase tracking-wide">WAIVED</span>
       )}
@@ -367,14 +388,14 @@ function StatusDropdown({ deptStatus, onStatusChange, disabled }) {
 
 /* ─── COMPLIANCE CONTENT ─── */
 const COMPLIANCE_CHECKLIST = [
-  "Revisión documental corporativa",
-  "Verificación de identidad de representantes",
-  "Validación de la estructura accionaria y UBO",
-  "Screening de sanciones, PEP y Adverse Media (Noto)",
-  "Ballerine -Evaluación del sitio web",
-  "Evaluación del perfil de riesgo del negocio",
-  "Revisión del programa de compliance del cliente",
-  "Inscripción del cliente en Mastercard y Visa como Pay...",
+  { label: "Revisión documental corporativa" },
+  { label: "Verificación de identidad de representantes" },
+  { label: "Validación de la estructura accionaria y UBO" },
+  { label: "Screening de sanciones, PEP y Adverse Media (Noto)" },
+  { label: "Ballerine -Evaluación del sitio web" },
+  { label: "Evaluación del perfil de riesgo del negocio", tag: "FRAUD" },
+  { label: "Revisión del programa de compliance del cliente" },
+  { label: "Inscripción del cliente en Mastercard y Visa como Pay..." },
 ]
 
 function ComplianceEdit({ checkedItems, onCheck, waivedItems, onWaive, logs, addLog }) {
@@ -384,10 +405,10 @@ function ComplianceEdit({ checkedItems, onCheck, waivedItems, onWaive, logs, add
       {/* Top area: Checklist + Activity side by side - 50/50 */}
       <div className="flex gap-4">
         <div className="w-1/2 min-w-0 flex flex-col">
-          {COMPLIANCE_CHECKLIST.map((label, i) => (
+          {COMPLIANCE_CHECKLIST.map((item, i) => (
             <ChecklistItemEdit
               key={i}
-              label={label}
+              label={item.label} tag={item.tag}
               checked={checkedItems.has(i)}
               waived={waivedItems.has(i)}
               isOpen={openIdx === i}
@@ -430,8 +451,8 @@ function ComplianceView({ checkedItems, waivedItems, logs }) {
       {/* Top area: Checklist + Activity side by side - 50/50 */}
       <div className="flex gap-4">
         <div className="w-1/2 min-w-0 flex flex-col">
-          {COMPLIANCE_CHECKLIST.map((label, i) => (
-            <ChecklistItemView key={i} label={label} checked={checkedItems.has(i)} waived={waivedItems.has(i)} />
+          {COMPLIANCE_CHECKLIST.map((item, i) => (
+            <ChecklistItemView key={i} label={item.label} tag={item.tag} checked={checkedItems.has(i)} waived={waivedItems.has(i)} />
           ))}
         </div>
         <div className="w-1/2 min-w-0">
@@ -462,12 +483,12 @@ function ComplianceView({ checkedItems, waivedItems, logs }) {
 
 /* ─── FRAUD CONTENT ─── */
 const FRAUD_CHECKLIST = [
-  "Datos de equipo de riesgo/prevención de fraude 1",
-  "Vertical de negocio",
-  "Perfil Transaccional Esperado",
-  "Tipo de Operatoria",
-  "Historial de Riesgo",
-  "Apetito de Riesgo del Cliente",
+  { label: "Datos de equipo de riesgo/prevención de fraude 1" },
+  { label: "Vertical de negocio" },
+  { label: "Perfil Transaccional Esperado", tag: "FINANCE" },
+  { label: "Tipo de Operatoria" },
+  { label: "Historial de Riesgo", tag: "FINANCE" },
+  { label: "Apetito de Riesgo del Cliente", tag: "COMPLIANCE" },
 ]
 
 function FraudEdit({ checkedItems, onCheck, waivedItems, onWaive, logs, addLog }) {
@@ -476,9 +497,9 @@ function FraudEdit({ checkedItems, onCheck, waivedItems, onWaive, logs, addLog }
     <>
       <div className="flex gap-4">
         <div className="w-1/2 min-w-0 flex flex-col">
-          {FRAUD_CHECKLIST.map((label, i) => (
+          {FRAUD_CHECKLIST.map((item, i) => (
             <ChecklistItemEdit
-              key={i} label={label}
+              key={i} label={item.label} tag={item.tag}
               checked={checkedItems.has(i)} waived={waivedItems.has(i)}
               isOpen={openIdx === i}
               onToggle={() => setOpenIdx(openIdx === i ? null : i)}
@@ -595,8 +616,8 @@ function FraudView({ checkedItems, waivedItems, logs }) {
     <>
       <div className="flex gap-4">
         <div className="w-1/2 min-w-0 flex flex-col">
-          {FRAUD_CHECKLIST.map((label, i) => (
-            <ChecklistItemView key={i} label={label} checked={checkedItems.has(i)} waived={waivedItems.has(i)} />
+          {FRAUD_CHECKLIST.map((item, i) => (
+            <ChecklistItemView key={i} label={item.label} tag={item.tag} checked={checkedItems.has(i)} waived={waivedItems.has(i)} />
           ))}
         </div>
         <div className="w-1/2 min-w-0">
@@ -677,12 +698,12 @@ function FraudView({ checkedItems, waivedItems, logs }) {
 
 /* ─── FINANCES CONTENT ─── */
 const FINANCES_CHECKLIST = [
-  "Text here",
-  "Text here",
-  "Text here",
-  "Text here",
-  "Text here",
-  "Text here",
+  { label: "Text here" },
+  { label: "Text here" },
+  { label: "Text here", tag: "FRAUD" },
+  { label: "Text here" },
+  { label: "Text here", tag: "FRAUD" },
+  { label: "Text here" },
 ]
 
 const FINANCES_DOC_LABELS = ['EEFF', 'Balance sheet', 'Income Statement', 'Histórico transaccional', 'Modelo transaccional']
@@ -726,9 +747,9 @@ function FinancesEdit({ checkedItems, onCheck, waivedItems, onWaive, logs, addLo
     <div className="flex gap-4">
       {/* Left column: Checklist + Info administrativa (continuous) */}
       <div className="w-1/2 min-w-0 flex flex-col">
-        {FINANCES_CHECKLIST.map((label, i) => (
+        {FINANCES_CHECKLIST.map((item, i) => (
           <ChecklistItemEdit
-            key={i} label={label}
+            key={i} label={item.label} tag={item.tag}
             checked={checkedItems.has(i)} waived={waivedItems.has(i)}
             isOpen={openIdx === i}
             onToggle={() => setOpenIdx(openIdx === i ? null : i)}
@@ -777,8 +798,8 @@ function FinancesView({ checkedItems, waivedItems, logs }) {
     <div className="flex gap-4">
       {/* Left column: Checklist + Info administrativa (continuous) */}
       <div className="w-1/2 min-w-0 flex flex-col">
-        {FINANCES_CHECKLIST.map((label, i) => (
-          <ChecklistItemView key={i} label={label} checked={checkedItems.has(i)} waived={waivedItems.has(i)} />
+        {FINANCES_CHECKLIST.map((item, i) => (
+          <ChecklistItemView key={i} label={item.label} tag={item.tag} checked={checkedItems.has(i)} waived={waivedItems.has(i)} />
         ))}
 
         <div className="border border-[#E5E7EB] rounded-[8px] p-4 bg-white mt-2">
@@ -1127,7 +1148,8 @@ export default function ClientDetailPage() {
   const handleCheck = (idx) => {
     const list = CHECKLISTS[activeDept] || []
     const wasChecked = (checkedItems[activeDept] || new Set()).has(idx)
-    const label = list[idx] || ''
+    const item = list[idx] || ''
+    const label = typeof item === 'string' ? item : item.label
     addLog(wasChecked ? `'${label}' desmarcado` : `'${label}' se ha marcado como lista`)
     setHasChanges(true)
     setCheckedItems(prev => {
@@ -1140,7 +1162,8 @@ export default function ClientDetailPage() {
   const handleWaive = (idx) => {
     const list = CHECKLISTS[activeDept] || []
     const wasWaived = (waivedItems[activeDept] || new Set()).has(idx)
-    const label = list[idx] || ''
+    const item = list[idx] || ''
+    const label = typeof item === 'string' ? item : item.label
     addLog(wasWaived ? `'${label}' waive revertido` : `'${label}' marcado como waived`)
     setHasChanges(true)
     setWaivedItems(prev => {
