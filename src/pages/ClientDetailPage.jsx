@@ -235,14 +235,18 @@ function ChecklistItemView({ label, tag, checked, waived }) {
 function InfoField({ label, value, info, tooltip }) {
   return (
     <div className="min-w-0">
-      <div className="flex items-center gap-1 mb-1 relative group/if">
+      <div className="flex items-center gap-1 mb-1">
         <span className="text-[12px] text-[#6B7280]">{label}</span>
-        {info && <Info size={12} className="text-[#D1D5DB] shrink-0 cursor-pointer" />}
-        {tooltip && (
-          <div className="absolute left-0 bottom-full mb-2 px-3 py-2 bg-[#1F2937] text-white text-[12px] rounded-[8px] whitespace-nowrap opacity-0 group-hover/if:opacity-100 transition-opacity pointer-events-none z-20">
-            {tooltip}
-            <div className="absolute top-full left-6 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-[#1F2937]" />
-          </div>
+        {info && (
+          <span className="relative group/ifo shrink-0">
+            <Info size={12} className="text-[#D1D5DB] cursor-pointer" />
+            {tooltip && (
+              <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-[#1F2937] text-white text-[12px] rounded-[8px] whitespace-nowrap opacity-0 group-hover/ifo:opacity-100 transition-opacity pointer-events-none z-20">
+                {tooltip}
+                <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-[#1F2937]" />
+              </div>
+            )}
+          </span>
         )}
       </div>
       <p className="text-[13px] text-[#0A0B0D] font-medium">{value || '—'}</p>
@@ -254,14 +258,18 @@ function InfoField({ label, value, info, tooltip }) {
 function RadioField({ label, info, tooltip }) {
   return (
     <div className="min-w-0">
-      <div className="flex items-center gap-1 mb-2 relative group/rf">
+      <div className="flex items-center gap-1 mb-2">
         <span className="text-[12px] text-[#374151]">{label}</span>
-        {info && <Info size={12} className="text-[#D1D5DB] shrink-0 cursor-pointer" />}
-        {tooltip && (
-          <div className="absolute left-0 bottom-full mb-2 px-3 py-2 bg-[#1F2937] text-white text-[12px] rounded-[8px] whitespace-nowrap opacity-0 group-hover/rf:opacity-100 transition-opacity pointer-events-none z-20">
-            {tooltip}
-            <div className="absolute top-full left-6 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-[#1F2937]" />
-          </div>
+        {info && (
+          <span className="relative group/rfo shrink-0">
+            <Info size={12} className="text-[#D1D5DB] cursor-pointer" />
+            {tooltip && (
+              <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-[#1F2937] text-white text-[12px] rounded-[8px] whitespace-nowrap opacity-0 group-hover/rfo:opacity-100 transition-opacity pointer-events-none z-20">
+                {tooltip}
+                <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-[#1F2937]" />
+              </div>
+            )}
+          </span>
         )}
       </div>
       <div className="flex items-center gap-3">
@@ -277,10 +285,23 @@ function RadioField({ label, info, tooltip }) {
 }
 
 /* ─── Text Input (Edit mode) ─── */
-function TextInput({ label, placeholder }) {
+function TextInput({ label, placeholder, info, tooltip }) {
   return (
     <div>
-      <span className="text-[12px] text-[#374151] font-medium block mb-1">{label}</span>
+      <div className="flex items-center gap-1 mb-1">
+        <span className="text-[12px] text-[#374151] font-medium">{label}</span>
+        {info && (
+          <span className="relative group/ti shrink-0">
+            <Info size={12} className="text-[#D1D5DB] cursor-pointer" />
+            {tooltip && (
+              <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-[#1F2937] text-white text-[12px] rounded-[8px] whitespace-nowrap opacity-0 group-hover/ti:opacity-100 transition-opacity pointer-events-none z-20">
+                {tooltip}
+                <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-[#1F2937]" />
+              </div>
+            )}
+          </span>
+        )}
+      </div>
       <input
         type="text"
         placeholder={placeholder}
@@ -540,13 +561,15 @@ function FraudEdit({ checkedItems, onCheck, waivedItems, onWaive, logs, addLog }
 
       {/* Perfil Transaccional Esperado */}
       <div className="mt-4 border border-[#E5E7EB] rounded-[8px] p-4 bg-white">
-        <div className="flex items-center gap-2 mb-4 relative group/pte">
+        <div className="flex items-center gap-2 mb-4">
           <p className="text-[14px] font-semibold text-[#0A0B0D]">Perfil Transaccional Esperado</p>
-          <Info size={14} className="text-[#9CA3AF] cursor-pointer" />
-          <div className="absolute left-[200px] bottom-full mb-2 px-3 py-2 bg-[#1F2937] text-white text-[12px] rounded-[8px] whitespace-nowrap opacity-0 group-hover/pte:opacity-100 transition-opacity pointer-events-none z-20">
-            Estimado por cantidad de transacciones
-            <div className="absolute top-full left-6 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-[#1F2937]" />
-          </div>
+          <span className="relative group/pte shrink-0">
+            <Info size={14} className="text-[#9CA3AF] cursor-pointer" />
+            <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-[#1F2937] text-white text-[12px] rounded-[8px] whitespace-nowrap opacity-0 group-hover/pte:opacity-100 transition-opacity pointer-events-none z-20">
+              Estimado por cantidad de transacciones
+              <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-[#1F2937]" />
+            </div>
+          </span>
         </div>
         <div className="grid grid-cols-3 gap-x-6 gap-y-4">
           <TextInput label="Volumen mensual" placeholder="Text" info tooltip="Estimado por cantidad de transacciones" />
@@ -575,13 +598,15 @@ function FraudEdit({ checkedItems, onCheck, waivedItems, onWaive, logs, addLog }
 
       {/* Historial de Riesgo */}
       <div className="mt-4 border border-[#E5E7EB] rounded-[8px] p-4 bg-white">
-        <div className="flex items-center gap-2 mb-4 relative group/hr">
+        <div className="flex items-center gap-2 mb-4">
           <p className="text-[14px] font-semibold text-[#0A0B0D]">Historial de Riesgo</p>
-          <Info size={14} className="text-[#9CA3AF] cursor-pointer" />
-          <div className="absolute left-[140px] bottom-full mb-2 px-3 py-2 bg-[#1F2937] text-white text-[12px] rounded-[8px] whitespace-nowrap opacity-0 group-hover/hr:opacity-100 transition-opacity pointer-events-none z-20">
-            Promedio (últimos 3 meses):
-            <div className="absolute top-full left-6 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-[#1F2937]" />
-          </div>
+          <span className="relative group/hr shrink-0">
+            <Info size={14} className="text-[#9CA3AF] cursor-pointer" />
+            <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-[#1F2937] text-white text-[12px] rounded-[8px] whitespace-nowrap opacity-0 group-hover/hr:opacity-100 transition-opacity pointer-events-none z-20">
+              Promedio (últimos 3 meses):
+              <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-[#1F2937]" />
+            </div>
+          </span>
         </div>
         <div className="grid grid-cols-3 gap-x-6 gap-y-5">
           <RadioField label="Historial de procesamiento" />
@@ -600,12 +625,15 @@ function FraudEdit({ checkedItems, onCheck, waivedItems, onWaive, logs, addLog }
 
       {/* Apetito de Riesgo del Cliente */}
       <div className="mt-4 border border-[#E5E7EB] rounded-[8px] p-4 bg-white">
-        <div className="relative group/ar mb-1">
+        <div className="flex items-center gap-2 mb-1">
           <p className="text-[14px] font-semibold text-[#0A0B0D]">Apetito de Riesgo del Cliente</p>
-          <div className="absolute left-[210px] bottom-full mb-2 px-3 py-2 bg-[#1F2937] text-white text-[12px] rounded-[8px] max-w-[320px] opacity-0 group-hover/ar:opacity-100 transition-opacity pointer-events-none z-20 leading-relaxed">
-            Máxima protección (acepta menor conversión) / Balance protección-conversión / Máxima conversión (acepta mayor riesgo)
-            <div className="absolute top-full left-6 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-[#1F2937]" />
-          </div>
+          <span className="relative group/ar shrink-0">
+            <Info size={14} className="text-[#9CA3AF] cursor-pointer" />
+            <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-[#1F2937] text-white text-[12px] rounded-[8px] max-w-[320px] whitespace-normal opacity-0 group-hover/ar:opacity-100 transition-opacity pointer-events-none z-20 leading-relaxed">
+              Máxima protección (acepta menor conversión) / Balance protección-conversión / Máxima conversión (acepta mayor riesgo)
+              <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-[#1F2937]" />
+            </div>
+          </span>
         </div>
         <p className="text-[12px] text-[#6B7280] mb-4">Indicar cómo el cliente prioriza entre seguridad y conversión, el Perfil D (recurrencia) y cómo se trata el primer cobro.</p>
         {/* Prioridad del cliente */}
@@ -621,24 +649,23 @@ function FraudEdit({ checkedItems, onCheck, waivedItems, onWaive, logs, addLog }
             <label className="flex items-center gap-2 text-[12px] text-[#374151] cursor-pointer">
               <input type="radio" name="prioridad" className="accent-[#180047] w-[14px] h-[14px]" /> Balance protección-conversión
             </label>
-            <label className="relative flex items-center gap-2 text-[12px] text-[#374151] cursor-pointer group/mc">
+            <label className="flex items-center gap-2 text-[12px] text-[#374151] cursor-pointer">
               <input type="radio" name="prioridad" className="accent-[#180047] w-[14px] h-[14px]" /> Máxima conversión (acepta mayor riesgo)
-              <div className="absolute left-[280px] bottom-full mb-2 px-3 py-2 bg-[#1F2937] text-white text-[12px] rounded-[8px] whitespace-nowrap opacity-0 group-hover/mc:opacity-100 transition-opacity pointer-events-none z-20">
-                Exigencia de 3DS en ciertos flujos
-                <div className="absolute top-full left-6 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-[#1F2937]" />
-              </div>
+              <span className="relative group/mc shrink-0">
+                <Info size={12} className="text-[#D1D5DB] cursor-pointer" />
+                <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-[#1F2937] text-white text-[12px] rounded-[8px] whitespace-nowrap opacity-0 group-hover/mc:opacity-100 transition-opacity pointer-events-none z-20">
+                  Exigencia de 3DS en ciertos flujos
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-[#1F2937]" />
+                </div>
+              </span>
             </label>
           </div>
         </div>
         <div className="grid grid-cols-2 gap-x-6 gap-y-5">
           <RadioField label="Restricciones contractuales o regulatorias" info />
         </div>
-        <div className="mt-5 relative group/det">
-          <TextInput label="Detalles" placeholder="Detalles de las restricciones" />
-          <div className="absolute left-[60px] bottom-full mb-2 px-3 py-2 bg-[#1F2937] text-white text-[12px] rounded-[8px] whitespace-nowrap opacity-0 group-hover/det:opacity-100 transition-opacity pointer-events-none z-20">
-            TRA, low-value, whitelist
-            <div className="absolute top-full left-6 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-[#1F2937]" />
-          </div>
+        <div className="mt-5">
+          <TextInput label="Detalles" placeholder="Detalles de las restricciones" info tooltip="TRA, low-value, whitelist" />
         </div>
         <div className="grid grid-cols-2 gap-x-6 gap-y-5 mt-5">
           <RadioField label="Exención específica" info />
@@ -740,12 +767,15 @@ function FraudView({ checkedItems, waivedItems, logs }) {
 
       {/* Apetito de Riesgo del Cliente */}
       <div className="mt-4 border border-[#E5E7EB] rounded-[8px] p-4 bg-white">
-        <div className="relative group/arv mb-1">
+        <div className="flex items-center gap-2 mb-1">
           <p className="text-[14px] font-semibold text-[#0A0B0D]">Apetito de Riesgo del Cliente</p>
-          <div className="absolute left-[210px] bottom-full mb-2 px-3 py-2 bg-[#1F2937] text-white text-[12px] rounded-[8px] max-w-[320px] opacity-0 group-hover/arv:opacity-100 transition-opacity pointer-events-none z-20 leading-relaxed">
-            Máxima protección (acepta menor conversión) / Balance protección-conversión / Máxima conversión (acepta mayor riesgo)
-            <div className="absolute top-full left-6 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-[#1F2937]" />
-          </div>
+          <span className="relative group/arv shrink-0">
+            <Info size={14} className="text-[#9CA3AF] cursor-pointer" />
+            <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-[#1F2937] text-white text-[12px] rounded-[8px] max-w-[320px] whitespace-normal opacity-0 group-hover/arv:opacity-100 transition-opacity pointer-events-none z-20 leading-relaxed">
+              Máxima protección (acepta menor conversión) / Balance protección-conversión / Máxima conversión (acepta mayor riesgo)
+              <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-[#1F2937]" />
+            </div>
+          </span>
         </div>
         <p className="text-[12px] text-[#6B7280] mb-4">Indicar cómo el cliente prioriza entre seguridad y conversión, el Perfil D (recurrencia) y cómo se trata el primer cobro.</p>
         <div className="grid grid-cols-3 gap-x-6 gap-y-4">
