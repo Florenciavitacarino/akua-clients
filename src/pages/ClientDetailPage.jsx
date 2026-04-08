@@ -578,7 +578,7 @@ function FraudEdit({ checkedItems, onCheck, waivedItems, onWaive, logs, addLog }
           <TextInput label="Ticket mínimo USD" placeholder="400 usd" />
           <TextInput label="Ticket máximo USD" placeholder="1000 usd" />
           <TextInput label="Mix estimado" placeholder="Text" info tooltip="Tarjetas domésticas vs. internacionales" />
-          <TextInput label="Países de origen de tarjetas frecuentes" placeholder="Text" info />
+          <TextInput label="Países de origen de tarjetas frecuentes" placeholder="Text" />
           <TextInput label="Monedas de transacción" placeholder="Text" />
         </div>
       </div>
@@ -705,7 +705,7 @@ function FraudView({ checkedItems, waivedItems, logs }) {
           <InfoField label="Ticket mínimo USD" value="400 usd" />
           <InfoField label="Ticket máximo USD" value="1000 usd" />
           <InfoField label="Mix estimado" value="Text" info tooltip="Tarjetas domésticas vs. internacionales" />
-          <InfoField label="Países de origen de tarjetas frecuentes" value="Colombia" info />
+          <InfoField label="Países de origen de tarjetas frecuentes" value="Colombia" />
           <InfoField label="Monedas de transacción" value="Text" />
         </div>
       </div>
