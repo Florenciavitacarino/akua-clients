@@ -241,7 +241,7 @@ function InfoField({ label, value, info, tooltip }) {
           <span className="relative group/ifo shrink-0">
             <Info size={12} className="text-[#D1D5DB] cursor-pointer" />
             {tooltip && (
-              <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-[#1F2937] text-white text-[12px] rounded-[8px] whitespace-nowrap opacity-0 group-hover/ifo:opacity-100 transition-opacity pointer-events-none z-20">
+              <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-[#1F2937] text-white text-[12px] rounded-[8px] w-[260px] whitespace-normal leading-relaxed opacity-0 group-hover/ifo:opacity-100 transition-opacity pointer-events-none z-20">
                 {tooltip}
                 <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-[#1F2937]" />
               </div>
@@ -598,24 +598,15 @@ function FraudEdit({ checkedItems, onCheck, waivedItems, onWaive, logs, addLog }
 
       {/* Historial de Riesgo */}
       <div className="mt-4 border border-[#E5E7EB] rounded-[8px] p-4 bg-white">
-        <div className="flex items-center gap-2 mb-4">
-          <p className="text-[14px] font-semibold text-[#0A0B0D]">Historial de Riesgo</p>
-          <span className="relative group/hr shrink-0">
-            <Info size={14} className="text-[#9CA3AF] cursor-pointer" />
-            <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-[#1F2937] text-white text-[12px] rounded-[8px] whitespace-nowrap opacity-0 group-hover/hr:opacity-100 transition-opacity pointer-events-none z-20">
-              Promedio (últimos 3 meses):
-              <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-[#1F2937]" />
-            </div>
-          </span>
-        </div>
+        <p className="text-[14px] font-semibold text-[#0A0B0D] mb-4">Historial de Riesgo</p>
         <div className="grid grid-cols-3 gap-x-6 gap-y-5">
           <RadioField label="Historial de procesamiento" />
-          <RadioField label="Tasa de chargebacks" info tooltip="Entre Visa o Mastercard (VAMP, ECP, FMP)" />
+          <RadioField label="Tasa de chargebacks" info tooltip="Promedio (últimos 3 meses)" />
           <RadioField label="Chargebacks > 0.9%" />
         </div>
         <div className="grid grid-cols-3 gap-x-6 gap-y-5 mt-5">
           <TextInput label="Fecha" placeholder="Mes" />
-          <RadioField label="Participación de monitoreo" info />
+          <RadioField label="Participación de monitoreo" info tooltip="Entre Visa o Mastercard (VAMP, ECP, FMP)" />
           <RadioField label="Incidentes de fraude" />
         </div>
         <div className="mt-5">
@@ -625,22 +616,19 @@ function FraudEdit({ checkedItems, onCheck, waivedItems, onWaive, logs, addLog }
 
       {/* Apetito de Riesgo del Cliente */}
       <div className="mt-4 border border-[#E5E7EB] rounded-[8px] p-4 bg-white">
-        <div className="flex items-center gap-2 mb-1">
-          <p className="text-[14px] font-semibold text-[#0A0B0D]">Apetito de Riesgo del Cliente</p>
-          <span className="relative group/ar shrink-0">
-            <Info size={14} className="text-[#9CA3AF] cursor-pointer" />
-            <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-[#1F2937] text-white text-[12px] rounded-[8px] max-w-[320px] whitespace-normal opacity-0 group-hover/ar:opacity-100 transition-opacity pointer-events-none z-20 leading-relaxed">
-              Máxima protección (acepta menor conversión) / Balance protección-conversión / Máxima conversión (acepta mayor riesgo)
-              <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-[#1F2937]" />
-            </div>
-          </span>
-        </div>
+        <p className="text-[14px] font-semibold text-[#0A0B0D] mb-1">Apetito de Riesgo del Cliente</p>
         <p className="text-[12px] text-[#6B7280] mb-4">Indicar cómo el cliente prioriza entre seguridad y conversión, el Perfil D (recurrencia) y cómo se trata el primer cobro.</p>
         {/* Prioridad del cliente */}
         <div className="mb-5">
           <div className="flex items-center gap-1 mb-2">
             <span className="text-[12px] text-[#374151]">Prioridad del cliente</span>
-            <Info size={12} className="text-[#D1D5DB]" />
+            <span className="relative group/pc shrink-0">
+              <Info size={12} className="text-[#D1D5DB] cursor-pointer" />
+              <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-[#1F2937] text-white text-[12px] rounded-[8px] w-[280px] whitespace-normal opacity-0 group-hover/pc:opacity-100 transition-opacity pointer-events-none z-20 leading-relaxed">
+                Máxima protección (acepta menor conversión) / Balance protección-conversión / Máxima conversión (acepta mayor riesgo)
+                <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-[#1F2937]" />
+              </div>
+            </span>
           </div>
           <div className="flex flex-col gap-2">
             <label className="flex items-center gap-2 text-[12px] text-[#374151] cursor-pointer">
@@ -651,24 +639,17 @@ function FraudEdit({ checkedItems, onCheck, waivedItems, onWaive, logs, addLog }
             </label>
             <label className="flex items-center gap-2 text-[12px] text-[#374151] cursor-pointer">
               <input type="radio" name="prioridad" className="accent-[#180047] w-[14px] h-[14px]" /> Máxima conversión (acepta mayor riesgo)
-              <span className="relative group/mc shrink-0">
-                <Info size={12} className="text-[#D1D5DB] cursor-pointer" />
-                <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-[#1F2937] text-white text-[12px] rounded-[8px] whitespace-nowrap opacity-0 group-hover/mc:opacity-100 transition-opacity pointer-events-none z-20">
-                  Exigencia de 3DS en ciertos flujos
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-[#1F2937]" />
-                </div>
-              </span>
             </label>
           </div>
         </div>
         <div className="grid grid-cols-2 gap-x-6 gap-y-5">
-          <RadioField label="Restricciones contractuales o regulatorias" info />
+          <RadioField label="Restricciones contractuales o regulatorias" info tooltip="Exigencia de 3DS en ciertos flujos" />
         </div>
         <div className="mt-5">
-          <TextInput label="Detalles" placeholder="Detalles de las restricciones" info tooltip="TRA, low-value, whitelist" />
+          <TextInput label="Detalles" placeholder="Detalles de las restricciones" />
         </div>
         <div className="grid grid-cols-2 gap-x-6 gap-y-5 mt-5">
-          <RadioField label="Exención específica" info />
+          <RadioField label="Exención específica" info tooltip="TRA, low-value, whitelist" />
           <TextInput label="Cuál" placeholder="Detalle de las restricciones" />
         </div>
         <div className="mt-5">
@@ -744,20 +725,13 @@ function FraudView({ checkedItems, waivedItems, logs }) {
 
       {/* Historial de Riesgo */}
       <div className="mt-4 border border-[#E5E7EB] rounded-[8px] p-4 bg-white">
-        <div className="flex items-center gap-2 mb-4 relative group/hrv">
-          <p className="text-[14px] font-semibold text-[#0A0B0D]">Historial de Riesgo</p>
-          <Info size={14} className="text-[#9CA3AF] cursor-pointer" />
-          <div className="absolute left-[140px] bottom-full mb-2 px-3 py-2 bg-[#1F2937] text-white text-[12px] rounded-[8px] whitespace-nowrap opacity-0 group-hover/hrv:opacity-100 transition-opacity pointer-events-none z-20">
-            Promedio (últimos 3 meses):
-            <div className="absolute top-full left-6 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-[#1F2937]" />
-          </div>
-        </div>
+        <p className="text-[14px] font-semibold text-[#0A0B0D] mb-4">Historial de Riesgo</p>
         <div className="grid grid-cols-3 gap-x-6 gap-y-4">
           <InfoField label="Historial de procesamiento" value="Si" />
-          <InfoField label="Tasa de chargebacks" value="Si" info tooltip="Entre Visa o Mastercard (VAMP, ECP, FMP)" />
+          <InfoField label="Tasa de chargebacks" value="Si" info tooltip="Promedio (últimos 3 meses)" />
           <InfoField label="Chargebacks > 0.9%" value="Si" />
           <InfoField label="Fecha" value="01/12/2023" />
-          <InfoField label="Participación de monitoreo" value="Si" info />
+          <InfoField label="Participación de monitoreo" value="Si" info tooltip="Entre Visa o Mastercard (VAMP, ECP, FMP)" />
           <InfoField label="Incidentes de fraude" value="No" />
         </div>
         <div className="mt-4">
@@ -767,22 +741,13 @@ function FraudView({ checkedItems, waivedItems, logs }) {
 
       {/* Apetito de Riesgo del Cliente */}
       <div className="mt-4 border border-[#E5E7EB] rounded-[8px] p-4 bg-white">
-        <div className="flex items-center gap-2 mb-1">
-          <p className="text-[14px] font-semibold text-[#0A0B0D]">Apetito de Riesgo del Cliente</p>
-          <span className="relative group/arv shrink-0">
-            <Info size={14} className="text-[#9CA3AF] cursor-pointer" />
-            <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-[#1F2937] text-white text-[12px] rounded-[8px] max-w-[320px] whitespace-normal opacity-0 group-hover/arv:opacity-100 transition-opacity pointer-events-none z-20 leading-relaxed">
-              Máxima protección (acepta menor conversión) / Balance protección-conversión / Máxima conversión (acepta mayor riesgo)
-              <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-[#1F2937]" />
-            </div>
-          </span>
-        </div>
+        <p className="text-[14px] font-semibold text-[#0A0B0D] mb-1">Apetito de Riesgo del Cliente</p>
         <p className="text-[12px] text-[#6B7280] mb-4">Indicar cómo el cliente prioriza entre seguridad y conversión, el Perfil D (recurrencia) y cómo se trata el primer cobro.</p>
         <div className="grid grid-cols-3 gap-x-6 gap-y-4">
-          <InfoField label="Prioridad del cliente" value="Máxima protección (acepta menor conversión)" info />
-          <InfoField label="Restricciones contractuales o regulatorias" value="No" info />
-          <InfoField label="Detalles" value="Detalles de las restricciones" info tooltip="TRA, low-value, whitelist" />
-          <InfoField label="Exención específica" value="No" info />
+          <InfoField label="Prioridad del cliente" value="Máxima protección (acepta menor conversión)" info tooltip="Máxima protección (acepta menor conversión) / Balance protección-conversión / Máxima conversión (acepta mayor riesgo)" />
+          <InfoField label="Restricciones contractuales o regulatorias" value="No" info tooltip="Exigencia de 3DS en ciertos flujos" />
+          <InfoField label="Detalles" value="Detalles de las restricciones" />
+          <InfoField label="Exención específica" value="No" info tooltip="TRA, low-value, whitelist" />
           <InfoField label="Cuál" value="Detalle de las restricciones" />
           <div />
           <InfoField label="Fallo de autenticación (fail-closed)" value="No" info tooltip="Si falla la autenticación, se declina la transacción" />
