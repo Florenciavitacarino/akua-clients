@@ -71,7 +71,7 @@ function StatusDot({ status }) {
 /* Department tag badge for checklist items */
 const DEPT_TAG_STYLES = {
   FINANCE: { bg: '#e0f2fe', text: '#0369a1', border: '#7dd3fc' },
-  FRAUD: { bg: '#ede9fe', text: '#6d28d9', border: '#c4b5fd' },
+  FRAUD: { bg: '#fef3c7', text: '#b45309', border: '#fcd34d' },
   COMPLIANCE: { bg: '#fef3c7', text: '#b45309', border: '#fcd34d' },
   SALES: { bg: '#d1fae5', text: '#047857', border: '#6ee7b7' },
   LEGAL: { bg: '#fce7f3', text: '#be185d', border: '#f9a8d4' },
