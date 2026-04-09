@@ -905,7 +905,7 @@ function FinancesEdit({ checkedItems, onCheck, waivedItems, onWaive, logs, addLo
             </span>
           </div>
           <p className="text-[12px] text-[#6B7280] mb-4">Esta sección permite calibrar los umbrales de monto y el mix de tarjetas.</p>
-          <div className="grid grid-cols-3 gap-x-6 gap-y-4">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-4">
             <TextInput label="Volumen mensual" placeholder="Text" info tooltip="Estimado por cantidad de transacciones" />
             <TextInput label="Monto procesado mensual" placeholder="Text" info tooltip="Estimado en USD" />
             <TextInput label="Ticket promedio USD" placeholder="1000 usd" />
@@ -920,12 +920,12 @@ function FinancesEdit({ checkedItems, onCheck, waivedItems, onWaive, logs, addLo
         {/* Historial de Riesgo */}
         <div className="border border-[#E5E7EB] rounded-[8px] p-4 bg-white mt-4">
           <p className="text-[14px] font-semibold text-[#0A0B0D] mb-4">Historial de Riesgo</p>
-          <div className="grid grid-cols-3 gap-x-6 gap-y-5">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-5">
             <RadioField label="Historial de procesamiento" />
             <RadioField label="Tasa de chargebacks" info tooltip="Promedio (últimos 3 meses)" />
             <RadioField label="Chargebacks > 0.9%" />
           </div>
-          <div className="grid grid-cols-3 gap-x-6 gap-y-5 mt-5">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-5 mt-5">
             <TextInput label="Fecha" placeholder="Mes" />
             <RadioField label="Participación de monitoreo" info tooltip="Entre Visa o Mastercard (VAMP, ECP, FMP)" />
             <RadioField label="Incidentes de fraude" />
@@ -977,7 +977,7 @@ function FinancesView({ checkedItems, waivedItems, logs }) {
             </span>
           </div>
           <p className="text-[12px] text-[#6B7280] mb-4">Esta sección permite calibrar los umbrales de monto y el mix de tarjetas.</p>
-          <div className="grid grid-cols-3 gap-x-6 gap-y-4">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-4">
             <InfoField label="Volumen mensual" value="Text" info tooltip="Estimado por cantidad de transacciones" />
             <InfoField label="Monto procesado mensual" value="Text" info tooltip="Estimado en USD" />
             <InfoField label="Ticket promedio USD" value="1000 usd" />
@@ -992,7 +992,7 @@ function FinancesView({ checkedItems, waivedItems, logs }) {
         {/* Historial de Riesgo */}
         <div className="border border-[#E5E7EB] rounded-[8px] p-4 bg-white mt-4">
           <p className="text-[14px] font-semibold text-[#0A0B0D] mb-4">Historial de Riesgo</p>
-          <div className="grid grid-cols-3 gap-x-6 gap-y-4">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-4">
             <InfoField label="Historial de procesamiento" value="Si" />
             <InfoField label="Tasa de chargebacks" value="Si" info tooltip="Promedio (últimos 3 meses)" />
             <InfoField label="Chargebacks > 0.9%" value="Si" />
