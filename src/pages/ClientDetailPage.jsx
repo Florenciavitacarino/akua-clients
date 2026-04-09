@@ -939,10 +939,19 @@ function FinancesEdit({ checkedItems, onCheck, waivedItems, onWaive, logs, addLo
       {/* Right column: Definición del colateral + Activity */}
       <div className="w-1/2 min-w-0 flex flex-col gap-4">
         <div className="bg-white border border-[#E5E7EB] rounded-[8px] p-4">
-          <p className="text-[13px] font-semibold text-[#0A0B0D] mb-3">Definición del colateral</p>
-          {FINANCES_DOC_LABELS.slice(0, 3).map((label, i) => <DocLinkInput key={i} label={label} />)}
+          <p className="text-[14px] font-semibold text-[#0A0B0D] mb-3">Definición del colateral</p>
+          <DocLinkInput label="Certificado bancario" />
+          <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mt-4 mb-2">Estados Financieros</p>
+          <div className="flex items-start gap-2 bg-[#F9FAFB] rounded-[8px] p-3 mb-3">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <p className="text-[12px] text-[#6B7280]">incluir Balance Sheet e Income Statement más recientes.</p>
+          </div>
+          <DocLinkInput label="EEFF" />
+          <DocLinkInput label="Balance sheet" />
+          <DocLinkInput label="Income Statement" />
           <hr className="border-t border-[#E5E7EB] my-3" />
-          {FINANCES_DOC_LABELS.slice(3).map((label, i) => <DocLinkInput key={i} label={label} />)}
+          <DocLinkInput label="Histórico transaccional" />
+          <DocLinkInput label="Contracargos" />
         </div>
         <ActivityPanel logs={logs} />
       </div>
@@ -1009,10 +1018,19 @@ function FinancesView({ checkedItems, waivedItems, logs }) {
       {/* Right column: Definición del colateral + Activity */}
       <div className="w-1/2 min-w-0 flex flex-col gap-4">
         <div className="bg-white border border-[#E5E7EB] rounded-[8px] p-4">
-          <p className="text-[13px] font-semibold text-[#0A0B0D] mb-3">Definición del colateral</p>
-          {FINANCES_DOC_LABELS.slice(0, 3).map((label, i) => <DocLinkInput key={i} label={label} disabled />)}
+          <p className="text-[14px] font-semibold text-[#0A0B0D] mb-3">Definición del colateral</p>
+          <DocLinkInput label="Certificado bancario" disabled />
+          <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mt-4 mb-2">Estados Financieros</p>
+          <div className="flex items-start gap-2 bg-[#F9FAFB] rounded-[8px] p-3 mb-3">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <p className="text-[12px] text-[#6B7280]">incluir Balance Sheet e Income Statement más recientes.</p>
+          </div>
+          <DocLinkInput label="EEFF" disabled />
+          <DocLinkInput label="Balance sheet" disabled />
+          <DocLinkInput label="Income Statement" disabled />
           <hr className="border-t border-[#E5E7EB] my-3" />
-          {FINANCES_DOC_LABELS.slice(3).map((label, i) => <DocLinkInput key={i} label={label} disabled />)}
+          <DocLinkInput label="Histórico transaccional" disabled />
+          <DocLinkInput label="Contracargos" disabled />
         </div>
         <ActivityPanel logs={logs} />
       </div>
