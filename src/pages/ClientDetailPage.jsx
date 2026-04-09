@@ -1228,7 +1228,7 @@ const KICKOFF_CHECKLIST = [
   "Text here", "Text here", "Text here", "Text here", "Text here", "Text here",
 ]
 
-const KICKOFF_DOC_LABELS = ['Contrato firmado', 'Pagos']
+const KICKOFF_DOC_LABELS = ['Contrato firmado', 'Pagos', 'Cargos de impuestos', 'Depósito']
 
 function KickoffEdit({ checkedItems, onCheck, waivedItems, onWaive, logs, addLog }) {
   const [openIdx, setOpenIdx] = useState(null)
