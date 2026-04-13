@@ -1247,7 +1247,7 @@ function CargosCobroEdit() {
           <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none bg-white"><option>Pendiente</option><option>Constituido</option></select>
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-x-4 gap-y-4 mb-3">
+      <div className="grid grid-cols-3 gap-x-4 gap-y-4 mb-3">
         <TextInput label="Fecha límite constitución (auto 24 hs)" placeholder="21/03/2025" />
         <TextInput label="Vigencia post-terminación" placeholder="7 meses" />
       </div>
@@ -1267,7 +1267,7 @@ function CargosCobroEdit() {
           <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none bg-white"><option>Pendiente</option></select>
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-x-4 gap-y-4 mb-3">
+      <div className="grid grid-cols-3 gap-x-4 gap-y-4 mb-3">
         <TextInput label="Fecha límite constitución (auto 24 hs)" placeholder="21/03/2025" />
         <TextInput label="Vigencia post-terminación" placeholder="7 meses" />
       </div>
@@ -1374,7 +1374,7 @@ function CargosCobroView() {
         <InfoField label="Equivalente COP (TRM día)" value="A calcular" />
         <InfoField label="Estado" value="Pendiente" />
       </div>
-      <div className="grid grid-cols-2 gap-x-4 gap-y-4 mb-3">
+      <div className="grid grid-cols-3 gap-x-4 gap-y-4 mb-3">
         <InfoField label="Fecha límite constitución (auto 24 hs)" value="21/03/2025" />
         <InfoField label="Vigencia post-terminación" value="7 meses" />
       </div>
@@ -1391,7 +1391,7 @@ function CargosCobroView() {
         <InfoField label="Equivalente COP (TRM día)" value="A calcular" />
         <InfoField label="Estado" value="Pendiente" />
       </div>
-      <div className="grid grid-cols-2 gap-x-4 gap-y-4 mb-3">
+      <div className="grid grid-cols-3 gap-x-4 gap-y-4 mb-3">
         <InfoField label="Fecha límite constitución (auto 24 hs)" value="21/03/2025" />
         <InfoField label="Vigencia post-terminación" value="7 meses" />
       </div>
