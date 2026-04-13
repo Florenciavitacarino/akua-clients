@@ -1154,9 +1154,9 @@ function CargosCobroEdit() {
       <hr className="border-t border-[#E5E7EB] my-5" />
       <div>
         <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Cargos Recurrentes Mensuales</p>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="flex items-stretch">
           {/* Adquirencia como Servicio - left */}
-          <div>
+          <div className="flex-1 pr-4">
             <p className="text-[14px] font-semibold text-[#0A0B0D] mb-3">Adquirencia como Servicio</p>
             <div className="flex justify-between text-[11px] text-[#9CA3AF] mb-2 pb-2 border-b border-[#F3F4F6]">
               <span>Rango de transacciones</span><span>Monto negociado</span>
@@ -1173,8 +1173,10 @@ function CargosCobroEdit() {
             </div>
           </div>
 
+          {/* Vertical divider */}
+          <div className="w-px bg-[#E5E7EB]" />
           {/* Right column with dividers */}
-          <div>
+          <div className="flex-1 pl-4">
             <p className="text-[14px] font-semibold text-[#0A0B0D] mb-3">Procesamiento Transaccional (Cloud)</p>
             <div className="grid grid-cols-2 gap-3 mb-4">
               <TextInput label="Mínimo mensual" placeholder="USD 6,000" />
@@ -1295,9 +1297,9 @@ function CargosCobroView() {
       <hr className="border-t border-[#E5E7EB] my-5" />
       <div>
         <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Cargos Recurrentes Mensuales</p>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="flex items-stretch">
           {/* Adquirencia como Servicio - left */}
-          <div>
+          <div className="flex-1 pr-4">
             <p className="text-[14px] font-semibold text-[#0A0B0D] mb-3">Adquirencia como Servicio</p>
             <div className="flex justify-between text-[11px] text-[#9CA3AF] mb-2 pb-2 border-b border-[#F3F4F6]">
               <span>Rango de transacciones</span><span>Monto negociado</span>
@@ -1314,8 +1316,10 @@ function CargosCobroView() {
             </div>
           </div>
 
+          {/* Vertical divider */}
+          <div className="w-px bg-[#E5E7EB]" />
           {/* Right column with dividers */}
-          <div>
+          <div className="flex-1 pl-4">
             <p className="text-[14px] font-semibold text-[#0A0B0D] mb-3">Procesamiento Transaccional (Cloud)</p>
             <div className="grid grid-cols-2 gap-3 mb-4">
               <InfoField label="Mínimo mensual" value="USD 6,000" />
