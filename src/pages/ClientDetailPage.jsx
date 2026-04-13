@@ -1271,10 +1271,6 @@ function CargosCobroEdit() {
         <TextInput label="Fecha límite constitución (auto 24 hs)" placeholder="21/03/2025" />
         <TextInput label="Vigencia post-terminación" placeholder="7 meses" />
       </div>
-      <div className="flex items-start gap-2 bg-[#F9FAFB] rounded-[8px] p-3">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        <p className="text-[11px] text-[#6B7280]">Akua puede ajustarlo por riesgo, volumen o requerimiento de franquicias. Ejecución directa sin requerimiento judicial.</p>
-      </div>
     </div>
   )
 }
@@ -1398,10 +1394,6 @@ function CargosCobroView() {
       <div className="grid grid-cols-2 gap-x-4 gap-y-4 mb-3">
         <InfoField label="Fecha límite constitución (auto 24 hs)" value="21/03/2025" />
         <InfoField label="Vigencia post-terminación" value="7 meses" />
-      </div>
-      <div className="flex items-start gap-2 bg-[#F9FAFB] rounded-[8px] p-3">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        <p className="text-[11px] text-[#6B7280]">Akua puede ajustarlo por riesgo, volumen o requerimiento de franquicias. Ejecución directa sin requerimiento judicial.</p>
       </div>
     </div>
   )
