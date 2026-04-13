@@ -1151,11 +1151,12 @@ function CargosCobroEdit() {
       </div>
 
       {/* Cargos recurrentes mensuales */}
+      <hr className="border-t border-[#E5E7EB] my-5" />
       <div>
         <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Cargos Recurrentes Mensuales</p>
         <div className="grid grid-cols-2 gap-4">
           {/* Adquirencia como Servicio - left */}
-          <div className="border border-[#E5E7EB] rounded-[8px] p-4">
+          <div>
             <p className="text-[14px] font-semibold text-[#0A0B0D] mb-3">Adquirencia como Servicio</p>
             <div className="flex justify-between text-[11px] text-[#9CA3AF] mb-2 pb-2 border-b border-[#F3F4F6]">
               <span>Rango de transacciones</span><span>Monto negociado</span>
@@ -1173,7 +1174,7 @@ function CargosCobroEdit() {
           </div>
 
           {/* Right column with dividers */}
-          <div className="border border-[#E5E7EB] rounded-[8px] p-4">
+          <div>
             <p className="text-[14px] font-semibold text-[#0A0B0D] mb-3">Procesamiento Transaccional (Cloud)</p>
             <div className="grid grid-cols-2 gap-3 mb-4">
               <TextInput label="Mínimo mensual" placeholder="USD 6,000" />
@@ -1216,7 +1217,8 @@ function CargosCobroEdit() {
       </div>
 
       {/* CARGOS POR AUTENTICACIÓN 3DS */}
-      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3 mt-5">Cargos por Autenticación 3DS</p>
+      <hr className="border-t border-[#E5E7EB] my-5" />
+      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Cargos por Autenticación 3DS</p>
       <div className="grid grid-cols-3 gap-x-4 gap-y-4 mb-4">
         <TextInput label="Cargo" placeholder="USD $ 2,5000  + IVA" />
         <TextInput label="Mantenimiento" placeholder="USD $500 + IVA" info tooltip="Exento primeros 3 meses" />
@@ -1224,6 +1226,7 @@ function CargosCobroEdit() {
       </div>
 
       {/* FORMA DE PAGO */}
+      <hr className="border-t border-[#E5E7EB] my-5" />
       <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Forma de Pago</p>
       <div className="grid grid-cols-3 gap-x-4 gap-y-4 mb-4">
         <TextInput label="Mecanismo" placeholder="Retención sobre settlements" />
@@ -1232,6 +1235,7 @@ function CargosCobroEdit() {
       </div>
 
       {/* DEPÓSITO EN GARANTÍA */}
+      <hr className="border-t border-[#E5E7EB] my-5" />
       <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Depósito en Garantía</p>
       <div className="grid grid-cols-3 gap-x-4 gap-y-4 mb-3">
         <TextInput label="Monto USD" placeholder="USD $15,000" />
@@ -1251,6 +1255,7 @@ function CargosCobroEdit() {
       </div>
 
       {/* ANEXOS */}
+      <hr className="border-t border-[#E5E7EB] my-5" />
       <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Anexos</p>
       <div className="grid grid-cols-3 gap-x-4 gap-y-4 mb-3">
         <TextInput label="Monto USD" placeholder="USD $15,000" />
@@ -1287,11 +1292,12 @@ function CargosCobroView() {
         <p className="text-[11px] text-[#6B7280]">Facturación: 30 días post-firma o día siguiente del Kickoff (lo que ocurra primero).</p>
       </div>
 
+      <hr className="border-t border-[#E5E7EB] my-5" />
       <div>
         <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Cargos Recurrentes Mensuales</p>
         <div className="grid grid-cols-2 gap-4">
           {/* Adquirencia como Servicio - left */}
-          <div className="border border-[#E5E7EB] rounded-[8px] p-4">
+          <div>
             <p className="text-[14px] font-semibold text-[#0A0B0D] mb-3">Adquirencia como Servicio</p>
             <div className="flex justify-between text-[11px] text-[#9CA3AF] mb-2 pb-2 border-b border-[#F3F4F6]">
               <span>Rango de transacciones</span><span>Monto negociado</span>
@@ -1309,7 +1315,7 @@ function CargosCobroView() {
           </div>
 
           {/* Right column with dividers */}
-          <div className="border border-[#E5E7EB] rounded-[8px] p-4">
+          <div>
             <p className="text-[14px] font-semibold text-[#0A0B0D] mb-3">Procesamiento Transaccional (Cloud)</p>
             <div className="grid grid-cols-2 gap-3 mb-4">
               <InfoField label="Mínimo mensual" value="USD 6,000" />
@@ -1343,7 +1349,8 @@ function CargosCobroView() {
       </div>
 
       {/* CARGOS POR AUTENTICACIÓN 3DS */}
-      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3 mt-5">Cargos por Autenticación 3DS</p>
+      <hr className="border-t border-[#E5E7EB] my-5" />
+      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Cargos por Autenticación 3DS</p>
       <div className="grid grid-cols-3 gap-x-4 gap-y-4 mb-4">
         <InfoField label="Cargo" value="USD $ 2,5000 + IVA" />
         <InfoField label="Mantenimiento" value="USD $500 + IVA" info tooltip="Exento primeros 3 meses" />
@@ -1351,6 +1358,7 @@ function CargosCobroView() {
       </div>
 
       {/* FORMA DE PAGO */}
+      <hr className="border-t border-[#E5E7EB] my-5" />
       <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Forma de Pago</p>
       <div className="grid grid-cols-3 gap-x-4 gap-y-4 mb-4">
         <InfoField label="Mecanismo" value="Retención sobre settlements" />
@@ -1359,6 +1367,7 @@ function CargosCobroView() {
       </div>
 
       {/* DEPÓSITO EN GARANTÍA */}
+      <hr className="border-t border-[#E5E7EB] my-5" />
       <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Depósito en Garantía</p>
       <div className="grid grid-cols-3 gap-x-4 gap-y-4 mb-3">
         <InfoField label="Monto USD" value="USD $15,000" />
@@ -1375,6 +1384,7 @@ function CargosCobroView() {
       </div>
 
       {/* ANEXOS */}
+      <hr className="border-t border-[#E5E7EB] my-5" />
       <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Anexos</p>
       <div className="grid grid-cols-3 gap-x-4 gap-y-4 mb-3">
         <InfoField label="Monto USD" value="USD $15,000" />
