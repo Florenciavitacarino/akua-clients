@@ -1387,7 +1387,8 @@ function CargosCobroView() {
 function LegalEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog }) {
   const [openIdx, setOpenIdx] = useState(null)
   return (
-    <div className="flex gap-4">
+    <>
+      <div className="flex gap-4">
       {/* Left: checklist + Contrato + NDA */}
       <div className="w-1/2 min-w-0 flex flex-col">
         {LEGAL_CHECKLIST.map((label, i) => (
@@ -1457,22 +1458,24 @@ function LegalEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog }) {
             </div>
           </div>
         </div>
-
-        {/* Cargos y formas de cobro */}
-        <CargosCobroEdit />
       </div>
 
-      {/* Right: Docs + Activity */}
+      {/* Right: Docs */}
       <div className="w-1/2 min-w-0 flex flex-col gap-4">
         <LegalDocsPanel disabled={false} />
       </div>
-    </div>
+      </div>
+
+      {/* Cargos y formas de cobro - full width below */}
+      <CargosCobroEdit />
+    </>
   )
 }
 
 function LegalView({ checkedItems, waivedItems }) {
   return (
-    <div className="flex gap-4">
+    <>
+      <div className="flex gap-4">
       {/* Left: checklist + Contrato + NDA */}
       <div className="w-1/2 min-w-0 flex flex-col">
         {LEGAL_CHECKLIST.map((label, i) => (
@@ -1508,16 +1511,17 @@ function LegalView({ checkedItems, waivedItems }) {
             <InfoField label="Desde" value="01/03/2026" />
           </div>
         </div>
-
-        {/* Cargos y formas de cobro */}
-        <CargosCobroView />
       </div>
 
-      {/* Right: Docs + Activity */}
+      {/* Right: Docs */}
       <div className="w-1/2 min-w-0 flex flex-col gap-4">
         <LegalDocsPanel disabled={true} />
       </div>
-    </div>
+      </div>
+
+      {/* Cargos y formas de cobro - full width below */}
+      <CargosCobroView />
+    </>
   )
 }
 
