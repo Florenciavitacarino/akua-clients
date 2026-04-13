@@ -840,7 +840,7 @@ function DocLinkInput({ label, disabled }) {
   const hasVal = val.trim().length > 0
   return (
     <div className="mb-3">
-      <p className="text-[12px] font-semibold text-[#1F2937] mb-1.5">{label}</p>
+      {label && <p className="text-[12px] font-semibold text-[#1F2937] mb-1.5">{label}</p>}
       <div className={`group/link relative flex items-center border rounded-full px-3.5 py-2 transition-colors ${
         disabled
           ? 'border-[#E5E7EB] bg-[#F9FAFB]'
@@ -1097,10 +1097,55 @@ function SalesView({ checkedItems, waivedItems, logs }) {
 
 /* ─── LEGAL AND CONTRACT CONTENT ─── */
 const LEGAL_CHECKLIST = [
-  "Text here", "Text here", "Text here", "Text here", "Text here", "Text here",
+  "Contrato firmado por ambas partes",
+  "Depósito en garantía constituido",
+  "NDA vigente",
+  "Poderes del firmante verificados",
+  "Cargos 3DS acordados",
+  "Anexos I y II aceptados",
 ]
 
 const LEGAL_DOC_LABELS = ['Certificados de Cámara de comercio', 'Poderes', 'Actas de asamblea', 'Histórico transaccional']
+
+function LegalDocsPanel({ disabled }) {
+  const Badge = ({ color, children }) => (
+    <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full" style={{
+      background: color === 'green' ? '#d1fae5' : color === 'blue' ? '#dbeafe' : color === 'gray' ? '#F3F4F6' : '#fef3c7',
+      color: color === 'green' ? '#047857' : color === 'blue' ? '#1e40af' : color === 'gray' ? '#6B7280' : '#b45309',
+    }}>{children}</span>
+  )
+  return (
+    <div className="bg-white border border-[#E5E7EB] rounded-[8px] p-4">
+      <p className="text-[14px] font-semibold text-[#0A0B0D] mb-3">Documentación</p>
+      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-2">Cargo de Implementación</p>
+      <DocLinkInput label="Certificados de Cámara de comercio" disabled={disabled} />
+      <DocLinkInput label="Poderes" disabled={disabled} />
+      <DocLinkInput label="Actas de asamblea" disabled={disabled} />
+      <DocLinkInput label="Histórico transaccional" disabled={disabled} />
+      <hr className="border-t border-[#E5E7EB] my-3" />
+      <p className="text-[14px] font-semibold text-[#0A0B0D] mb-3">Documentos de Constitución</p>
+      <DocLinkInput label="" disabled={disabled} />
+      <DocLinkInput label="" disabled={disabled} />
+      <hr className="border-t border-[#E5E7EB] my-3" />
+      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-2">Documentos del Contrato</p>
+      <DocLinkInput label="Contrato V5 completo" disabled={disabled} />
+      <p className="text-[13px] font-semibold text-[#0A0B0D] mt-3 mb-1.5">Anexo I – Descripción técnica y alcance</p>
+      <DocLinkInput label="" disabled={disabled} />
+      <div className="flex flex-wrap gap-1.5 mb-3">
+        <Badge color="green">99% Disponibilidad</Badge>
+        <Badge color="green">{'<'}1S Autorización</Badge>
+        <Badge color="blue">Visa & Mastercard</Badge>
+        <Badge color="gray">PCI DSS · AML · KYC</Badge>
+      </div>
+      <p className="text-[13px] font-semibold text-[#0A0B0D] mt-3 mb-1.5">Anexo II – SLA</p>
+      <DocLinkInput label="" disabled={disabled} />
+      <div className="flex flex-wrap gap-1.5">
+        <Badge color="yellow">Penalidad Máx. 30%</Badge>
+        <Badge color="gray">Procesamiento Transaccional</Badge>
+      </div>
+    </div>
+  )
+}
 
 function CargosCobroEdit() {
   return (
@@ -1191,6 +1236,60 @@ function CargosCobroEdit() {
           </div>
         </div>
       </div>
+
+      {/* CARGOS POR AUTENTICACIÓN 3DS */}
+      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3 mt-5">Cargos por Autenticación 3DS</p>
+      <div className="grid grid-cols-3 gap-x-4 gap-y-4 mb-4">
+        <TextInput label="Cargo" placeholder="USD $ 2,5000  + IVA" />
+        <TextInput label="Mantenimiento" placeholder="USD $500 + IVA" info tooltip="Exento primeros 3 meses" />
+        <TextInput label="Por transacción autenticada" placeholder="USD $0.029 + IVA" />
+      </div>
+
+      {/* FORMA DE PAGO */}
+      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Forma de Pago</p>
+      <div className="grid grid-cols-3 gap-x-4 gap-y-4 mb-4">
+        <TextInput label="Mecanismo" placeholder="Retención sobre settlements" />
+        <TextInput label="Plazo dev. excedente" placeholder="8 días calendario" />
+        <TextInput label="Plazo pago déficit" placeholder="8 días" />
+      </div>
+
+      {/* DEPÓSITO EN GARANTÍA */}
+      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Depósito en Garantía</p>
+      <div className="grid grid-cols-3 gap-x-4 gap-y-4 mb-3">
+        <TextInput label="Monto USD" placeholder="USD $15,000" />
+        <TextInput label="Equivalente COP (TRM día)" placeholder="A calcular" />
+        <div>
+          <span className="text-[12px] text-[#374151] font-medium block mb-1">Estado</span>
+          <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none bg-white"><option>Pendiente</option><option>Constituido</option></select>
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-x-4 gap-y-4 mb-3">
+        <TextInput label="Fecha límite constitución (auto 24 hs)" placeholder="21/03/2025" />
+        <TextInput label="Vigencia post-terminación" placeholder="7 meses" />
+      </div>
+      <div className="flex items-start gap-2 bg-[#F9FAFB] rounded-[8px] p-3 mb-4">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <p className="text-[11px] text-[#6B7280]">Akua puede ajustarlo por riesgo, volumen o requerimiento de franquicias. Ejecución directa sin requerimiento judicial.</p>
+      </div>
+
+      {/* ANEXOS */}
+      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Anexos</p>
+      <div className="grid grid-cols-3 gap-x-4 gap-y-4 mb-3">
+        <TextInput label="Monto USD" placeholder="USD $15,000" />
+        <TextInput label="Equivalente COP (TRM día)" placeholder="A calcular" />
+        <div>
+          <span className="text-[12px] text-[#374151] font-medium block mb-1">Estado</span>
+          <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none bg-white"><option>Pendiente</option></select>
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-x-4 gap-y-4 mb-3">
+        <TextInput label="Fecha límite constitución (auto 24 hs)" placeholder="21/03/2025" />
+        <TextInput label="Vigencia post-terminación" placeholder="7 meses" />
+      </div>
+      <div className="flex items-start gap-2 bg-[#F9FAFB] rounded-[8px] p-3">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <p className="text-[11px] text-[#6B7280]">Akua puede ajustarlo por riesgo, volumen o requerimiento de franquicias. Ejecución directa sin requerimiento judicial.</p>
+      </div>
     </div>
   )
 }
@@ -1257,6 +1356,54 @@ function CargosCobroView() {
             <InfoField label="Compensación real time" value="Inactivo" />
           </div>
         </div>
+      </div>
+
+      {/* CARGOS POR AUTENTICACIÓN 3DS */}
+      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3 mt-5">Cargos por Autenticación 3DS</p>
+      <div className="grid grid-cols-3 gap-x-4 gap-y-4 mb-4">
+        <InfoField label="Cargo" value="USD $ 2,5000 + IVA" />
+        <InfoField label="Mantenimiento" value="USD $500 + IVA" info tooltip="Exento primeros 3 meses" />
+        <InfoField label="Por transacción autenticada" value="USD $0.029 + IVA" />
+      </div>
+
+      {/* FORMA DE PAGO */}
+      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Forma de Pago</p>
+      <div className="grid grid-cols-3 gap-x-4 gap-y-4 mb-4">
+        <InfoField label="Mecanismo" value="Retención sobre settlements" />
+        <InfoField label="Plazo dev. excedente" value="8 días calendario" />
+        <InfoField label="Plazo pago déficit" value="8 días" />
+      </div>
+
+      {/* DEPÓSITO EN GARANTÍA */}
+      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Depósito en Garantía</p>
+      <div className="grid grid-cols-3 gap-x-4 gap-y-4 mb-3">
+        <InfoField label="Monto USD" value="USD $15,000" />
+        <InfoField label="Equivalente COP (TRM día)" value="A calcular" />
+        <InfoField label="Estado" value="Pendiente" />
+      </div>
+      <div className="grid grid-cols-2 gap-x-4 gap-y-4 mb-3">
+        <InfoField label="Fecha límite constitución (auto 24 hs)" value="21/03/2025" />
+        <InfoField label="Vigencia post-terminación" value="7 meses" />
+      </div>
+      <div className="flex items-start gap-2 bg-[#F9FAFB] rounded-[8px] p-3 mb-4">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <p className="text-[11px] text-[#6B7280]">Akua puede ajustarlo por riesgo, volumen o requerimiento de franquicias. Ejecución directa sin requerimiento judicial.</p>
+      </div>
+
+      {/* ANEXOS */}
+      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Anexos</p>
+      <div className="grid grid-cols-3 gap-x-4 gap-y-4 mb-3">
+        <InfoField label="Monto USD" value="USD $15,000" />
+        <InfoField label="Equivalente COP (TRM día)" value="A calcular" />
+        <InfoField label="Estado" value="Pendiente" />
+      </div>
+      <div className="grid grid-cols-2 gap-x-4 gap-y-4 mb-3">
+        <InfoField label="Fecha límite constitución (auto 24 hs)" value="21/03/2025" />
+        <InfoField label="Vigencia post-terminación" value="7 meses" />
+      </div>
+      <div className="flex items-start gap-2 bg-[#F9FAFB] rounded-[8px] p-3">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <p className="text-[11px] text-[#6B7280]">Akua puede ajustarlo por riesgo, volumen o requerimiento de franquicias. Ejecución directa sin requerimiento judicial.</p>
       </div>
     </div>
   )
@@ -1342,10 +1489,7 @@ function LegalEdit({ checkedItems, onCheck, waivedItems, onWaive, logs, addLog }
 
       {/* Right: Docs + Activity */}
       <div className="w-1/2 min-w-0 flex flex-col gap-4">
-        <div className="bg-white border border-[#E5E7EB] rounded-[8px] p-4">
-          <p className="text-[13px] font-semibold text-[#0A0B0D] mb-3">Documentación Societaria</p>
-          {LEGAL_DOC_LABELS.map((label, i) => <DocLinkInput key={i} label={label} />)}
-        </div>
+        <LegalDocsPanel disabled={false} />
         <ActivityPanel logs={logs} />
       </div>
     </div>
@@ -1397,10 +1541,7 @@ function LegalView({ checkedItems, waivedItems, logs }) {
 
       {/* Right: Docs + Activity */}
       <div className="w-1/2 min-w-0 flex flex-col gap-4">
-        <div className="bg-white border border-[#E5E7EB] rounded-[8px] p-4">
-          <p className="text-[13px] font-semibold text-[#0A0B0D] mb-3">Documentación Societaria</p>
-          {LEGAL_DOC_LABELS.map((label, i) => <DocLinkInput key={i} label={label} disabled />)}
-        </div>
+        <LegalDocsPanel disabled={true} />
         <ActivityPanel logs={logs} />
       </div>
     </div>
