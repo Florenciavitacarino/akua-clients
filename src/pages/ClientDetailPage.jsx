@@ -1151,7 +1151,7 @@ function CargosCobroEdit() {
       </div>
 
       {/* Cargos recurrentes mensuales */}
-      <div className="border border-[#E5E7EB] rounded-[8px] p-4 bg-[#F9FAFB]">
+      <div>
         <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Cargos Recurrentes Mensuales</p>
         <div className="grid grid-cols-2 gap-4">
           {/* Adquirencia como Servicio - left */}
@@ -1287,7 +1287,7 @@ function CargosCobroView() {
         <p className="text-[11px] text-[#6B7280]">Facturación: 30 días post-firma o día siguiente del Kickoff (lo que ocurra primero).</p>
       </div>
 
-      <div className="border border-[#E5E7EB] rounded-[8px] p-4 bg-[#F9FAFB]">
+      <div>
         <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Cargos Recurrentes Mensuales</p>
         <div className="grid grid-cols-2 gap-4">
           {/* Adquirencia como Servicio - left */}
