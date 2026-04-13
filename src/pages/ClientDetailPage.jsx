@@ -432,30 +432,25 @@ const COMPLIANCE_CHECKLIST = [
   { label: "Apetito de Riesgo del Cliente", tag: "FRAUD" },
 ]
 
-function ComplianceEdit({ checkedItems, onCheck, waivedItems, onWaive, logs, addLog }) {
+function ComplianceEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog }) {
   const [openIdx, setOpenIdx] = useState(null)
   return (
     <>
-      {/* Top area: Checklist + Activity side by side - 50/50 */}
-      <div className="flex gap-4">
-        <div className="w-1/2 min-w-0 flex flex-col">
-          {COMPLIANCE_CHECKLIST.map((item, i) => (
-            <ChecklistItemEdit
-              key={i}
-              label={item.label} tag={item.tag}
-              checked={checkedItems.has(i)}
-              waived={waivedItems.has(i)}
-              isOpen={openIdx === i}
-              onToggle={() => setOpenIdx(openIdx === i ? null : i)}
-              onMarkDone={() => onCheck(i)}
-              onWaive={() => onWaive(i)}
-              addLog={addLog}
-            />
-          ))}
-        </div>
-        <div className="w-1/2 min-w-0">
-          <ActivityPanel logs={logs} />
-        </div>
+      {/* Checklist full width */}
+      <div className="flex flex-col">
+        {COMPLIANCE_CHECKLIST.map((item, i) => (
+          <ChecklistItemEdit
+            key={i}
+            label={item.label} tag={item.tag}
+            checked={checkedItems.has(i)}
+            waived={waivedItems.has(i)}
+            isOpen={openIdx === i}
+            onToggle={() => setOpenIdx(openIdx === i ? null : i)}
+            onMarkDone={() => onCheck(i)}
+            onWaive={() => onWaive(i)}
+            addLog={addLog}
+          />
+        ))}
       </div>
 
       {/* Historial de Riesgo */}
@@ -524,19 +519,13 @@ function ComplianceEdit({ checkedItems, onCheck, waivedItems, onWaive, logs, add
   )
 }
 
-function ComplianceView({ checkedItems, waivedItems, logs }) {
+function ComplianceView({ checkedItems, waivedItems }) {
   return (
     <>
-      {/* Top area: Checklist + Activity side by side - 50/50 */}
-      <div className="flex gap-4">
-        <div className="w-1/2 min-w-0 flex flex-col">
-          {COMPLIANCE_CHECKLIST.map((item, i) => (
-            <ChecklistItemView key={i} label={item.label} tag={item.tag} checked={checkedItems.has(i)} waived={waivedItems.has(i)} />
-          ))}
-        </div>
-        <div className="w-1/2 min-w-0">
-          <ActivityPanel logs={logs} />
-        </div>
+      <div className="flex flex-col">
+        {COMPLIANCE_CHECKLIST.map((item, i) => (
+          <ChecklistItemView key={i} label={item.label} tag={item.tag} checked={checkedItems.has(i)} waived={waivedItems.has(i)} />
+        ))}
       </div>
 
       {/* Historial de Riesgo - VIEW mode: label/value pairs */}
@@ -586,27 +575,22 @@ const FRAUD_CHECKLIST = [
   { label: "Apetito de Riesgo del Cliente", tag: "COMPLIANCE" },
 ]
 
-function FraudEdit({ checkedItems, onCheck, waivedItems, onWaive, logs, addLog }) {
+function FraudEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog }) {
   const [openIdx, setOpenIdx] = useState(null)
   return (
     <>
-      <div className="flex gap-4">
-        <div className="w-1/2 min-w-0 flex flex-col">
-          {FRAUD_CHECKLIST.map((item, i) => (
-            <ChecklistItemEdit
-              key={i} label={item.label} tag={item.tag}
-              checked={checkedItems.has(i)} waived={waivedItems.has(i)}
-              isOpen={openIdx === i}
-              onToggle={() => setOpenIdx(openIdx === i ? null : i)}
-              onMarkDone={() => onCheck(i)}
-              onWaive={() => onWaive(i)}
-              addLog={addLog}
-            />
-          ))}
-        </div>
-        <div className="w-1/2 min-w-0">
-          <ActivityPanel logs={logs} />
-        </div>
+      <div className="flex flex-col">
+        {FRAUD_CHECKLIST.map((item, i) => (
+          <ChecklistItemEdit
+            key={i} label={item.label} tag={item.tag}
+            checked={checkedItems.has(i)} waived={waivedItems.has(i)}
+            isOpen={openIdx === i}
+            onToggle={() => setOpenIdx(openIdx === i ? null : i)}
+            onMarkDone={() => onCheck(i)}
+            onWaive={() => onWaive(i)}
+            addLog={addLog}
+          />
+        ))}
       </div>
 
       {/* Vertical de negocio */}
@@ -725,18 +709,13 @@ function FraudEdit({ checkedItems, onCheck, waivedItems, onWaive, logs, addLog }
   )
 }
 
-function FraudView({ checkedItems, waivedItems, logs }) {
+function FraudView({ checkedItems, waivedItems }) {
   return (
     <>
-      <div className="flex gap-4">
-        <div className="w-1/2 min-w-0 flex flex-col">
-          {FRAUD_CHECKLIST.map((item, i) => (
-            <ChecklistItemView key={i} label={item.label} tag={item.tag} checked={checkedItems.has(i)} waived={waivedItems.has(i)} />
-          ))}
-        </div>
-        <div className="w-1/2 min-w-0">
-          <ActivityPanel logs={logs} />
-        </div>
+      <div className="flex flex-col">
+        {FRAUD_CHECKLIST.map((item, i) => (
+          <ChecklistItemView key={i} label={item.label} tag={item.tag} checked={checkedItems.has(i)} waived={waivedItems.has(i)} />
+        ))}
       </div>
 
       {/* Vertical de negocio */}
@@ -868,7 +847,7 @@ function DocLinkInput({ label, disabled }) {
   )
 }
 
-function FinancesEdit({ checkedItems, onCheck, waivedItems, onWaive, logs, addLog }) {
+function FinancesEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog }) {
   const [openIdx, setOpenIdx] = useState(null)
   return (
     <div className="flex gap-4">
@@ -953,13 +932,12 @@ function FinancesEdit({ checkedItems, onCheck, waivedItems, onWaive, logs, addLo
           <DocLinkInput label="Histórico transaccional" />
           <DocLinkInput label="Contracargos" />
         </div>
-        <ActivityPanel logs={logs} />
       </div>
     </div>
   )
 }
 
-function FinancesView({ checkedItems, waivedItems, logs }) {
+function FinancesView({ checkedItems, waivedItems }) {
   return (
     <div className="flex gap-4">
       {/* Left column: Checklist + Info administrativa (continuous) */}
@@ -1032,7 +1010,6 @@ function FinancesView({ checkedItems, waivedItems, logs }) {
           <DocLinkInput label="Histórico transaccional" disabled />
           <DocLinkInput label="Contracargos" disabled />
         </div>
-        <ActivityPanel logs={logs} />
       </div>
     </div>
   )
@@ -1048,7 +1025,7 @@ const SALES_CHECKLIST = [
 
 const SALES_DOC_LABELS = ['Contrato firmado', 'Pagos', 'Cargos de impuestos', 'Depósito']
 
-function SalesEdit({ checkedItems, onCheck, waivedItems, onWaive, logs, addLog }) {
+function SalesEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog }) {
   const [openIdx, setOpenIdx] = useState(null)
   return (
     <div className="flex gap-4">
@@ -1070,13 +1047,12 @@ function SalesEdit({ checkedItems, onCheck, waivedItems, onWaive, logs, addLog }
           <p className="text-[13px] font-semibold text-[#0A0B0D] mb-3">Documentación</p>
           {SALES_DOC_LABELS.map((label, i) => <DocLinkInput key={i} label={label} />)}
         </div>
-        <ActivityPanel logs={logs} />
       </div>
     </div>
   )
 }
 
-function SalesView({ checkedItems, waivedItems, logs }) {
+function SalesView({ checkedItems, waivedItems }) {
   return (
     <div className="flex gap-4">
       <div className="w-1/2 min-w-0 flex flex-col">
@@ -1089,7 +1065,6 @@ function SalesView({ checkedItems, waivedItems, logs }) {
           <p className="text-[13px] font-semibold text-[#0A0B0D] mb-3">Documentación</p>
           {SALES_DOC_LABELS.map((label, i) => <DocLinkInput key={i} label={label} disabled />)}
         </div>
-        <ActivityPanel logs={logs} />
       </div>
     </div>
   )
@@ -1409,7 +1384,7 @@ function CargosCobroView() {
   )
 }
 
-function LegalEdit({ checkedItems, onCheck, waivedItems, onWaive, logs, addLog }) {
+function LegalEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog }) {
   const [openIdx, setOpenIdx] = useState(null)
   return (
     <div className="flex gap-4">
@@ -1490,13 +1465,12 @@ function LegalEdit({ checkedItems, onCheck, waivedItems, onWaive, logs, addLog }
       {/* Right: Docs + Activity */}
       <div className="w-1/2 min-w-0 flex flex-col gap-4">
         <LegalDocsPanel disabled={false} />
-        <ActivityPanel logs={logs} />
       </div>
     </div>
   )
 }
 
-function LegalView({ checkedItems, waivedItems, logs }) {
+function LegalView({ checkedItems, waivedItems }) {
   return (
     <div className="flex gap-4">
       {/* Left: checklist + Contrato + NDA */}
@@ -1542,7 +1516,6 @@ function LegalView({ checkedItems, waivedItems, logs }) {
       {/* Right: Docs + Activity */}
       <div className="w-1/2 min-w-0 flex flex-col gap-4">
         <LegalDocsPanel disabled={true} />
-        <ActivityPanel logs={logs} />
       </div>
     </div>
   )
@@ -1555,7 +1528,7 @@ const KICKOFF_CHECKLIST = [
 
 const KICKOFF_DOC_LABELS = ['Contrato firmado', 'Pagos', 'Cargos de impuestos', 'Depósito']
 
-function KickoffEdit({ checkedItems, onCheck, waivedItems, onWaive, logs, addLog }) {
+function KickoffEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog }) {
   const [openIdx, setOpenIdx] = useState(null)
   return (
     <div className="flex gap-4">
@@ -1577,13 +1550,12 @@ function KickoffEdit({ checkedItems, onCheck, waivedItems, onWaive, logs, addLog
           <p className="text-[13px] font-semibold text-[#0A0B0D] mb-3">Documentación</p>
           {KICKOFF_DOC_LABELS.map((label, i) => <DocLinkInput key={i} label={label} />)}
         </div>
-        <ActivityPanel logs={logs} />
       </div>
     </div>
   )
 }
 
-function KickoffView({ checkedItems, waivedItems, logs }) {
+function KickoffView({ checkedItems, waivedItems }) {
   return (
     <div className="flex gap-4">
       <div className="w-1/2 min-w-0 flex flex-col">
@@ -1596,7 +1568,6 @@ function KickoffView({ checkedItems, waivedItems, logs }) {
           <p className="text-[13px] font-semibold text-[#0A0B0D] mb-3">Documentación</p>
           {KICKOFF_DOC_LABELS.map((label, i) => <DocLinkInput key={i} label={label} disabled />)}
         </div>
-        <ActivityPanel logs={logs} />
       </div>
     </div>
   )
@@ -1619,6 +1590,7 @@ export default function ClientDetailPage() {
   const [activeDept, setActiveDept] = useState('compliance')
   const [isEditing, setIsEditingRaw] = useState(false)
   const setIsEditing = (val) => { setIsEditingRaw(val); if (!val) setHasChanges(false) }
+  const [innerTab, setInnerTab] = useState('information')
   const [checkedItems, setCheckedItems] = useState({ compliance: new Set(), fraud: new Set(), finances: new Set(), sales: new Set(), legal: new Set(), kickoff: new Set() })
   const [waivedItems, setWaivedItems] = useState({ compliance: new Set(), fraud: new Set(), finances: new Set(), sales: new Set(), legal: new Set(), kickoff: new Set() })
   const [deptStatuses, setDeptStatuses] = useState({
@@ -1786,64 +1758,86 @@ export default function ClientDetailPage() {
 
             {/* Department content */}
             <div className="flex-1 min-w-0 border border-[#E5E7EB] rounded-[12px] p-5">
-              {/* Header: Title + Edit/Save button */}
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-[16px] font-semibold text-[#0A0B0D] m-0">
+              {/* Header: Title | Right side (Edit + Status) */}
+              <div className="flex items-start justify-between mb-3">
+                <h2 className="text-[18px] font-semibold text-[#0A0B0D] m-0">
                   {currentDept?.name === 'Compliance' ? 'Compliance Review' : currentDept?.name}
                 </h2>
-                {!isEditing ? (
-                  <button
-                    onClick={() => setIsEditing(true)}
-                    className="text-[13px] font-medium text-white bg-[#180047] px-5 py-2 rounded-full border-none cursor-pointer hover:bg-[#2a0066] transition-colors"
-                  >
-                    Editar
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => { setIsEditing(false); addLog('Cambios guardados') }}
-                    className="text-[13px] font-medium px-5 py-2 rounded-full border-none text-white bg-[#180047] cursor-pointer hover:bg-[#2a0066] transition-colors"
-                  >
-                    Guardar cambios
-                  </button>
-                )}
+                <div className="flex items-center gap-3">
+                  {!isEditing ? (
+                    <button
+                      onClick={() => setIsEditing(true)}
+                      className="text-[13px] font-medium text-white bg-[#180047] px-5 py-2 rounded-full border-none cursor-pointer hover:bg-[#2a0066] transition-colors"
+                    >
+                      Editar
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => { setIsEditing(false); addLog('Cambios guardados') }}
+                      className="text-[13px] font-medium px-5 py-2 rounded-full border-none text-white bg-[#180047] cursor-pointer hover:bg-[#2a0066] transition-colors"
+                    >
+                      Guardar cambios
+                    </button>
+                  )}
+                  <StatusDropdown
+                    deptStatus={deptStatuses[activeDept]}
+                    onStatusChange={handleStatusChange}
+                    disabled={!isEditing}
+                  />
+                </div>
               </div>
 
-              {/* Tareas + Status dropdown row */}
-              <div className="flex items-center justify-between mb-4">
-                <p className="text-[14px] font-medium text-[#0A0B0D] m-0">Tareas</p>
-                <StatusDropdown
-                  deptStatus={deptStatuses[activeDept]}
-                  onStatusChange={handleStatusChange}
-                  disabled={!isEditing}
-                />
+              {/* Inner tabs: Information | Activity */}
+              <div className="flex items-center border-b border-[#E5E7EB] mb-5">
+                {['information', 'activity'].map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => setInnerTab(tab)}
+                    className={`px-4 py-2.5 text-[13px] border-none bg-transparent cursor-pointer -mb-px border-b-2 transition-colors ${
+                      innerTab === tab
+                        ? 'border-b-[#180047] text-[#0A0B0D] font-medium'
+                        : 'border-b-transparent text-[#6B7280] hover:text-[#0A0B0D]'
+                    }`}
+                  >
+                    {tab === 'information' ? 'Information' : 'Activity'}
+                  </button>
+                ))}
               </div>
 
-              {/* Department content */}
-              {activeDept === 'compliance' && (isEditing
-                ? <ComplianceEdit checkedItems={checkedItems.compliance} onCheck={handleCheck} waivedItems={waivedItems.compliance} onWaive={handleWaive} logs={activityLogs[activeDept]} addLog={addLog} />
-                : <ComplianceView checkedItems={checkedItems.compliance} waivedItems={waivedItems.compliance} logs={activityLogs[activeDept]} />
+              {/* Content based on inner tab */}
+              {innerTab === 'information' && (
+                <>
+                  {activeDept === 'compliance' && (isEditing
+                    ? <ComplianceEdit checkedItems={checkedItems.compliance} onCheck={handleCheck} waivedItems={waivedItems.compliance} onWaive={handleWaive} addLog={addLog} />
+                    : <ComplianceView checkedItems={checkedItems.compliance} waivedItems={waivedItems.compliance} />
+                  )}
+                  {activeDept === 'fraud' && (isEditing
+                    ? <FraudEdit checkedItems={checkedItems.fraud} onCheck={handleCheck} waivedItems={waivedItems.fraud} onWaive={handleWaive} addLog={addLog} />
+                    : <FraudView checkedItems={checkedItems.fraud} waivedItems={waivedItems.fraud} />
+                  )}
+                  {activeDept === 'finances' && (isEditing
+                    ? <FinancesEdit checkedItems={checkedItems.finances} onCheck={handleCheck} waivedItems={waivedItems.finances} onWaive={handleWaive} addLog={addLog} />
+                    : <FinancesView checkedItems={checkedItems.finances} waivedItems={waivedItems.finances} />
+                  )}
+                  {activeDept === 'sales' && (isEditing
+                    ? <SalesEdit checkedItems={checkedItems.sales} onCheck={handleCheck} waivedItems={waivedItems.sales} onWaive={handleWaive} addLog={addLog} />
+                    : <SalesView checkedItems={checkedItems.sales} waivedItems={waivedItems.sales} />
+                  )}
+                  {activeDept === 'legal' && (isEditing
+                    ? <LegalEdit checkedItems={checkedItems.legal} onCheck={handleCheck} waivedItems={waivedItems.legal} onWaive={handleWaive} addLog={addLog} />
+                    : <LegalView checkedItems={checkedItems.legal} waivedItems={waivedItems.legal} />
+                  )}
+                  {activeDept === 'kickoff' && (isEditing
+                    ? <KickoffEdit checkedItems={checkedItems.kickoff} onCheck={handleCheck} waivedItems={waivedItems.kickoff} onWaive={handleWaive} addLog={addLog} />
+                    : <KickoffView checkedItems={checkedItems.kickoff} waivedItems={waivedItems.kickoff} />
+                  )}
+                  {!['compliance','fraud','finances','sales','legal','kickoff'].includes(activeDept) && <PlaceholderDept name={currentDept?.name} isEditing={isEditing} />}
+                </>
               )}
-              {activeDept === 'fraud' && (isEditing
-                ? <FraudEdit checkedItems={checkedItems.fraud} onCheck={handleCheck} waivedItems={waivedItems.fraud} onWaive={handleWaive} logs={activityLogs[activeDept]} addLog={addLog} />
-                : <FraudView checkedItems={checkedItems.fraud} waivedItems={waivedItems.fraud} logs={activityLogs[activeDept]} />
+
+              {innerTab === 'activity' && (
+                <ActivityPanel logs={activityLogs[activeDept]} />
               )}
-              {activeDept === 'finances' && (isEditing
-                ? <FinancesEdit checkedItems={checkedItems.finances} onCheck={handleCheck} waivedItems={waivedItems.finances} onWaive={handleWaive} logs={activityLogs[activeDept]} addLog={addLog} />
-                : <FinancesView checkedItems={checkedItems.finances} waivedItems={waivedItems.finances} logs={activityLogs[activeDept]} />
-              )}
-              {activeDept === 'sales' && (isEditing
-                ? <SalesEdit checkedItems={checkedItems.sales} onCheck={handleCheck} waivedItems={waivedItems.sales} onWaive={handleWaive} logs={activityLogs[activeDept]} addLog={addLog} />
-                : <SalesView checkedItems={checkedItems.sales} waivedItems={waivedItems.sales} logs={activityLogs[activeDept]} />
-              )}
-              {activeDept === 'legal' && (isEditing
-                ? <LegalEdit checkedItems={checkedItems.legal} onCheck={handleCheck} waivedItems={waivedItems.legal} onWaive={handleWaive} logs={activityLogs[activeDept]} addLog={addLog} />
-                : <LegalView checkedItems={checkedItems.legal} waivedItems={waivedItems.legal} logs={activityLogs[activeDept]} />
-              )}
-              {activeDept === 'kickoff' && (isEditing
-                ? <KickoffEdit checkedItems={checkedItems.kickoff} onCheck={handleCheck} waivedItems={waivedItems.kickoff} onWaive={handleWaive} logs={activityLogs[activeDept]} addLog={addLog} />
-                : <KickoffView checkedItems={checkedItems.kickoff} waivedItems={waivedItems.kickoff} logs={activityLogs[activeDept]} />
-              )}
-              {!['compliance','fraud','finances','sales','legal','kickoff'].includes(activeDept) && <PlaceholderDept name={currentDept?.name} isEditing={isEditing} />}
             </div>
           </div>
         )}
