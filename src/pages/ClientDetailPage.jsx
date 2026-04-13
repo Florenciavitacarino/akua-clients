@@ -1102,6 +1102,166 @@ const LEGAL_CHECKLIST = [
 
 const LEGAL_DOC_LABELS = ['Certificados de Cámara de comercio', 'Poderes', 'Actas de asamblea', 'Histórico transaccional']
 
+function CargosCobroEdit() {
+  return (
+    <div className="border border-[#E5E7EB] rounded-[8px] p-4 bg-white mt-4">
+      <p className="text-[14px] font-semibold text-[#0A0B0D] mb-4">Cargos y formas de cobro</p>
+
+      {/* Cargo de implementación */}
+      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Cargo de Implementación</p>
+      <div className="grid grid-cols-3 gap-x-4 gap-y-4 mb-3">
+        <TextInput label="Monto" placeholder="USD 15.000  + IVA" info />
+        <div>
+          <span className="text-[12px] text-[#374151] font-medium block mb-1">Tipo de cambio</span>
+          <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white">
+            <option>Pago único</option>
+          </select>
+        </div>
+        <div>
+          <span className="text-[12px] text-[#374151] font-medium block mb-1">Estado</span>
+          <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white">
+            <option>Pendiente</option>
+            <option>Pagado</option>
+          </select>
+        </div>
+      </div>
+      <div className="flex items-start gap-2 bg-[#F9FAFB] rounded-[8px] p-3 mb-4">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <p className="text-[11px] text-[#6B7280]">Facturación: 30 días post-firma o día siguiente del Kickoff (lo que ocurra primero).</p>
+      </div>
+
+      {/* Cargos recurrentes mensuales */}
+      <div className="border border-[#E5E7EB] rounded-[8px] p-3">
+        <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Cargos Recurrentes Mensuales</p>
+        <div className="grid grid-cols-2 gap-4">
+          {/* Adquirencia como Servicio - left */}
+          <div className="border border-[#E5E7EB] rounded-[8px] p-3">
+            <p className="text-[13px] font-semibold text-[#0A0B0D] mb-3">Adquirencia como Servicio</p>
+            <div className="flex justify-between text-[10px] text-[#6B7280] mb-2 pb-2 border-b border-[#F3F4F6]">
+              <span>Rango de transacciones</span><span>Monto negociado</span>
+            </div>
+            {['0 – 200K','200K – 1M','1M – 3M','+3M'].map((r) => (
+              <div key={r} className="flex justify-between items-center py-2">
+                <span className="text-[12px] text-[#1F2937]">{r}</span>
+                <input type="text" placeholder="Ingresar monto" className="w-[110px] border border-[#E5E7EB] rounded-[6px] px-2 h-[26px] text-[11px] text-[#374151] outline-none focus:border-[#180047] bg-white placeholder:text-[#9CA3AF]" />
+              </div>
+            ))}
+            <div className="flex justify-between items-center pt-3 mt-2 border-t border-[#E5E7EB]">
+              <span className="text-[12px] text-[#1F2937] font-semibold">Rango activo actual</span>
+              <input type="text" placeholder="Ingresar monto" className="w-[110px] border border-[#E5E7EB] rounded-[6px] px-2 h-[26px] text-[11px] text-[#374151] outline-none focus:border-[#180047] bg-white placeholder:text-[#9CA3AF]" />
+            </div>
+          </div>
+
+          {/* Procesamiento Transaccional Cloud - right */}
+          <div>
+            <p className="text-[13px] font-semibold text-[#0A0B0D] mb-3">Procesamiento Transaccional (Cloud)</p>
+            <div className="grid grid-cols-2 gap-3 mb-3">
+              <TextInput label="Mínimo mensual" placeholder="USD 6,000" />
+              <TextInput label="Exento hasta (auto)" placeholder="20/06/2026" />
+            </div>
+            <p className="text-[13px] font-semibold text-[#0A0B0D] mb-3">Fees EASPBV + Tarifa de Intercambio</p>
+            <div className="grid grid-cols-2 gap-3 mb-3">
+              <TextInput label="Base" placeholder="Proporcional según MCC" />
+              <TextInput label="Adicional fijo" placeholder="+00.02%" />
+            </div>
+            <div className="flex items-center gap-1 mb-3">
+              <span className="text-[13px] font-semibold text-[#0A0B0D]">Servicios adicionales</span>
+              <span className="relative group/sa shrink-0">
+                <Info size={14} className="text-[#9CA3AF] cursor-pointer" />
+                <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-[#1F2937] text-white text-[12px] rounded-[8px] w-[260px] whitespace-normal leading-relaxed opacity-0 group-hover/sa:opacity-100 transition-opacity pointer-events-none z-20">
+                  Mensual según tarifa vigente, activables desde el Dashboard
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-[#1F2937]" />
+                </div>
+              </span>
+            </div>
+            <div className="grid grid-cols-2 gap-3 mb-3">
+              <div>
+                <span className="text-[12px] text-[#374151] font-medium block mb-1">Tokenización</span>
+                <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none bg-white"><option>Inactivo</option><option>Activo</option></select>
+              </div>
+              <div>
+                <span className="text-[12px] text-[#374151] font-medium block mb-1">Análisis de fraude</span>
+                <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none bg-white"><option>Inactivo</option><option>Activo</option></select>
+              </div>
+            </div>
+            <div>
+              <span className="text-[12px] text-[#374151] font-medium block mb-1">Compensación real time</span>
+              <select className="w-[calc(50%-6px)] border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none bg-white"><option>Inactivo</option><option>Activo</option></select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function CargosCobroView() {
+  return (
+    <div className="border border-[#E5E7EB] rounded-[8px] p-4 bg-white mt-4">
+      <p className="text-[14px] font-semibold text-[#0A0B0D] mb-4">Cargos y formas de cobro</p>
+      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Cargo de Implementación</p>
+      <div className="grid grid-cols-3 gap-x-4 gap-y-4 mb-3">
+        <InfoField label="Monto" value="USD 15.000 + IVA" info />
+        <InfoField label="Tipo de cambio" value="Pago único" />
+        <InfoField label="Estado" value="Pendiente" />
+      </div>
+      <div className="flex items-start gap-2 bg-[#F9FAFB] rounded-[8px] p-3 mb-4">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <p className="text-[11px] text-[#6B7280]">Facturación: 30 días post-firma o día siguiente del Kickoff (lo que ocurra primero).</p>
+      </div>
+
+      <div className="border border-[#E5E7EB] rounded-[8px] p-3">
+        <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Cargos Recurrentes Mensuales</p>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="border border-[#E5E7EB] rounded-[8px] p-3">
+            <p className="text-[13px] font-semibold text-[#0A0B0D] mb-3">Adquirencia como Servicio</p>
+            <div className="flex justify-between text-[10px] text-[#6B7280] mb-2 pb-2 border-b border-[#F3F4F6]">
+              <span>Rango de transacciones</span><span>Monto negociado</span>
+            </div>
+            {['0 – 200K','200K – 1M','1M – 3M','+3M'].map((r) => (
+              <div key={r} className="flex justify-between items-center py-2">
+                <span className="text-[12px] text-[#1F2937]">{r}</span>
+                <span className="text-[11px] text-[#9CA3AF]">—</span>
+              </div>
+            ))}
+            <div className="flex justify-between items-center pt-3 mt-2 border-t border-[#E5E7EB]">
+              <span className="text-[12px] text-[#1F2937] font-semibold">Rango activo actual</span>
+              <span className="text-[11px] text-[#9CA3AF]">—</span>
+            </div>
+          </div>
+          <div>
+            <p className="text-[13px] font-semibold text-[#0A0B0D] mb-3">Procesamiento Transaccional (Cloud)</p>
+            <div className="grid grid-cols-2 gap-3 mb-3">
+              <InfoField label="Mínimo mensual" value="USD 6,000" />
+              <InfoField label="Exento hasta (auto)" value="20/06/2026" />
+            </div>
+            <p className="text-[13px] font-semibold text-[#0A0B0D] mb-3">Fees EASPBV + Tarifa de Intercambio</p>
+            <div className="grid grid-cols-2 gap-3 mb-3">
+              <InfoField label="Base" value="Proporcional según MCC" />
+              <InfoField label="Adicional fijo" value="+00.02%" />
+            </div>
+            <div className="flex items-center gap-1 mb-3">
+              <span className="text-[13px] font-semibold text-[#0A0B0D]">Servicios adicionales</span>
+              <span className="relative group/sav shrink-0">
+                <Info size={14} className="text-[#9CA3AF] cursor-pointer" />
+                <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-[#1F2937] text-white text-[12px] rounded-[8px] w-[260px] whitespace-normal leading-relaxed opacity-0 group-hover/sav:opacity-100 transition-opacity pointer-events-none z-20">
+                  Mensual según tarifa vigente, activables desde el Dashboard
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-[#1F2937]" />
+                </div>
+              </span>
+            </div>
+            <div className="grid grid-cols-2 gap-3 mb-3">
+              <InfoField label="Tokenización" value="Inactivo" />
+              <InfoField label="Análisis de fraude" value="Inactivo" />
+            </div>
+            <InfoField label="Compensación real time" value="Inactivo" />
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function LegalEdit({ checkedItems, onCheck, waivedItems, onWaive, logs, addLog }) {
   const [openIdx, setOpenIdx] = useState(null)
   return (
@@ -1175,6 +1335,9 @@ function LegalEdit({ checkedItems, onCheck, waivedItems, onWaive, logs, addLog }
             </div>
           </div>
         </div>
+
+        {/* Cargos y formas de cobro */}
+        <CargosCobroEdit />
       </div>
 
       {/* Right: Docs + Activity */}
@@ -1227,6 +1390,9 @@ function LegalView({ checkedItems, waivedItems, logs }) {
             <InfoField label="Desde" value="01/03/2026" />
           </div>
         </div>
+
+        {/* Cargos y formas de cobro */}
+        <CargosCobroView />
       </div>
 
       {/* Right: Docs + Activity */}
