@@ -1155,7 +1155,7 @@ function CargosCobroEdit() {
         <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Cargos Recurrentes Mensuales</p>
         <div className="grid grid-cols-2 gap-4">
           {/* Adquirencia como Servicio - left */}
-          <div className="border border-[#E5E7EB] rounded-[8px] p-4 bg-white">
+          <div className="border border-[#E5E7EB] rounded-[8px] p-4">
             <p className="text-[14px] font-semibold text-[#0A0B0D] mb-3">Adquirencia como Servicio</p>
             <div className="flex justify-between text-[11px] text-[#9CA3AF] mb-2 pb-2 border-b border-[#F3F4F6]">
               <span>Rango de transacciones</span><span>Monto negociado</span>
@@ -1173,7 +1173,7 @@ function CargosCobroEdit() {
           </div>
 
           {/* Right column with dividers */}
-          <div className="border border-[#E5E7EB] rounded-[8px] p-4 bg-white">
+          <div className="border border-[#E5E7EB] rounded-[8px] p-4">
             <p className="text-[14px] font-semibold text-[#0A0B0D] mb-3">Procesamiento Transaccional (Cloud)</p>
             <div className="grid grid-cols-2 gap-3 mb-4">
               <TextInput label="Mínimo mensual" placeholder="USD 6,000" />
@@ -1291,7 +1291,7 @@ function CargosCobroView() {
         <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Cargos Recurrentes Mensuales</p>
         <div className="grid grid-cols-2 gap-4">
           {/* Adquirencia como Servicio - left */}
-          <div className="border border-[#E5E7EB] rounded-[8px] p-4 bg-white">
+          <div className="border border-[#E5E7EB] rounded-[8px] p-4">
             <p className="text-[14px] font-semibold text-[#0A0B0D] mb-3">Adquirencia como Servicio</p>
             <div className="flex justify-between text-[11px] text-[#9CA3AF] mb-2 pb-2 border-b border-[#F3F4F6]">
               <span>Rango de transacciones</span><span>Monto negociado</span>
@@ -1309,7 +1309,7 @@ function CargosCobroView() {
           </div>
 
           {/* Right column with dividers */}
-          <div className="border border-[#E5E7EB] rounded-[8px] p-4 bg-white">
+          <div className="border border-[#E5E7EB] rounded-[8px] p-4">
             <p className="text-[14px] font-semibold text-[#0A0B0D] mb-3">Procesamiento Transaccional (Cloud)</p>
             <div className="grid grid-cols-2 gap-3 mb-4">
               <InfoField label="Mínimo mensual" value="USD 6,000" />
