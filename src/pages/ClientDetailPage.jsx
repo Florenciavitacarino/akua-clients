@@ -429,7 +429,6 @@ const COMPLIANCE_CHECKLIST = [
   { label: "Evaluación del perfil de riesgo del negocio" },
   { label: "Revisión del programa de compliance del cliente" },
   { label: "Inscripción del cliente en Mastercard y Visa como Pay..." },
-  { label: "Apetito de Riesgo del Cliente", tag: "FRAUD" },
 ]
 
 function ComplianceEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog }) {
@@ -452,69 +451,6 @@ function ComplianceEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog })
           />
         ))}
       </div>
-
-      {/* Historial de Riesgo */}
-      <div className="mt-6 border border-[#E5E7EB] rounded-[8px] p-4 bg-white">
-        <p className="text-[14px] font-semibold text-[#0A0B0D] mb-4">Historial de Riesgo</p>
-        <div className="grid grid-cols-3 gap-x-8 gap-y-5">
-          <RadioField label="Historial de procesamiento" />
-          <RadioField label="Tasa de chargebacks" info />
-          <RadioField label="Chargebacks > 0.9%" />
-        </div>
-        <div className="grid grid-cols-3 gap-x-8 gap-y-5 mt-5">
-          <TextInput label="Fecha" placeholder="Mes" />
-          <RadioField label="Participación de monitoreo" info />
-          <RadioField label="Incidentes de fraude" />
-        </div>
-        <div className="mt-5">
-          <TextInput label="Descripción del incidente" placeholder="Descripción del incidente" />
-        </div>
-      </div>
-
-      {/* Apetito de Riesgo del Cliente */}
-      <div className="mt-4 border border-[#E5E7EB] rounded-[8px] p-4 bg-white">
-        <p className="text-[14px] font-semibold text-[#0A0B0D] mb-1">Apetito de Riesgo del Cliente</p>
-        <p className="text-[12px] text-[#6B7280] mb-4">Indicar cómo el cliente prioriza entre seguridad y conversión, el Perfil D (recurrencia) y cómo se trata el primer cobro.</p>
-        <div className="mb-5">
-          <div className="flex items-center gap-1 mb-2">
-            <span className="text-[12px] text-[#374151]">Prioridad del cliente</span>
-            <span className="relative group/pcc shrink-0">
-              <Info size={12} className="text-[#D1D5DB] cursor-pointer" />
-              <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-[#1F2937] text-white text-[12px] rounded-[8px] w-[280px] whitespace-normal opacity-0 group-hover/pcc:opacity-100 transition-opacity pointer-events-none z-20 leading-relaxed">
-                Máxima protección (acepta menor conversión) / Balance protección-conversión / Máxima conversión (acepta mayor riesgo)
-                <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-[#1F2937]" />
-              </div>
-            </span>
-          </div>
-          <div className="flex flex-col gap-2">
-            <label className="flex items-center gap-2 text-[12px] text-[#374151] cursor-pointer">
-              <input type="radio" name="prioridad_c" className="accent-[#180047] w-[14px] h-[14px]" /> Máxima protección (acepta menor conversión)
-            </label>
-            <label className="flex items-center gap-2 text-[12px] text-[#374151] cursor-pointer">
-              <input type="radio" name="prioridad_c" className="accent-[#180047] w-[14px] h-[14px]" /> Balance protección-conversión
-            </label>
-            <label className="flex items-center gap-2 text-[12px] text-[#374151] cursor-pointer">
-              <input type="radio" name="prioridad_c" className="accent-[#180047] w-[14px] h-[14px]" /> Máxima conversión (acepta mayor riesgo)
-            </label>
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-x-6 gap-y-5">
-          <RadioField label="Restricciones contractuales o regulatorias" info tooltip="Exigencia de 3DS en ciertos flujos" />
-        </div>
-        <div className="mt-5">
-          <TextInput label="Detalles" placeholder="Detalles de las restricciones" />
-        </div>
-        <div className="grid grid-cols-2 gap-x-6 gap-y-5 mt-5">
-          <RadioField label="Exención específica" info tooltip="TRA, low-value, whitelist" />
-          <TextInput label="Cuál" placeholder="Detalle de las restricciones" />
-        </div>
-        <div className="mt-5">
-          <RadioField label="Fallo de autenticación (fail-closed)" info tooltip="Si falla la autenticación, se declina la transacción" />
-        </div>
-        <div className="mt-5">
-          <TextInput label="Observaciones adicionales" placeholder="Más observaciones del cliente sobre pagos" />
-        </div>
-      </div>
     </>
   )
 }
@@ -526,40 +462,6 @@ function ComplianceView({ checkedItems, waivedItems }) {
         {COMPLIANCE_CHECKLIST.map((item, i) => (
           <ChecklistItemView key={i} label={item.label} tag={item.tag} checked={checkedItems.has(i)} waived={waivedItems.has(i)} />
         ))}
-      </div>
-
-      {/* Historial de Riesgo - VIEW mode: label/value pairs */}
-      <div className="mt-6 border border-[#E5E7EB] rounded-[8px] p-4 bg-white">
-        <p className="text-[14px] font-semibold text-[#0A0B0D] mb-4">Historial de Riesgo</p>
-        <div className="grid grid-cols-3 gap-x-8 gap-y-5">
-          <InfoField label="Historial de procesamiento" value="No" />
-          <InfoField label="Tasa de chargebacks" value="Si" info />
-          <InfoField label="Chargebacks > 0.9%" value="No" />
-        </div>
-        <div className="grid grid-cols-3 gap-x-8 gap-y-5 mt-5">
-          <InfoField label="Fecha" value="21/03/2025" />
-          <InfoField label="Participación de monitoreo" value="Si" info />
-          <InfoField label="Incidentes de fraude" value="No" />
-        </div>
-        <div className="mt-5">
-          <InfoField label="Descripción del incidente" value="Descripción del incidente" />
-        </div>
-      </div>
-
-      {/* Apetito de Riesgo del Cliente */}
-      <div className="mt-4 border border-[#E5E7EB] rounded-[8px] p-4 bg-white">
-        <p className="text-[14px] font-semibold text-[#0A0B0D] mb-1">Apetito de Riesgo del Cliente</p>
-        <p className="text-[12px] text-[#6B7280] mb-4">Indicar cómo el cliente prioriza entre seguridad y conversión, el Perfil D (recurrencia) y cómo se trata el primer cobro.</p>
-        <div className="grid grid-cols-3 gap-x-6 gap-y-4">
-          <InfoField label="Prioridad del cliente" value="Máxima protección (acepta menor conversión)" info tooltip="Máxima protección (acepta menor conversión) / Balance protección-conversión / Máxima conversión (acepta mayor riesgo)" />
-          <InfoField label="Restricciones contractuales o regulatorias" value="No" info tooltip="Exigencia de 3DS en ciertos flujos" />
-          <InfoField label="Detalles" value="Detalles de las restricciones" />
-          <InfoField label="Exención específica" value="No" info tooltip="TRA, low-value, whitelist" />
-          <InfoField label="Cuál" value="Detalle de las restricciones" />
-          <div />
-          <InfoField label="Fallo de autenticación (fail-closed)" value="No" info tooltip="Si falla la autenticación, se declina la transacción" />
-          <InfoField label="Observaciones adicionales" value="Más observaciones del cliente sobre pagos" />
-        </div>
       </div>
     </>
   )
