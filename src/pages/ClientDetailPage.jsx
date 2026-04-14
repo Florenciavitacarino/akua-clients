@@ -236,7 +236,7 @@ function InfoField({ label, value, info, tooltip }) {
   return (
     <div className="min-w-0">
       <div className="flex items-center gap-1 mb-1">
-        <span className="text-[12px] text-[#6B7280]">{label}</span>
+        <span className="text-[12px] text-[#374151] font-medium">{label}</span>
         {info && (
           <span className="relative group/ifo shrink-0">
             <Info size={12} className="text-[#D1D5DB] cursor-pointer" />
@@ -249,7 +249,7 @@ function InfoField({ label, value, info, tooltip }) {
           </span>
         )}
       </div>
-      <p className="text-[13px] text-[#0A0B0D] font-medium">{value || '—'}</p>
+      <div className="flex items-center h-[28px] px-3 text-[13px] text-[#0A0B0D] font-medium border border-transparent rounded-[6px]">{value || '—'}</div>
     </div>
   )
 }
@@ -258,8 +258,8 @@ function InfoField({ label, value, info, tooltip }) {
 function RadioField({ label, info, tooltip }) {
   return (
     <div className="min-w-0">
-      <div className="flex items-center gap-1 mb-2">
-        <span className="text-[12px] text-[#374151]">{label}</span>
+      <div className="flex items-center gap-1 mb-1">
+        <span className="text-[12px] text-[#374151] font-medium">{label}</span>
         {info && (
           <span className="relative group/rfo shrink-0">
             <Info size={12} className="text-[#D1D5DB] cursor-pointer" />
@@ -272,7 +272,7 @@ function RadioField({ label, info, tooltip }) {
           </span>
         )}
       </div>
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 h-[28px]">
         <label className="flex items-center gap-1.5 text-[12px] text-[#374151] cursor-pointer">
           <input type="radio" name={label} className="accent-[#180047] w-[14px] h-[14px]" /> Si
         </label>
