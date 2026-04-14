@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import DocumentsTab from '../components/DocumentsTab'
 import {
   CheckCircle2, Circle, ChevronDown, ChevronUp, ChevronRight, Lock, LockOpen,
   Link2, ExternalLink, Info, RefreshCw, Flag, FileText, Ban, Trash2,
@@ -2068,12 +2069,7 @@ export default function ClientDetailPage() {
 
         {activeTab === 'Contactos' && <ContactsTab />}
 
-        {activeTab === 'Documentos' && (
-          <div className="text-center py-16 text-[#9CA3AF]">
-            <FileText size={36} className="mx-auto mb-3" />
-            <p className="text-[13px]">Documentos will be displayed here.</p>
-          </div>
-        )}
+        {activeTab === 'Documentos' && <DocumentsTab />}
 
         {activeTab === 'Timeline' && (() => {
           const defaultTimeline = [
