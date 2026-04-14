@@ -1522,8 +1522,14 @@ function ContactsTab() {
     { name: 'Sandra Mora', email: 'smora@efecty.com', phone: '1223445569', type: 'Finanzas' },
     { name: 'Pedro Gómez', email: 'pgomez@efecty.com', phone: '1223445570', type: 'Compliance' },
   ])
+  const [autorizados, setAutorizados] = useState([
+    { name: 'Alan Juárez', email: 'alan@efecty.com', phone: '1223445566', requerimientos: 'Cambio MCC, Razón social' },
+    { name: 'María López', email: 'mlopez@efecty.com', phone: '1223445567', requerimientos: 'Datos de contacto, Otros' },
+  ])
   const [editingRow, setEditingRow] = useState(null)
+  const [editingRowAuth, setEditingRowAuth] = useState(null)
   const [editForm, setEditForm] = useState({ name: '', email: '', phone: '', type: '' })
+  const [editFormAuth, setEditFormAuth] = useState({ name: '', email: '', phone: '', requerimientos: '' })
 
   const handleAddContact = () => {
     setContacts(prev => [...prev, { name: '', email: '', phone: '', type: '' }])
@@ -1613,6 +1619,62 @@ function ContactsTab() {
           ))}
         </tbody>
       </table>
+
+      {/* Second section: Autorizados para requerimientos oficiales */}
+      <hr className="border-t border-[#E5E7EB] my-6" />
+      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-4">Autorizados para requerimientos oficiales</p>
+      <table className="w-full text-left">
+        <thead>
+          <tr className="border-b border-[#E5E7EB]">
+            <th className="text-[12px] text-[#6B7280] font-medium pb-3 pr-4">Nombre</th>
+            <th className="text-[12px] text-[#6B7280] font-medium pb-3 pr-4">Email</th>
+            <th className="text-[12px] text-[#6B7280] font-medium pb-3 pr-4">Teléfono</th>
+            <th className="text-[12px] text-[#6B7280] font-medium pb-3 pr-4">Requerimientos</th>
+            {contactsEditing && <th className="text-[12px] text-[#6B7280] font-medium pb-3" />}
+          </tr>
+        </thead>
+        <tbody>
+          {autorizados.map((contact, idx) => (
+            <tr key={idx} className="border-b border-[#F3F4F6]">
+              {editingRowAuth === idx ? (
+                <>
+                  <td className="py-3 pr-4"><input value={editFormAuth.name} onChange={e => setEditFormAuth(p => ({...p, name: e.target.value}))} placeholder="Nombre" className="w-full border border-[#D1D5DB] rounded-[6px] px-2 h-[32px] text-[13px] outline-none focus:border-[#180047] bg-white" /></td>
+                  <td className="py-3 pr-4"><input value={editFormAuth.email} onChange={e => setEditFormAuth(p => ({...p, email: e.target.value}))} placeholder="Email" className="w-full border border-[#D1D5DB] rounded-[6px] px-2 h-[32px] text-[13px] outline-none focus:border-[#180047] bg-white" /></td>
+                  <td className="py-3 pr-4"><input value={editFormAuth.phone} onChange={e => setEditFormAuth(p => ({...p, phone: e.target.value}))} placeholder="Teléfono" className="w-full border border-[#D1D5DB] rounded-[6px] px-2 h-[32px] text-[13px] outline-none focus:border-[#180047] bg-white" /></td>
+                  <td className="py-3 pr-4"><input value={editFormAuth.requerimientos} onChange={e => setEditFormAuth(p => ({...p, requerimientos: e.target.value}))} placeholder="Requerimientos" className="w-full border border-[#D1D5DB] rounded-[6px] px-2 h-[32px] text-[13px] outline-none focus:border-[#180047] bg-white" /></td>
+                  <td className="py-3">
+                    <button onClick={() => { setAutorizados(prev => prev.map((c, i) => i === idx ? { ...editFormAuth } : c)); setEditingRowAuth(null) }} className="text-[12px] font-medium text-white bg-[#180047] px-3 py-1.5 rounded-full border-none cursor-pointer hover:bg-[#2a0066]">Guardar</button>
+                  </td>
+                </>
+              ) : (
+                <>
+                  <td className="py-4 pr-4 text-[14px] font-semibold text-[#0A0B0D]">{contact.name || '—'}</td>
+                  <td className="py-4 pr-4 text-[13px] text-[#374151]">{contact.email || '—'}</td>
+                  <td className="py-4 pr-4 text-[13px] text-[#374151]">{contact.phone || '—'}</td>
+                  <td className="py-4 pr-4 text-[13px] text-[#374151]">{contact.requerimientos || '—'}</td>
+                  {contactsEditing && (
+                    <td className="py-4">
+                      <button onClick={() => { setEditingRowAuth(idx); setEditFormAuth({ ...contact }) }} className="text-[13px] font-medium text-[#374151] bg-white px-4 py-1.5 rounded-full border border-[#E5E7EB] cursor-pointer hover:bg-[#F9FAFB]">Editar</button>
+                    </td>
+                  )}
+                </>
+              )}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {contactsEditing && (
+        <button
+          onClick={() => {
+            setAutorizados(prev => [...prev, { name: '', email: '', phone: '', requerimientos: '' }])
+            setEditingRowAuth(autorizados.length)
+            setEditFormAuth({ name: '', email: '', phone: '', requerimientos: '' })
+          }}
+          className="mt-3 text-[13px] font-medium text-[#374151] bg-white px-4 py-2 rounded-full border border-[#E5E7EB] cursor-pointer hover:bg-[#F9FAFB] transition-colors"
+        >
+          + Agregar autorizado
+        </button>
+      )}
     </div>
   )
 }
