@@ -30,7 +30,7 @@ const DEPARTMENTS = [
   { key: 'review', name: '1st Review', status: 'pending' },
 ]
 
-const TABS = ['Resumen', 'Revisión por áreas', 'Features', 'Timeline', 'Contacts', 'Documentos']
+const TABS = ['Resumen', 'Revisión por áreas', 'Features', 'Contactos', 'Documentos', 'Timeline']
 
 /* ─── Shared UI ─── */
 
@@ -1582,7 +1582,7 @@ function ContactsTab() {
             <th className="text-[12px] text-[#6B7280] font-medium pb-3 pr-4">Nombre</th>
             <th className="text-[12px] text-[#6B7280] font-medium pb-3 pr-4">Email</th>
             <th className="text-[12px] text-[#6B7280] font-medium pb-3 pr-4">Teléfono</th>
-            <th className="text-[12px] text-[#6B7280] font-medium pb-3 pr-4">Tipo</th>
+            <th className="text-[12px] text-[#6B7280] font-medium pb-3 pr-4">Área</th>
             <th className="text-[12px] text-[#6B7280] font-medium pb-3" />
           </tr>
         </thead>
@@ -1594,12 +1594,7 @@ function ContactsTab() {
                   <td className="py-3 pr-4"><input value={editForm.name} onChange={e => setEditForm(p => ({...p, name: e.target.value}))} placeholder="Nombre" className="w-full border border-[#D1D5DB] rounded-[6px] px-2 h-[32px] text-[13px] outline-none focus:border-[#180047] bg-white" /></td>
                   <td className="py-3 pr-4"><input value={editForm.email} onChange={e => setEditForm(p => ({...p, email: e.target.value}))} placeholder="Email" className="w-full border border-[#D1D5DB] rounded-[6px] px-2 h-[32px] text-[13px] outline-none focus:border-[#180047] bg-white" /></td>
                   <td className="py-3 pr-4"><input value={editForm.phone} onChange={e => setEditForm(p => ({...p, phone: e.target.value}))} placeholder="Teléfono" className="w-full border border-[#D1D5DB] rounded-[6px] px-2 h-[32px] text-[13px] outline-none focus:border-[#180047] bg-white" /></td>
-                  <td className="py-3 pr-4">
-                    <select value={editForm.type} onChange={e => setEditForm(p => ({...p, type: e.target.value}))} className="w-full border border-[#D1D5DB] rounded-[6px] px-2 h-[32px] text-[13px] outline-none focus:border-[#180047] bg-white">
-                      <option value="">Seleccionar</option>
-                      {Object.keys(CONTACT_TYPE_COLORS).map(t => <option key={t} value={t}>{t}</option>)}
-                    </select>
-                  </td>
+                  <td className="py-3 pr-4"><input value={editForm.type} onChange={e => setEditForm(p => ({...p, type: e.target.value}))} placeholder="Área" className="w-full border border-[#D1D5DB] rounded-[6px] px-2 h-[32px] text-[13px] outline-none focus:border-[#180047] bg-white" /></td>
                   <td className="py-3">
                     <button onClick={() => handleSaveRow(idx)} className="text-[12px] font-medium text-white bg-[#180047] px-3 py-1.5 rounded-full border-none cursor-pointer hover:bg-[#2a0066]">Guardar</button>
                   </td>
@@ -1609,12 +1604,7 @@ function ContactsTab() {
                   <td className="py-4 pr-4 text-[14px] font-semibold text-[#0A0B0D]">{contact.name || '—'}</td>
                   <td className="py-4 pr-4 text-[13px] text-[#374151]">{contact.email || '—'}</td>
                   <td className="py-4 pr-4 text-[13px] text-[#374151]">{contact.phone || '—'}</td>
-                  <td className="py-4 pr-4">
-                    {contact.type && (() => {
-                      const s = CONTACT_TYPE_COLORS[contact.type] || { bg: '#F3F4F6', text: '#6B7280', border: '#D1D5DB' }
-                      return <span className="text-[12px] font-medium px-3 py-1 rounded-full" style={{ background: s.bg, color: s.text, border: `1px solid ${s.border}` }}>{contact.type}</span>
-                    })()}
-                  </td>
+                  <td className="py-4 pr-4 text-[13px] text-[#374151]">{contact.type || '—'}</td>
                   <td className="py-4">
                     {contactsEditing && (
                       <button onClick={() => handleEditRow(idx)} className="text-[13px] font-medium text-[#374151] bg-white px-4 py-1.5 rounded-full border border-[#E5E7EB] cursor-pointer hover:bg-[#F9FAFB]">Editar</button>
@@ -2066,7 +2056,7 @@ export default function ClientDetailPage() {
           </div>
         )}
 
-        {activeTab === 'Contacts' && <ContactsTab />}
+        {activeTab === 'Contactos' && <ContactsTab />}
 
         {activeTab === 'Documentos' && (
           <div className="text-center py-16 text-[#9CA3AF]">
