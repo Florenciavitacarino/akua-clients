@@ -1607,7 +1607,12 @@ function ContactsTab() {
                   <td className="py-4 pr-4 text-[13px] text-[#374151]">{contact.type || '—'}</td>
                   <td className="py-4">
                     {contactsEditing && (
-                      <button onClick={() => handleEditRow(idx)} className="text-[13px] font-medium text-[#374151] bg-white px-4 py-1.5 rounded-full border border-[#E5E7EB] cursor-pointer hover:bg-[#F9FAFB]">Editar</button>
+                      <div className="flex items-center gap-2">
+                        <button onClick={() => handleEditRow(idx)} className="text-[13px] font-medium text-[#374151] bg-white px-4 py-1.5 rounded-full border border-[#E5E7EB] cursor-pointer hover:bg-[#F9FAFB]">Editar</button>
+                        <button onClick={() => setContacts(prev => prev.filter((_, i) => i !== idx))} className="flex items-center justify-center w-[30px] h-[30px] rounded-full border border-[#E5E7EB] bg-white cursor-pointer hover:bg-[#FEE2E2] hover:border-[#fa5252] transition-colors">
+                          <Trash2 size={14} className="text-[#6B7280] hover:text-[#fa5252]" />
+                        </button>
+                      </div>
                     )}
                   </td>
                 </>
@@ -1658,7 +1663,12 @@ function ContactsTab() {
                   <td className="py-4 pr-4 text-[13px] text-[#374151]">{contact.requerimientos || '—'}</td>
                   <td className="py-4">
                     {contactsEditing && (
-                      <button onClick={() => { setEditingRowAuth(idx); setEditFormAuth({ ...contact }) }} className="text-[13px] font-medium text-[#374151] bg-white px-4 py-1.5 rounded-full border border-[#E5E7EB] cursor-pointer hover:bg-[#F9FAFB]">Editar</button>
+                      <div className="flex items-center gap-2">
+                        <button onClick={() => { setEditingRowAuth(idx); setEditFormAuth({ ...contact }) }} className="text-[13px] font-medium text-[#374151] bg-white px-4 py-1.5 rounded-full border border-[#E5E7EB] cursor-pointer hover:bg-[#F9FAFB]">Editar</button>
+                        <button onClick={() => setAutorizados(prev => prev.filter((_, i) => i !== idx))} className="flex items-center justify-center w-[30px] h-[30px] rounded-full border border-[#E5E7EB] bg-white cursor-pointer hover:bg-[#FEE2E2] hover:border-[#fa5252] transition-colors">
+                          <Trash2 size={14} className="text-[#6B7280]" />
+                        </button>
+                      </div>
                     )}
                   </td>
                 </>
