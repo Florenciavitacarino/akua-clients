@@ -62,11 +62,21 @@ function UploadModal({ onClose, onUpload }) {
     if (f) setFile(f)
   }
 
+  const detectType = (fileName) => {
+    if (!fileName) return 'PDF'
+    const ext = fileName.split('.').pop().toLowerCase()
+    if (['pdf'].includes(ext)) return 'PDF'
+    if (['doc', 'docx'].includes(ext)) return 'Word'
+    if (['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'].includes(ext)) return 'Imagen'
+    if (['xls', 'xlsx', 'csv'].includes(ext)) return 'Excel'
+    return 'PDF'
+  }
+
   const handleSubmit = () => {
     onUpload({
       name: name || file?.name || 'Documento',
       size: file ? `${(file.size / 1024 / 1024).toFixed(1)} MB` : '—',
-      type,
+      type: detectType(file?.name),
       category: category || 'General',
       date: new Date().toLocaleDateString('es-AR'),
       user: 'Agustina R.',
@@ -86,20 +96,12 @@ function UploadModal({ onClose, onUpload }) {
             <span className="text-[12px] text-[#374151] font-medium block mb-1">Nombre</span>
             <input value={name} onChange={e => setName(e.target.value)} placeholder="Nombre del documento" className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[36px] text-[13px] outline-none focus:border-[#180047] bg-white" />
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <span className="text-[12px] text-[#374151] font-medium block mb-1">Tipo</span>
-              <select value={type} onChange={e => setType(e.target.value)} className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[36px] text-[13px] outline-none focus:border-[#180047] bg-white">
-                <option>PDF</option><option>Word</option><option>Imagen</option><option>Excel</option>
-              </select>
-            </div>
-            <div>
-              <span className="text-[12px] text-[#374151] font-medium block mb-1">Categoría</span>
-              <select value={category} onChange={e => setCategory(e.target.value)} className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[36px] text-[13px] outline-none focus:border-[#180047] bg-white">
-                <option value="">Seleccionar</option>
-                {Object.keys(CAT_COLORS).map(c => <option key={c} value={c}>{c}</option>)}
-              </select>
-            </div>
+          <div>
+            <span className="text-[12px] text-[#374151] font-medium block mb-1">Área</span>
+            <select value={category} onChange={e => setCategory(e.target.value)} className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[36px] text-[13px] outline-none focus:border-[#180047] bg-white">
+              <option value="">Seleccionar</option>
+              {Object.keys(CAT_COLORS).map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
           </div>
           <div
             onDragOver={e => { e.preventDefault(); setDragging(true) }}
@@ -183,7 +185,7 @@ export default function DocumentsTab() {
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Buscar documento..." className="flex-1 bg-transparent border-none outline-none text-[13px] text-[#374151] placeholder:text-[#9CA3AF]" />
         </div>
         <select value={catFilter} onChange={e => setCatFilter(e.target.value)} className="border border-[#E5E7EB] rounded-full px-4 h-[36px] text-[13px] text-[#374151] bg-white outline-none cursor-pointer">
-          <option value="">Categoría</option>
+          <option value="">Área</option>
           {Object.keys(CAT_COLORS).map(c => <option key={c} value={c}>{c}</option>)}
         </select>
         <select value={typeFilter} onChange={e => setTypeFilter(e.target.value)} className="border border-[#E5E7EB] rounded-full px-4 h-[36px] text-[13px] text-[#374151] bg-white outline-none cursor-pointer">
@@ -198,8 +200,7 @@ export default function DocumentsTab() {
       {/* Table */}
       <table className="w-full text-left table-fixed">
         <colgroup>
-          <col className="w-[5%]" />
-          <col className="w-[25%]" />
+          <col className="w-[30%]" />
           <col className="w-[12%]" />
           <col className="w-[15%]" />
           <col className="w-[25%]" />
@@ -207,10 +208,9 @@ export default function DocumentsTab() {
         </colgroup>
         <thead>
           <tr className="border-b border-[#E5E7EB]">
-            <th />
             <th className="text-[12px] text-[#6B7280] font-medium pb-3">Nombre</th>
             <th className="text-[12px] text-[#6B7280] font-medium pb-3">Tipo</th>
-            <th className="text-[12px] text-[#6B7280] font-medium pb-3">Categoría</th>
+            <th className="text-[12px] text-[#6B7280] font-medium pb-3">Área</th>
             <th className="text-[12px] text-[#6B7280] font-medium pb-3">Subido</th>
             <th />
           </tr>
@@ -218,10 +218,14 @@ export default function DocumentsTab() {
         <tbody>
           {filtered.map((doc, idx) => (
             <tr key={idx} className="border-b border-[#F3F4F6]">
-              <td className="py-4"><TypeIcon type={doc.type} /></td>
               <td className="py-4">
-                <p className="text-[14px] font-semibold text-[#0A0B0D] leading-tight">{doc.name}</p>
-                <p className="text-[11px] text-[#9CA3AF] mt-0.5">{doc.size}</p>
+                <div className="flex items-center gap-3">
+                  <TypeIcon type={doc.type} />
+                  <div>
+                    <p className="text-[14px] font-semibold text-[#0A0B0D] leading-tight">{doc.name}</p>
+                    <p className="text-[11px] text-[#9CA3AF] mt-0.5">{doc.size}</p>
+                  </div>
+                </div>
               </td>
               <td className="py-4 text-[13px] text-[#374151]">{doc.type}</td>
               <td className="py-4"><CatBadge category={doc.category} /></td>
@@ -237,7 +241,7 @@ export default function DocumentsTab() {
             </tr>
           ))}
           {filtered.length === 0 && (
-            <tr><td colSpan={6} className="py-8 text-center text-[13px] text-[#9CA3AF]">No se encontraron documentos.</td></tr>
+            <tr><td colSpan={5} className="py-8 text-center text-[13px] text-[#9CA3AF]">No se encontraron documentos.</td></tr>
           )}
         </tbody>
       </table>
