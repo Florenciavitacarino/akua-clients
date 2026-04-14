@@ -1569,14 +1569,21 @@ function ContactsTab() {
         </div>
       </div>
       <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-4">Por tipo de gestión</p>
-      <table className="w-full text-left">
+      <table className="w-full text-left table-fixed">
+        <colgroup>
+          <col className="w-[22%]" />
+          <col className="w-[25%]" />
+          <col className="w-[20%]" />
+          <col className="w-[20%]" />
+          <col className="w-[13%]" />
+        </colgroup>
         <thead>
           <tr className="border-b border-[#E5E7EB]">
             <th className="text-[12px] text-[#6B7280] font-medium pb-3 pr-4">Nombre</th>
             <th className="text-[12px] text-[#6B7280] font-medium pb-3 pr-4">Email</th>
             <th className="text-[12px] text-[#6B7280] font-medium pb-3 pr-4">Teléfono</th>
             <th className="text-[12px] text-[#6B7280] font-medium pb-3 pr-4">Tipo</th>
-            {contactsEditing && <th className="text-[12px] text-[#6B7280] font-medium pb-3" />}
+            <th className="text-[12px] text-[#6B7280] font-medium pb-3" />
           </tr>
         </thead>
         <tbody>
@@ -1608,11 +1615,11 @@ function ContactsTab() {
                       return <span className="text-[12px] font-medium px-3 py-1 rounded-full" style={{ background: s.bg, color: s.text, border: `1px solid ${s.border}` }}>{contact.type}</span>
                     })()}
                   </td>
-                  {contactsEditing && (
-                    <td className="py-4">
+                  <td className="py-4">
+                    {contactsEditing && (
                       <button onClick={() => handleEditRow(idx)} className="text-[13px] font-medium text-[#374151] bg-white px-4 py-1.5 rounded-full border border-[#E5E7EB] cursor-pointer hover:bg-[#F9FAFB]">Editar</button>
-                    </td>
-                  )}
+                    )}
+                  </td>
                 </>
               )}
             </tr>
@@ -1623,14 +1630,21 @@ function ContactsTab() {
       {/* Second section: Autorizados para requerimientos oficiales */}
       <hr className="border-t border-[#E5E7EB] my-6" />
       <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-4">Autorizados para requerimientos oficiales</p>
-      <table className="w-full text-left">
+      <table className="w-full text-left table-fixed">
+        <colgroup>
+          <col className="w-[22%]" />
+          <col className="w-[25%]" />
+          <col className="w-[20%]" />
+          <col className="w-[20%]" />
+          <col className="w-[13%]" />
+        </colgroup>
         <thead>
           <tr className="border-b border-[#E5E7EB]">
             <th className="text-[12px] text-[#6B7280] font-medium pb-3 pr-4">Nombre</th>
             <th className="text-[12px] text-[#6B7280] font-medium pb-3 pr-4">Email</th>
             <th className="text-[12px] text-[#6B7280] font-medium pb-3 pr-4">Teléfono</th>
             <th className="text-[12px] text-[#6B7280] font-medium pb-3 pr-4">Requerimientos</th>
-            {contactsEditing && <th className="text-[12px] text-[#6B7280] font-medium pb-3" />}
+            <th className="text-[12px] text-[#6B7280] font-medium pb-3" />
           </tr>
         </thead>
         <tbody>
@@ -1652,11 +1666,11 @@ function ContactsTab() {
                   <td className="py-4 pr-4 text-[13px] text-[#374151]">{contact.email || '—'}</td>
                   <td className="py-4 pr-4 text-[13px] text-[#374151]">{contact.phone || '—'}</td>
                   <td className="py-4 pr-4 text-[13px] text-[#374151]">{contact.requerimientos || '—'}</td>
-                  {contactsEditing && (
-                    <td className="py-4">
+                  <td className="py-4">
+                    {contactsEditing && (
                       <button onClick={() => { setEditingRowAuth(idx); setEditFormAuth({ ...contact }) }} className="text-[13px] font-medium text-[#374151] bg-white px-4 py-1.5 rounded-full border border-[#E5E7EB] cursor-pointer hover:bg-[#F9FAFB]">Editar</button>
-                    </td>
-                  )}
+                    )}
+                  </td>
                 </>
               )}
             </tr>
