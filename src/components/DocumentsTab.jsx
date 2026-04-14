@@ -2,12 +2,12 @@ import { useState, useRef } from 'react'
 import { Search, Upload, ExternalLink, X, FileText, File, Image, Table2 } from 'lucide-react'
 
 const INITIAL_DOCS = [
-  { name: 'Contrato V5 completo', size: '2.4 MB', type: 'PDF', category: 'Contrato', date: '20/03/2025', user: 'Ingrith V.' },
-  { name: 'Anexo I – Descripción técnica', size: '1.1 MB', type: 'PDF', category: 'Contrato', date: '20/03/2025', user: 'Ingrith V.' },
-  { name: 'Anexo II – SLA', size: '890 KB', type: 'PDF', category: 'SLA', date: '20/03/2025', user: 'Ingrith V.' },
-  { name: 'Poderes notariales', size: '340 KB', type: 'Word', category: 'Legal', date: '10/03/2025', user: 'Ingrith V.' },
-  { name: 'Cámara de comercio', size: '1.8 MB', type: 'Imagen', category: 'Compliance', date: '10/03/2025', user: 'Ingrith V.' },
-  { name: 'Histórico transaccional Q1', size: '5.2 MB', type: 'Excel', category: 'KYC', date: '01/04/2025', user: 'Ingrith V.' },
+  { name: 'Contrato V5 completo', size: '2.4 MB', type: 'PDF', category: 'Contrato', date: '20/03/2025', user: 'Ingrith Velandia' },
+  { name: 'Anexo I – Descripción técnica', size: '1.1 MB', type: 'PDF', category: 'Contrato', date: '20/03/2025', user: 'Ingrith Velandia' },
+  { name: 'Anexo II – SLA', size: '890 KB', type: 'PDF', category: 'SLA', date: '20/03/2025', user: 'Ingrith Velandia' },
+  { name: 'Poderes notariales', size: '340 KB', type: 'Word', category: 'Legal', date: '10/03/2025', user: 'Ingrith Velandia' },
+  { name: 'Cámara de comercio', size: '1.8 MB', type: 'Imagen', category: 'Compliance', date: '10/03/2025', user: 'Ingrith Velandia' },
+  { name: 'Histórico transaccional Q1', size: '5.2 MB', type: 'Excel', category: 'KYC', date: '01/04/2025', user: 'Ingrith Velandia' },
 ]
 
 const TYPE_ICON_COLORS = {
@@ -225,7 +225,10 @@ export default function DocumentsTab() {
               </td>
               <td className="py-4 text-[13px] text-[#374151]">{doc.type}</td>
               <td className="py-4"><CatBadge category={doc.category} /></td>
-              <td className="py-4 text-[13px] text-[#374151]">{doc.date} · {doc.user}</td>
+              <td className="py-4">
+                <p className="text-[13px] text-[#0A0B0D] font-medium">{doc.user}</p>
+                <p className="text-[12px] text-[#9CA3AF] mt-0.5">{doc.date}</p>
+              </td>
               <td className="py-4">
                 <button onClick={() => setViewDoc(doc)} className="flex items-center gap-1.5 text-[13px] font-medium text-[#374151] bg-white px-4 py-1.5 rounded-full border border-[#E5E7EB] cursor-pointer hover:bg-[#F9FAFB]">
                   Ver <ExternalLink size={12} />
