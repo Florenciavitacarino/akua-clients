@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { Search, Upload, ExternalLink, X, FileText, File, Image, Table2 } from 'lucide-react'
+import { Search, Upload, ExternalLink, X, FileText } from 'lucide-react'
 
 const INITIAL_DOCS = [
   { name: 'Contrato V5 completo', size: '2.4 MB', type: 'PDF', category: 'Legal and Contract', date: '20/03/2025', user: 'Ingrith Velandia' },
