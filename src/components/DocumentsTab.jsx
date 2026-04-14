@@ -2,12 +2,12 @@ import { useState, useRef } from 'react'
 import { Search, Upload, ExternalLink, X, FileText, File, Image, Table2 } from 'lucide-react'
 
 const INITIAL_DOCS = [
-  { name: 'Contrato V5 completo', size: '2.4 MB', type: 'PDF', category: 'Contrato', date: '20/03/2025', user: 'Ingrith Velandia' },
-  { name: 'Anexo I – Descripción técnica', size: '1.1 MB', type: 'PDF', category: 'Contrato', date: '20/03/2025', user: 'Ingrith Velandia' },
-  { name: 'Anexo II – SLA', size: '890 KB', type: 'PDF', category: 'SLA', date: '20/03/2025', user: 'Ingrith Velandia' },
-  { name: 'Poderes notariales', size: '340 KB', type: 'Word', category: 'Legal', date: '10/03/2025', user: 'Ingrith Velandia' },
+  { name: 'Contrato V5 completo', size: '2.4 MB', type: 'PDF', category: 'Legal and Contract', date: '20/03/2025', user: 'Ingrith Velandia' },
+  { name: 'Anexo I – Descripción técnica', size: '1.1 MB', type: 'PDF', category: 'Legal and Contract', date: '20/03/2025', user: 'Ingrith Velandia' },
+  { name: 'Anexo II – SLA', size: '890 KB', type: 'PDF', category: 'Legal and Contract', date: '20/03/2025', user: 'Ingrith Velandia' },
+  { name: 'Poderes notariales', size: '340 KB', type: 'Word', category: 'Legal and Contract', date: '10/03/2025', user: 'Ingrith Velandia' },
   { name: 'Cámara de comercio', size: '1.8 MB', type: 'Imagen', category: 'Compliance', date: '10/03/2025', user: 'Ingrith Velandia' },
-  { name: 'Histórico transaccional Q1', size: '5.2 MB', type: 'Excel', category: 'KYC', date: '01/04/2025', user: 'Ingrith Velandia' },
+  { name: 'Histórico transaccional Q1', size: '5.2 MB', type: 'Excel', category: 'Finance', date: '01/04/2025', user: 'Ingrith Velandia' },
 ]
 
 const TYPE_ICON_COLORS = {
@@ -17,14 +17,17 @@ const TYPE_ICON_COLORS = {
   Excel: { bg: '#D1FAE5', text: '#059669' },
 }
 
+const AREA_OPTIONS = ['Compliance', 'Fraud', 'Finance', 'Sales', 'Legal and Contract', 'Kickoff & Integration', 'Go Live', '1st Review']
+
 const CAT_COLORS = {
-  Contrato: { bg: '#fef3c7', text: '#92400e', border: '#fcd34d' },
-  SLA: { bg: '#d1fae5', text: '#065f46', border: '#6ee7b7' },
-  Legal: { bg: '#e0e7ff', text: '#3730a3', border: '#a5b4fc' },
   Compliance: { bg: '#ede9fe', text: '#5b21b6', border: '#c4b5fd' },
-  KYC: { bg: '#fce7f3', text: '#9d174d', border: '#f9a8d4' },
   Fraud: { bg: '#fef3c7', text: '#b45309', border: '#fcd34d' },
   Finance: { bg: '#dbeafe', text: '#1e40af', border: '#93c5fd' },
+  Sales: { bg: '#d1fae5', text: '#065f46', border: '#6ee7b7' },
+  'Legal and Contract': { bg: '#e0e7ff', text: '#3730a3', border: '#a5b4fc' },
+  'Kickoff & Integration': { bg: '#fce7f3', text: '#9d174d', border: '#f9a8d4' },
+  'Go Live': { bg: '#F3F4F6', text: '#374151', border: '#D1D5DB' },
+  '1st Review': { bg: '#F3F4F6', text: '#6B7280', border: '#D1D5DB' },
 }
 
 const TYPE_LABELS = { PDF: 'PDF', Word: 'DOC', Imagen: 'IMG', Excel: 'XLS' }
@@ -100,7 +103,7 @@ function UploadModal({ onClose, onUpload }) {
             <span className="text-[12px] text-[#374151] font-medium block mb-1">Área</span>
             <select value={category} onChange={e => setCategory(e.target.value)} className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[36px] text-[13px] outline-none focus:border-[#180047] bg-white">
               <option value="">Seleccionar</option>
-              {Object.keys(CAT_COLORS).map(c => <option key={c} value={c}>{c}</option>)}
+              {AREA_OPTIONS.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
           <div
@@ -186,7 +189,7 @@ export default function DocumentsTab() {
         </div>
         <select value={catFilter} onChange={e => setCatFilter(e.target.value)} className="border border-[#E5E7EB] rounded-full px-4 h-[36px] text-[13px] text-[#374151] bg-white outline-none cursor-pointer">
           <option value="">Área</option>
-          {Object.keys(CAT_COLORS).map(c => <option key={c} value={c}>{c}</option>)}
+          {AREA_OPTIONS.map(c => <option key={c} value={c}>{c}</option>)}
         </select>
         <select value={typeFilter} onChange={e => setTypeFilter(e.target.value)} className="border border-[#E5E7EB] rounded-full px-4 h-[36px] text-[13px] text-[#374151] bg-white outline-none cursor-pointer">
           <option value="">Tipo</option>
