@@ -474,7 +474,7 @@ const FRAUD_CHECKLIST = [
   { label: "Perfil Transaccional Esperado", tag: "FINANCE", sharedId: "perfil_transaccional" },
   { label: "Tipo de Operatoria" },
   { label: "Historial de Riesgo", tag: "FINANCE", sharedId: "historial_riesgo" },
-  { label: "Apetito de Riesgo del Cliente", tag: "COMPLIANCE" },
+  { label: "Apetito de Riesgo del Cliente" },
 ]
 
 function FraudEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog }) {
