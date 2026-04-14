@@ -4,19 +4,20 @@ import DocumentsTab from '../components/DocumentsTab'
 import {
   CheckCircle2, Circle, ChevronDown, ChevronUp, ChevronRight, Lock, LockOpen,
   Link2, ExternalLink, Info, RefreshCw, Flag, FileText, Ban, Trash2,
-  Store, ShieldCheck, KeyRound, Settings, ShieldAlert, UserCheck, Link as LinkIcon
+  Store, ShieldCheck, KeyRound, Settings, ShieldAlert, UserCheck, Link as LinkIcon,
+  Shield, DollarSign, Users, Scale, Rocket, Clock
 } from 'lucide-react'
 
-/* ─── Figma icon assets for department menu ─── */
-const DEPT_ICONS = {
-  compliance: 'https://www.figma.com/api/mcp/asset/ca6aee76-26ee-4b78-a22d-79b30e25cb10',
-  fraud: 'https://www.figma.com/api/mcp/asset/f54bf299-f001-4208-88ab-9836eec2fbaf',
-  finances: 'https://www.figma.com/api/mcp/asset/28d9b875-1517-411c-82f7-dfa54903ad28',
-  sales: 'https://www.figma.com/api/mcp/asset/c3010f7a-be54-4e59-9a34-eff03b76f4ac',
-  legal: 'https://www.figma.com/api/mcp/asset/ebaf2414-1f44-4fa8-8d05-fefd163cadf7',
-  kickoff: 'https://www.figma.com/api/mcp/asset/2e85f120-8344-47fc-9739-c29135c91bf6',
-  golive: 'https://www.figma.com/api/mcp/asset/55598504-5c4b-4332-b978-ac17faccb2d0',
-  review: 'https://www.figma.com/api/mcp/asset/55598504-5c4b-4332-b978-ac17faccb2d0',
+/* ─── Department menu icons (Lucide) ─── */
+const DEPT_ICON_MAP = {
+  compliance: Shield,
+  fraud: ShieldAlert,
+  finances: DollarSign,
+  sales: Users,
+  legal: Scale,
+  kickoff: Rocket,
+  golive: Flag,
+  review: Clock,
 }
 
 /* ─── Config ─── */
@@ -88,16 +89,12 @@ function DeptTag({ dept }) {
   )
 }
 
-/* Department icon: 32px circle with border, icon image inside */
+/* Department icon: 32px circle with border, Lucide icon inside */
 function DeptIcon({ deptKey }) {
-  const src = DEPT_ICONS[deptKey]
+  const IconComponent = DEPT_ICON_MAP[deptKey] || RefreshCw
   return (
     <div className="w-[32px] h-[32px] rounded-full border border-[#dee2e6] flex items-center justify-center shrink-0 bg-white">
-      {src ? (
-        <img src={src} alt="" className="w-[16px] h-[16px] object-contain" />
-      ) : (
-        <RefreshCw size={16} className="text-[#9CA3AF]" />
-      )}
+      <IconComponent size={16} className="text-[#374151]" />
     </div>
   )
 }
