@@ -30,7 +30,7 @@ const DEPARTMENTS = [
   { key: 'review', name: '1st Review', status: 'pending' },
 ]
 
-const TABS = ['Resumen', 'Revisión por áreas', 'Features', 'Timeline', 'Documentos']
+const TABS = ['Resumen', 'Revisión por áreas', 'Features', 'Timeline', 'Contacts', 'Documentos']
 
 /* ─── Shared UI ─── */
 
@@ -1876,6 +1876,131 @@ export default function ClientDetailPage() {
             ))}
           </div>
         )}
+
+        {activeTab === 'Contacts' && (() => {
+          const TYPE_COLORS = {
+            Ventas: { bg: '#fef3c7', text: '#92400e', border: '#fcd34d' },
+            Legal: { bg: '#fce7f3', text: '#9d174d', border: '#f9a8d4' },
+            'Soporte técnico': { bg: '#e0e7ff', text: '#3730a3', border: '#a5b4fc' },
+            Finanzas: { bg: '#d1fae5', text: '#065f46', border: '#6ee7b7' },
+            Compliance: { bg: '#ede9fe', text: '#5b21b6', border: '#c4b5fd' },
+          }
+          const [contactsEditing, setContactsEditing] = useState(false)
+          const [contacts, setContacts] = useState([
+            { name: 'Alan Juárez', email: 'alan@efecty.com', phone: '1223445566', type: 'Ventas' },
+            { name: 'María López', email: 'mlopez@efecty.com', phone: '1223445567', type: 'Legal' },
+            { name: 'Carlos Ríos', email: 'crios@efecty.com', phone: '1223445568', type: 'Soporte técnico' },
+            { name: 'Sandra Mora', email: 'smora@efecty.com', phone: '1223445569', type: 'Finanzas' },
+            { name: 'Pedro Gómez', email: 'pgomez@efecty.com', phone: '1223445570', type: 'Compliance' },
+          ])
+          const [editingRow, setEditingRow] = useState(null)
+          const [editForm, setEditForm] = useState({ name: '', email: '', phone: '', type: '' })
+
+          const handleAddContact = () => {
+            setContacts(prev => [...prev, { name: '', email: '', phone: '', type: '' }])
+            setEditingRow(contacts.length)
+            setEditForm({ name: '', email: '', phone: '', type: '' })
+          }
+
+          const handleSaveRow = (idx) => {
+            setContacts(prev => prev.map((c, i) => i === idx ? { ...editForm } : c))
+            setEditingRow(null)
+          }
+
+          const handleEditRow = (idx) => {
+            setEditingRow(idx)
+            setEditForm({ ...contacts[idx] })
+          }
+
+          return (
+            <div className="border border-[#E5E7EB] rounded-[12px] p-5 bg-white">
+              {/* Header */}
+              <div className="flex items-center justify-between mb-5">
+                <h2 className="text-[16px] font-semibold text-[#0A0B0D] m-0">Contacts</h2>
+                <div className="flex items-center gap-2">
+                  {contactsEditing && (
+                    <button
+                      onClick={handleAddContact}
+                      className="text-[13px] font-medium text-[#374151] bg-white px-4 py-2 rounded-full border border-[#E5E7EB] cursor-pointer hover:bg-[#F9FAFB] transition-colors"
+                    >
+                      + Agregar contacto
+                    </button>
+                  )}
+                  {!contactsEditing ? (
+                    <button
+                      onClick={() => setContactsEditing(true)}
+                      className="text-[13px] font-medium text-white bg-[#180047] px-5 py-2 rounded-full border-none cursor-pointer hover:bg-[#2a0066] transition-colors"
+                    >
+                      Editar
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => { setContactsEditing(false); setEditingRow(null) }}
+                      className="text-[13px] font-medium text-white bg-[#180047] px-5 py-2 rounded-full border-none cursor-pointer hover:bg-[#2a0066] transition-colors"
+                    >
+                      Guardar cambios
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Subtitle */}
+              <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-4">Por tipo de gestión</p>
+
+              {/* Table */}
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="border-b border-[#E5E7EB]">
+                    <th className="text-[12px] text-[#6B7280] font-medium pb-3 pr-4">Nombre</th>
+                    <th className="text-[12px] text-[#6B7280] font-medium pb-3 pr-4">Email</th>
+                    <th className="text-[12px] text-[#6B7280] font-medium pb-3 pr-4">Teléfono</th>
+                    <th className="text-[12px] text-[#6B7280] font-medium pb-3 pr-4">Tipo</th>
+                    {contactsEditing && <th className="text-[12px] text-[#6B7280] font-medium pb-3" />}
+                  </tr>
+                </thead>
+                <tbody>
+                  {contacts.map((contact, idx) => (
+                    <tr key={idx} className="border-b border-[#F3F4F6]">
+                      {editingRow === idx ? (
+                        <>
+                          <td className="py-3 pr-4"><input value={editForm.name} onChange={e => setEditForm(p => ({...p, name: e.target.value}))} placeholder="Nombre" className="w-full border border-[#D1D5DB] rounded-[6px] px-2 h-[32px] text-[13px] outline-none focus:border-[#180047] bg-white" /></td>
+                          <td className="py-3 pr-4"><input value={editForm.email} onChange={e => setEditForm(p => ({...p, email: e.target.value}))} placeholder="Email" className="w-full border border-[#D1D5DB] rounded-[6px] px-2 h-[32px] text-[13px] outline-none focus:border-[#180047] bg-white" /></td>
+                          <td className="py-3 pr-4"><input value={editForm.phone} onChange={e => setEditForm(p => ({...p, phone: e.target.value}))} placeholder="Teléfono" className="w-full border border-[#D1D5DB] rounded-[6px] px-2 h-[32px] text-[13px] outline-none focus:border-[#180047] bg-white" /></td>
+                          <td className="py-3 pr-4">
+                            <select value={editForm.type} onChange={e => setEditForm(p => ({...p, type: e.target.value}))} className="w-full border border-[#D1D5DB] rounded-[6px] px-2 h-[32px] text-[13px] outline-none focus:border-[#180047] bg-white">
+                              <option value="">Seleccionar</option>
+                              {Object.keys(TYPE_COLORS).map(t => <option key={t} value={t}>{t}</option>)}
+                            </select>
+                          </td>
+                          <td className="py-3">
+                            <button onClick={() => handleSaveRow(idx)} className="text-[12px] font-medium text-white bg-[#180047] px-3 py-1.5 rounded-full border-none cursor-pointer hover:bg-[#2a0066]">Guardar</button>
+                          </td>
+                        </>
+                      ) : (
+                        <>
+                          <td className="py-4 pr-4 text-[14px] font-semibold text-[#0A0B0D]">{contact.name || '—'}</td>
+                          <td className="py-4 pr-4 text-[13px] text-[#374151]">{contact.email || '—'}</td>
+                          <td className="py-4 pr-4 text-[13px] text-[#374151]">{contact.phone || '—'}</td>
+                          <td className="py-4 pr-4">
+                            {contact.type && (() => {
+                              const s = TYPE_COLORS[contact.type] || { bg: '#F3F4F6', text: '#6B7280', border: '#D1D5DB' }
+                              return <span className="text-[12px] font-medium px-3 py-1 rounded-full" style={{ background: s.bg, color: s.text, border: `1px solid ${s.border}` }}>{contact.type}</span>
+                            })()}
+                          </td>
+                          {contactsEditing && (
+                            <td className="py-4">
+                              <button onClick={() => handleEditRow(idx)} className="text-[13px] font-medium text-[#374151] bg-white px-4 py-1.5 rounded-full border border-[#E5E7EB] cursor-pointer hover:bg-[#F9FAFB]">Editar</button>
+                            </td>
+                          )}
+                        </>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )
+        })()}
 
         {activeTab === 'Documentos' && (
           <div className="text-center py-16 text-[#9CA3AF]">
