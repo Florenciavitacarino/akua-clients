@@ -2125,14 +2125,14 @@ export default function ClientDetailPage() {
                   {activeDept === 'fraud' && (
                     <>
                       {fraudShowBanner && !isViewingFraudSnapshot && (
-                        <div className="flex items-center justify-between gap-3 px-4 py-3 rounded-[10px] bg-[#EDF0FF] border border-[#c7cffb] mb-4">
+                        <div className="flex items-center justify-between gap-3 px-4 py-3 rounded-[10px] bg-[#F5F6FA] mb-4">
                           <div className="min-w-0">
-                            <p className="text-[13px] font-semibold text-[#0A0B0D] m-0">Review requerida</p>
-                            <p className="text-[12px] text-[#4B5563] mt-0.5">Este departamento requiere una nueva revisión periódica</p>
+                            <p className="text-[14px] font-semibold text-[#0A0B0D] m-0">Review requerida</p>
+                            <p className="text-[13px] text-[#6B7280] mt-0.5">Este departamento requiere una nueva revisión periódica</p>
                           </div>
                           <button
                             onClick={handleStartFraudReview}
-                            className="text-[12px] font-medium text-white bg-[#180047] px-4 py-1.5 rounded-full border-none cursor-pointer hover:bg-[#2a0066] whitespace-nowrap shrink-0"
+                            className="text-[13px] font-medium text-white bg-[#180047] px-5 py-2 rounded-full border-none cursor-pointer hover:bg-[#2a0066] whitespace-nowrap shrink-0"
                           >
                             Iniciar
                           </button>
