@@ -5,7 +5,7 @@ import {
   CheckCircle2, Circle, ChevronDown, ChevronUp, ChevronRight, Lock, LockOpen,
   Link2, ExternalLink, Info, RefreshCw, Flag, FileText, Ban, Trash2,
   Store, ShieldCheck, KeyRound, Settings, ShieldAlert, UserCheck, Link as LinkIcon,
-  Shield, DollarSign, Users, Scale, Rocket, Clock
+  Shield, DollarSign, Users, Scale, Rocket, Clock, ArrowUpRight
 } from 'lucide-react'
 
 /* ─── Department menu icons (Lucide) ─── */
@@ -430,50 +430,371 @@ function StatusDropdown({ deptStatus, onStatusChange, disabled }) {
 }
 
 /* ─── COMPLIANCE CONTENT ─── */
-const COMPLIANCE_CHECKLIST = [
-  { label: "Revisión documental corporativa" },
-  { label: "Verificación de identidad de representantes" },
-  { label: "Validación de la estructura accionaria y UBO" },
-  { label: "Screening de sanciones, PEP y Adverse Media (Noto)" },
-  { label: "Ballerine -Evaluación del sitio web" },
-  { label: "Evaluación del perfil de riesgo del negocio" },
-  { label: "Revisión del programa de compliance del cliente" },
-  { label: "Inscripción del cliente en Mastercard y Visa como Pay..." },
+const COMPLIANCE_STEPS = [
+  {
+    title: '1 — KYB: revisión documental',
+    subItems: [
+      'Estatutos y modificaciones',
+      'Certificado de existencia y representación',
+      'Regularidad fiscal y laboral',
+      'Licencias operativas',
+      'Estados financieros auditados',
+    ],
+  },
+  {
+    title: '2 — Estructura societaria y UBO',
+    subItems: [
+      'Organigrama completo',
+      'UBOs identificados',
+      'Estructuras complejas documentadas (offshore, trusts, camadas)',
+      'Documentos societarios adjuntos',
+    ],
+  },
+  {
+    title: '3 — KYC de representantes y firmantes',
+    subItems: [
+      'Lista de firmantes/rep legales (nombre + rol)',
+      'ID foto frente — por persona',
+      'ID foto dorso — por persona',
+    ],
+    note: 'Si falta alguno → bloquea avance',
+  },
+  {
+    title: '4 — Screening listas restrictivas',
+    subItems: [
+      'Empresa verificada',
+      'Rep legal verificado',
+      'UBOs verificados',
+    ],
+    note: 'Futuro API Noto',
+  },
+  {
+    title: '5 — Evaluación del negocio',
+    subItems: [
+      'Revisión sitio web con Ballerine (link + resultado)',
+      'MCC contrastado',
+      'Actividades prohibidas verificadas',
+    ],
+  },
+  {
+    title: '6 — Perfil de riesgo',
+    special: 'risk_profile',
+  },
+  {
+    title: '7 — Programa de compliance',
+    subtitle: 'Solo Payfac/PSP/Fintech, no blocker',
+    subItems: [
+      'Políticas AML/KYC revisadas',
+      'Estructura interna de compliance revisada',
+      'Histórico regulatorio revisado',
+    ],
+  },
+  {
+    title: '8 — Final decision',
+    special: 'final_decision',
+  },
+  {
+    title: '9 — Inscripción en franquicias',
+    subtitle: 'Disponible post go-live',
+    special: 'franchise_signup',
+  },
 ]
 
-function ComplianceEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog }) {
-  const [openIdx, setOpenIdx] = useState(null)
+const COMPLIANCE_CHECKLIST = COMPLIANCE_STEPS.map(s => ({ label: s.title }))
+
+/* ─── Compliance Sub-item (checkbox row with expand panel) ─── */
+function ComplianceSubItem({ label, checked, waived, isOpen, onToggle, onMarkDone, onWaive, addLog, editable }) {
+  const [linkValue, setLinkValue] = useState('')
+  const [noteValue, setNoteValue] = useState('')
+
   return (
-    <>
-      {/* Checklist full width */}
-      <div className="flex flex-col">
-        {COMPLIANCE_CHECKLIST.map((item, i) => (
-          <ChecklistItemEdit
-            key={i}
-            label={item.label} tag={item.tag}
-            checked={checkedItems.has(i)}
-            waived={waivedItems.has(i)}
-            isOpen={openIdx === i}
-            onToggle={() => setOpenIdx(openIdx === i ? null : i)}
-            onMarkDone={() => onCheck(i)}
-            onWaive={() => onWaive(i)}
-            addLog={addLog}
-          />
-        ))}
+    <div className={`rounded-[8px] border border-[#E5E7EB] bg-white ${isOpen ? 'shadow-[0_1px_4px_rgba(0,0,0,0.06)]' : ''}`}>
+      <div
+        className={`flex items-center gap-3 cursor-pointer ${isOpen ? 'px-4 pt-3 pb-2' : 'px-4 py-2.5'}`}
+        onClick={onToggle}
+      >
+        <div
+          className={`w-[18px] h-[18px] rounded-[4px] shrink-0 flex items-center justify-center ${
+            waived
+              ? 'border-[1.5px] border-[#E5E7EB] bg-[#F3F4F6] cursor-not-allowed opacity-50'
+              : 'cursor-pointer hover:opacity-80'
+          } ${checked && !waived ? 'bg-[#180047]' : !waived ? 'border-[1.5px] border-[#D1D5DB] bg-white' : ''}`}
+          onClick={(e) => { e.stopPropagation(); if (editable && !waived) onMarkDone() }}
+        >
+          {checked && !waived && <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+        </div>
+        <span className={`text-[13px] ${checked ? 'text-[#374151]' : 'text-[#1F2937]'}`}>{label}</span>
+        {waived && (
+          <span className="text-[10px] font-semibold text-[#5a6dd7] bg-[#EDF0FF] px-2 py-0.5 rounded-full uppercase tracking-wide">WAIVED</span>
+        )}
+        <span className="flex-1" />
+        {isOpen
+          ? <ChevronUp size={16} className="text-[#374151] shrink-0" />
+          : <ChevronDown size={16} className="text-[#9CA3AF] shrink-0" />
+        }
       </div>
-    </>
+
+      {isOpen && editable && (
+        <div className="px-4 pb-4 flex flex-col gap-3">
+          <div className="flex items-center gap-2 border border-[#E5E7EB] rounded-full px-3.5 py-2 bg-white focus-within:border-[#5a6dd7] transition-colors">
+            <Link2 size={14} className="text-[#9CA3AF] shrink-0" />
+            <input
+              type="url"
+              value={linkValue}
+              onChange={(e) => setLinkValue(e.target.value)}
+              placeholder="Add document link"
+              className="flex-1 bg-transparent border-none outline-none text-[13px] text-[#374151] placeholder:text-[#9CA3AF] min-w-0"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+          <textarea
+            value={noteValue}
+            onChange={(e) => setNoteValue(e.target.value)}
+            placeholder="Write a note here"
+            rows={2}
+            className="w-full border border-[#E5E7EB] rounded-[10px] px-3.5 py-2.5 text-[13px] bg-white outline-none focus:border-[#5a6dd7] placeholder:text-[#9CA3AF] resize-none"
+            onClick={(e) => e.stopPropagation()}
+          />
+          <div className="flex items-center gap-3">
+            <button
+              className="text-[13px] font-semibold text-white bg-[#180047] px-4 py-2 rounded-full border-none cursor-pointer hover:bg-[#2a0066] transition-colors"
+              onClick={(e) => { e.stopPropagation(); onMarkDone(); onToggle?.() }}
+            >
+              Guardar
+            </button>
+            {waived ? (
+              <button
+                className="flex items-center gap-2 text-[13px] font-medium text-[#374151] bg-white px-4 py-2 rounded-full border border-[#E5E7EB] cursor-pointer hover:bg-[#F9FAFB]"
+                onClick={(e) => { e.stopPropagation(); onWaive() }}
+              >
+                <RefreshCw size={13} /> Undo waive
+              </button>
+            ) : (
+              <button
+                className="flex items-center gap-2 text-[13px] font-medium text-[#374151] bg-[#EDF0FF] px-4 py-2 rounded-full border-none cursor-pointer hover:bg-[#dde3ff]"
+                onClick={(e) => { e.stopPropagation(); onWaive() }}
+              >
+                <Ban size={13} /> Waive
+              </button>
+            )}
+            <span className="flex-1" />
+            <button
+              className="flex items-center gap-1 text-[13px] font-medium text-[#374151] bg-transparent border-none cursor-pointer hover:text-[#180047]"
+              onClick={(e) => { e.stopPropagation(); addLog?.(`Solicitud enviada a Sales para '${label}'`) }}
+            >
+              Solicitar a sales <ArrowUpRight size={13} />
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
   )
 }
 
-function ComplianceView({ checkedItems, waivedItems }) {
+/* ─── Compliance Step (outer collapsible card) ─── */
+function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, checked, onCheckMain, subChecked, onSubCheck, subWaived, onSubWaive, addLog, editable }) {
+  const [openSubIdx, setOpenSubIdx] = useState(null)
   return (
-    <>
-      <div className="flex flex-col">
-        {COMPLIANCE_CHECKLIST.map((item, i) => (
-          <ChecklistItemView key={i} label={item.label} tag={item.tag} checked={checkedItems.has(i)} waived={waivedItems.has(i)} />
-        ))}
+    <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-[10px] mb-3">
+      <div
+        className={`flex items-center gap-3 cursor-pointer ${isOpen ? 'px-4 pt-4 pb-3' : 'px-4 py-3'}`}
+        onClick={onToggle}
+      >
+        <div
+          className={`w-[20px] h-[20px] rounded-[5px] shrink-0 flex items-center justify-center ${
+            editable ? 'cursor-pointer hover:opacity-80' : 'cursor-default'
+          } ${checked ? 'bg-[#180047]' : 'border-[1.5px] border-[#D1D5DB] bg-white'}`}
+          onClick={(e) => { e.stopPropagation(); if (editable) onCheckMain() }}
+        >
+          {checked && <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+        </div>
+        <span className="text-[14px] font-medium text-[#0A0B0D]">{step.title}</span>
+        <span className="flex-1" />
+        {isOpen
+          ? <ChevronUp size={18} className="text-[#374151] shrink-0" />
+          : <ChevronDown size={18} className="text-[#9CA3AF] shrink-0" />
+        }
       </div>
-    </>
+
+      {isOpen && (
+        <div className="px-4 pb-4 flex flex-col gap-2">
+          {step.subtitle && <p className="text-[12px] text-[#6B7280] italic -mt-1 mb-1">{step.subtitle}</p>}
+
+          {step.subItems && step.subItems.map((sub, j) => (
+            <ComplianceSubItem
+              key={j}
+              label={sub}
+              checked={subChecked.has(j)}
+              waived={subWaived.has(j)}
+              isOpen={openSubIdx === j}
+              onToggle={() => setOpenSubIdx(openSubIdx === j ? null : j)}
+              onMarkDone={() => onSubCheck(j)}
+              onWaive={() => onSubWaive(j)}
+              addLog={addLog}
+              editable={editable}
+            />
+          ))}
+
+          {step.special === 'risk_profile' && <RiskProfileFields editable={editable} />}
+          {step.special === 'final_decision' && <FinalDecisionFields editable={editable} />}
+          {step.special === 'franchise_signup' && <FranchiseSignupFields editable={editable} />}
+
+          {step.note && (
+            <p className="text-[12px] text-[#6B7280] italic mt-1">{step.note}</p>
+          )}
+
+          {editable && (
+            <div>
+              <button
+                onClick={() => addLog?.(`Solicitud enviada a Sales para: ${step.title}`)}
+                className="flex items-center gap-1.5 text-[13px] font-medium text-white bg-[#180047] px-4 py-2 rounded-full border-none cursor-pointer hover:bg-[#2a0066] mt-2"
+              >
+                Solicitar a Sales <ArrowUpRight size={13} />
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function RiskProfileFields({ editable }) {
+  const [classification, setClassification] = useState('')
+  const [drivers, setDrivers] = useState('')
+  if (editable) {
+    return (
+      <div className="flex flex-col gap-3 bg-white border border-[#E5E7EB] rounded-[8px] p-4">
+        <div>
+          <span className="text-[12px] text-[#374151] font-medium block mb-1">Clasificación</span>
+          <select value={classification} onChange={e => setClassification(e.target.value)} className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white">
+            <option value="">Seleccionar</option>
+            <option>Bajo</option><option>Medio</option><option>Alto</option>
+          </select>
+        </div>
+        <div>
+          <span className="text-[12px] text-[#374151] font-medium block mb-1">Drivers</span>
+          <textarea value={drivers} onChange={e => setDrivers(e.target.value)} placeholder="Jurisdicción, industria, producto, canal, tipo de cliente" rows={3} className="w-full border border-[#D1D5DB] rounded-[6px] px-3 py-2 text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white resize-none placeholder:text-[#9CA3AF]" />
+        </div>
+      </div>
+    )
+  }
+  return (
+    <div className="flex flex-col gap-3 bg-white border border-[#E5E7EB] rounded-[8px] p-4">
+      <InfoField label="Clasificación" value={classification} />
+      <InfoField label="Drivers" value={drivers} />
+    </div>
+  )
+}
+
+function FinalDecisionFields({ editable }) {
+  const [decision, setDecision] = useState('')
+  const [date, setDate] = useState('')
+  const [owner, setOwner] = useState('')
+  if (editable) {
+    return (
+      <div className="grid grid-cols-3 gap-3 bg-white border border-[#E5E7EB] rounded-[8px] p-4">
+        <div>
+          <span className="text-[12px] text-[#374151] font-medium block mb-1">Decisión</span>
+          <select value={decision} onChange={e => setDecision(e.target.value)} className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white">
+            <option value="">Seleccionar</option>
+            <option>Aprobado</option>
+            <option>Aprobado con condiciones</option>
+            <option>Reprobado</option>
+          </select>
+        </div>
+        <div>
+          <span className="text-[12px] text-[#374151] font-medium block mb-1">Fecha próxima revisión</span>
+          <input type="text" value={date} onChange={e => setDate(e.target.value)} placeholder="DD/MM/AAAA" className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white placeholder:text-[#9CA3AF]" />
+        </div>
+        <div>
+          <span className="text-[12px] text-[#374151] font-medium block mb-1">Responsable de la decisión</span>
+          <input type="text" value={owner} onChange={e => setOwner(e.target.value)} placeholder="Nombre" className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white placeholder:text-[#9CA3AF]" />
+        </div>
+      </div>
+    )
+  }
+  return (
+    <div className="grid grid-cols-3 gap-3 bg-white border border-[#E5E7EB] rounded-[8px] p-4">
+      <InfoField label="Decisión" value={decision} />
+      <InfoField label="Fecha próxima revisión" value={date} />
+      <InfoField label="Responsable de la decisión" value={owner} />
+    </div>
+  )
+}
+
+function FranchiseSignupFields({ editable }) {
+  const [mc, setMc] = useState('')
+  const [visa, setVisa] = useState('')
+  if (editable) {
+    return (
+      <div className="grid grid-cols-2 gap-3 bg-white border border-[#E5E7EB] rounded-[8px] p-4">
+        <div>
+          <span className="text-[12px] text-[#374151] font-medium block mb-1">Inscripción Mastercard — ID de registro</span>
+          <input type="text" value={mc} onChange={e => setMc(e.target.value)} placeholder="MC-ID" className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white placeholder:text-[#9CA3AF]" />
+        </div>
+        <div>
+          <span className="text-[12px] text-[#374151] font-medium block mb-1">Inscripción Visa — ID de registro</span>
+          <input type="text" value={visa} onChange={e => setVisa(e.target.value)} placeholder="VISA-ID" className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white placeholder:text-[#9CA3AF]" />
+        </div>
+      </div>
+    )
+  }
+  return (
+    <div className="grid grid-cols-2 gap-3 bg-white border border-[#E5E7EB] rounded-[8px] p-4">
+      <InfoField label="Inscripción Mastercard — ID de registro" value={mc} />
+      <InfoField label="Inscripción Visa — ID de registro" value={visa} />
+    </div>
+  )
+}
+
+function ComplianceEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog, subChecked, subWaived, onSubCheck, onSubWaive }) {
+  const [openStepIdx, setOpenStepIdx] = useState(0)
+  return (
+    <div className="flex flex-col">
+      {COMPLIANCE_STEPS.map((step, i) => (
+        <ComplianceStepCard
+          key={i}
+          step={step}
+          stepIdx={i}
+          isOpen={openStepIdx === i}
+          onToggle={() => setOpenStepIdx(openStepIdx === i ? null : i)}
+          checked={checkedItems.has(i)}
+          onCheckMain={() => onCheck(i)}
+          subChecked={subChecked[i] || new Set()}
+          subWaived={subWaived[i] || new Set()}
+          onSubCheck={(j) => onSubCheck(i, j)}
+          onSubWaive={(j) => onSubWaive(i, j)}
+          addLog={addLog}
+          editable
+        />
+      ))}
+    </div>
+  )
+}
+
+function ComplianceView({ checkedItems, waivedItems, subChecked = {}, subWaived = {} }) {
+  const [openStepIdx, setOpenStepIdx] = useState(null)
+  return (
+    <div className="flex flex-col">
+      {COMPLIANCE_STEPS.map((step, i) => (
+        <ComplianceStepCard
+          key={i}
+          step={step}
+          stepIdx={i}
+          isOpen={openStepIdx === i}
+          onToggle={() => setOpenStepIdx(openStepIdx === i ? null : i)}
+          checked={checkedItems.has(i)}
+          onCheckMain={() => {}}
+          subChecked={subChecked[i] || new Set()}
+          subWaived={subWaived[i] || new Set()}
+          onSubCheck={() => {}}
+          onSubWaive={() => {}}
+          addLog={() => {}}
+          editable={false}
+        />
+      ))}
+    </div>
   )
 }
 
@@ -1863,6 +2184,30 @@ export default function ClientDetailPage() {
     compliance: [], fraud: [], finances: [], sales: [], legal: [], kickoff: [], golive: [], review: [],
   })
 
+  // Compliance sub-items state: per-step Sets of sub-indices
+  const [complianceSubChecked, setComplianceSubChecked] = useState({})
+  const [complianceSubWaived, setComplianceSubWaived] = useState({})
+  const handleComplianceSubCheck = (stepIdx, subIdx) => {
+    setComplianceSubChecked(prev => {
+      const s = new Set(prev[stepIdx] || [])
+      if (s.has(subIdx)) s.delete(subIdx); else s.add(subIdx)
+      return { ...prev, [stepIdx]: s }
+    })
+    const step = COMPLIANCE_STEPS[stepIdx]
+    const sub = step?.subItems?.[subIdx]
+    if (sub) {
+      const was = (complianceSubChecked[stepIdx] || new Set()).has(subIdx)
+      addLog(was ? `'${sub}' desmarcado` : `'${sub}' se ha marcado como lista`)
+    }
+  }
+  const handleComplianceSubWaive = (stepIdx, subIdx) => {
+    setComplianceSubWaived(prev => {
+      const s = new Set(prev[stepIdx] || [])
+      if (s.has(subIdx)) s.delete(subIdx); else s.add(subIdx)
+      return { ...prev, [stepIdx]: s }
+    })
+  }
+
   // Fraud review/version state
   const [fraudReview, setFraudReview] = useState({ frecuencia: '60 días', alertar: '' })
   const [fraudShowBanner, setFraudShowBanner] = useState(false)
@@ -2119,8 +2464,23 @@ export default function ClientDetailPage() {
               {innerTab === 'information' && (
                 <>
                   {activeDept === 'compliance' && (isEditing
-                    ? <ComplianceEdit checkedItems={checkedItems.compliance} onCheck={handleCheck} waivedItems={waivedItems.compliance} onWaive={handleWaive} addLog={addLog} />
-                    : <ComplianceView checkedItems={checkedItems.compliance} waivedItems={waivedItems.compliance} />
+                    ? <ComplianceEdit
+                        checkedItems={checkedItems.compliance}
+                        onCheck={handleCheck}
+                        waivedItems={waivedItems.compliance}
+                        onWaive={handleWaive}
+                        addLog={addLog}
+                        subChecked={complianceSubChecked}
+                        subWaived={complianceSubWaived}
+                        onSubCheck={handleComplianceSubCheck}
+                        onSubWaive={handleComplianceSubWaive}
+                      />
+                    : <ComplianceView
+                        checkedItems={checkedItems.compliance}
+                        waivedItems={waivedItems.compliance}
+                        subChecked={complianceSubChecked}
+                        subWaived={complianceSubWaived}
+                      />
                   )}
                   {activeDept === 'fraud' && (
                     <>
