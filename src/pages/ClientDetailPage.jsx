@@ -943,9 +943,15 @@ function SalesEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog }) {
             />
           ))}
         </div>
+      </div>
+      <div className="w-1/2 min-w-0 flex flex-col gap-4">
+        <div className="bg-white border border-[#E5E7EB] rounded-[8px] p-4">
+          <p className="text-[13px] font-semibold text-[#0A0B0D] mb-3">Documentación</p>
+          {SALES_DOC_LABELS.map((label, i) => <DocLinkInput key={i} label={label} />)}
+        </div>
         <div className="bg-white border border-[#E5E7EB] rounded-[8px] p-4">
           <p className="text-[13px] font-semibold text-[#0A0B0D] mb-3">Información general</p>
-          <div className="flex flex-col gap-3">
+          <div className="grid grid-cols-2 gap-3">
             <TextInput label="Nombre legal" placeholder="Nombre legal del cliente" />
             <TextInput label="Tenant" placeholder="20/03/2026" />
             <TextInput label="Website" placeholder="www.hola.com" />
@@ -953,7 +959,7 @@ function SalesEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog }) {
         </div>
         <div className="bg-white border border-[#E5E7EB] rounded-[8px] p-4">
           <p className="text-[13px] font-semibold text-[#0A0B0D] mb-3">Configuración del servicio</p>
-          <div className="flex flex-col gap-3">
+          <div className="grid grid-cols-2 gap-3">
             <div>
               <span className="text-[12px] text-[#374151] font-medium block mb-1">Deal Type</span>
               <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white">
@@ -964,16 +970,6 @@ function SalesEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog }) {
             </div>
             <RadioField label="3DS incluido" />
             <RadioField label="Tap on Phone incluído" />
-            <div className="bg-[#F9FAFB] rounded-[8px] p-3">
-              <p className="text-[11px] font-semibold text-[#6B7280] uppercase tracking-wide mb-2">Otros servicios</p>
-              <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white mb-2">
-                <option>Seleccionar</option>
-                <option>Antifraude</option>
-                <option>Tokenización</option>
-                <option>Reportes avanzados</option>
-              </select>
-              <button className="text-[12px] font-medium text-[#180047] bg-white px-3 py-1.5 rounded-full border border-[#180047] cursor-pointer hover:bg-[#F3F0FF]">+ Agregar otro</button>
-            </div>
             <TextInput label="Set Up Fee" placeholder="1000 USD" />
             <div>
               <span className="text-[12px] text-[#374151] font-medium block mb-1">Collteral</span>
@@ -984,12 +980,18 @@ function SalesEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog }) {
               </select>
             </div>
           </div>
-        </div>
-      </div>
-      <div className="w-1/2 min-w-0 flex flex-col gap-4">
-        <div className="bg-white border border-[#E5E7EB] rounded-[8px] p-4">
-          <p className="text-[13px] font-semibold text-[#0A0B0D] mb-3">Documentación</p>
-          {SALES_DOC_LABELS.map((label, i) => <DocLinkInput key={i} label={label} />)}
+          <div className="bg-[#F9FAFB] rounded-[8px] p-3 mt-3">
+            <p className="text-[11px] font-semibold text-[#6B7280] uppercase tracking-wide mb-2">Otros servicios</p>
+            <div className="flex items-center gap-2">
+              <select className="flex-1 border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white">
+                <option>Seleccionar</option>
+                <option>Antifraude</option>
+                <option>Tokenización</option>
+                <option>Reportes avanzados</option>
+              </select>
+              <button className="text-[12px] font-medium text-[#180047] bg-white px-3 py-1.5 rounded-full border border-[#180047] cursor-pointer hover:bg-[#F3F0FF] whitespace-nowrap shrink-0">+ Agregar otro</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -1005,9 +1007,15 @@ function SalesView({ checkedItems, waivedItems }) {
             <ChecklistItemView key={i} label={label} checked={checkedItems.has(i)} waived={waivedItems.has(i)} />
           ))}
         </div>
+      </div>
+      <div className="w-1/2 min-w-0 flex flex-col gap-4">
+        <div className="bg-white border border-[#E5E7EB] rounded-[8px] p-4">
+          <p className="text-[13px] font-semibold text-[#0A0B0D] mb-3">Documentación</p>
+          {SALES_DOC_LABELS.map((label, i) => <DocLinkInput key={i} label={label} disabled />)}
+        </div>
         <div className="bg-white border border-[#E5E7EB] rounded-[8px] p-4">
           <p className="text-[13px] font-semibold text-[#0A0B0D] mb-3">Información general</p>
-          <div className="flex flex-col gap-3">
+          <div className="grid grid-cols-2 gap-3">
             <InfoField label="Nombre legal" value="Akua Pagos S.A." />
             <InfoField label="Tenant" value="20/03/2026" />
             <InfoField label="Website" value="www.hola.com" />
@@ -1015,23 +1023,17 @@ function SalesView({ checkedItems, waivedItems }) {
         </div>
         <div className="bg-white border border-[#E5E7EB] rounded-[8px] p-4">
           <p className="text-[13px] font-semibold text-[#0A0B0D] mb-3">Configuración del servicio</p>
-          <div className="flex flex-col gap-3">
+          <div className="grid grid-cols-2 gap-3">
             <InfoField label="Deal Type" value="Processing" />
             <InfoField label="3DS incluido" value="No" />
             <InfoField label="Tap on Phone incluído" value="Si" />
-            <div className="bg-[#F9FAFB] rounded-[8px] p-3">
-              <p className="text-[11px] font-semibold text-[#6B7280] uppercase tracking-wide mb-2">Otros servicios</p>
-              <p className="text-[13px] text-[#0A0B0D] font-medium">—</p>
-            </div>
             <InfoField label="Set Up Fee" value="1000 USD" />
             <InfoField label="Collteral" value="Depósito" />
           </div>
-        </div>
-      </div>
-      <div className="w-1/2 min-w-0 flex flex-col gap-4">
-        <div className="bg-white border border-[#E5E7EB] rounded-[8px] p-4">
-          <p className="text-[13px] font-semibold text-[#0A0B0D] mb-3">Documentación</p>
-          {SALES_DOC_LABELS.map((label, i) => <DocLinkInput key={i} label={label} disabled />)}
+          <div className="bg-[#F9FAFB] rounded-[8px] p-3 mt-3">
+            <p className="text-[11px] font-semibold text-[#6B7280] uppercase tracking-wide mb-2">Otros servicios</p>
+            <p className="text-[13px] text-[#0A0B0D] font-medium">—</p>
+          </div>
         </div>
       </div>
     </div>
