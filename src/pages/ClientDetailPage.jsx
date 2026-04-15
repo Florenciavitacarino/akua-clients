@@ -699,7 +699,7 @@ function FraudView({ checkedItems, waivedItems, review }) {
 
       {/* Perfil Transaccional Esperado */}
       <div className="mt-4 border border-[#E5E7EB] rounded-[8px] p-4 bg-white">
-        <div className="flex items-center gap-2 mb-4 relative group/ptev">
+        <div className="flex items-center gap-2 mb-1 relative group/ptev">
           <p className="text-[14px] font-semibold text-[#0A0B0D]">Perfil Transaccional Esperado</p>
           <Info size={14} className="text-[#9CA3AF] cursor-pointer" />
           <div className="absolute left-[200px] bottom-full mb-2 px-3 py-2 bg-[#1F2937] text-white text-[12px] rounded-[8px] whitespace-nowrap opacity-0 group-hover/ptev:opacity-100 transition-opacity pointer-events-none z-20">
