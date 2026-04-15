@@ -707,17 +707,18 @@ function ComplianceSubItem({ label, checked, waived, isOpen, onToggle, onMarkDon
   const [linkValue, setLinkValue] = useState('')
   const [noteValue, setNoteValue] = useState('')
 
+  const canExpand = editable
   return (
     <div className={`rounded-[8px] border border-[#E5E7EB] bg-white ${isOpen ? 'shadow-[0_1px_4px_rgba(0,0,0,0.06)]' : ''}`}>
       <div
-        className={`flex items-center gap-3 cursor-pointer ${isOpen ? 'px-4 pt-3 pb-2' : 'px-4 py-2.5'}`}
-        onClick={onToggle}
+        className={`flex items-center gap-3 ${canExpand ? 'cursor-pointer' : 'cursor-default'} ${isOpen ? 'px-4 pt-3 pb-2' : 'px-4 py-2.5'}`}
+        onClick={(e) => { if (canExpand) onToggle?.() }}
       >
         <div
           className={`w-[18px] h-[18px] rounded-[4px] shrink-0 flex items-center justify-center ${
             waived
               ? 'border-[1.5px] border-[#E5E7EB] bg-[#F3F4F6] cursor-not-allowed opacity-50'
-              : 'cursor-pointer hover:opacity-80'
+              : editable ? 'cursor-pointer hover:opacity-80' : 'cursor-default'
           } ${checked && !waived ? 'bg-[#180047]' : !waived ? 'border-[1.5px] border-[#D1D5DB] bg-white' : ''}`}
           onClick={(e) => { e.stopPropagation(); if (editable && !waived) onMarkDone() }}
         >
@@ -728,10 +729,11 @@ function ComplianceSubItem({ label, checked, waived, isOpen, onToggle, onMarkDon
           <span className="text-[10px] font-semibold text-[#5a6dd7] bg-[#EDF0FF] px-2 py-0.5 rounded-full uppercase tracking-wide">EXIMIDO</span>
         )}
         <span className="flex-1" />
-        {isOpen
-          ? <ChevronUp size={16} className="text-[#374151] shrink-0" />
-          : <ChevronDown size={16} className="text-[#9CA3AF] shrink-0" />
-        }
+        {canExpand && (
+          isOpen
+            ? <ChevronUp size={16} className="text-[#374151] shrink-0" />
+            : <ChevronDown size={16} className="text-[#9CA3AF] shrink-0" />
+        )}
       </div>
 
       {isOpen && editable && (
@@ -836,7 +838,7 @@ function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, subChecked, onSub
               checked={subChecked.has(j)}
               waived={subWaived.has(j)}
               isOpen={openSubIdx === j}
-              onToggle={() => setOpenSubIdx(openSubIdx === j ? null : j)}
+              onToggle={() => setOpenSubIdx(prev => prev === j ? null : j)}
               onMarkDone={() => onSubCheck(j)}
               onWaive={() => onSubWaive(j)}
               addLog={addLog}
