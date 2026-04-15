@@ -486,7 +486,61 @@ const FRAUD_CHECKLIST = [
   { label: "Apetito de Riesgo del Cliente" },
 ]
 
-function FraudEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog }) {
+const FRECUENCIA_OPTIONS = ['30 días', '60 días', '90 días', '180 días']
+const ALERTAR_OPTIONS = ['15 días', '20 días', '25 días']
+
+function ProximaRevision({ review, onReviewChange, editable }) {
+  if (editable) {
+    return (
+      <div className="mt-4 border border-[#E5E7EB] rounded-[8px] p-4 bg-white">
+        <p className="text-[14px] font-semibold text-[#0A0B0D] mb-1">Próxima revisión</p>
+        <p className="text-[12px] text-[#6B7280] mb-4">Define cuándo se debe revisar este departamento para este cliente</p>
+        <div className="grid grid-cols-3 gap-x-6">
+          <div>
+            <span className="text-[12px] text-[#374151] font-medium block mb-1">Frecuencia de revisión</span>
+            <select
+              value={review.frecuencia || ''}
+              onChange={e => onReviewChange({ ...review, frecuencia: e.target.value })}
+              className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white"
+            >
+              <option value="">Seleccionar</option>
+              {FRECUENCIA_OPTIONS.map(o => <option key={o}>{o}</option>)}
+            </select>
+          </div>
+          <div>
+            <span className="text-[12px] text-[#374151] font-medium block mb-1">Alertar con anticipación</span>
+            <select
+              value={review.alertar || ''}
+              onChange={e => onReviewChange({ ...review, alertar: e.target.value })}
+              className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white"
+            >
+              <option value="">Seleccionar</option>
+              {ALERTAR_OPTIONS.map(o => <option key={o}>{o}</option>)}
+            </select>
+          </div>
+        </div>
+        {review.alertar && (
+          <div className="flex items-center gap-2 mt-4 text-[12px] text-[#6B7280]">
+            <Info size={14} className="text-[#9CA3AF] shrink-0" />
+            Con la anticipación configurada, aparecerá un aviso para iniciar la nueva review
+          </div>
+        )}
+      </div>
+    )
+  }
+  return (
+    <div className="mt-4 border border-[#E5E7EB] rounded-[8px] p-4 bg-white">
+      <p className="text-[14px] font-semibold text-[#0A0B0D] mb-1">Próxima revisión</p>
+      <p className="text-[12px] text-[#6B7280] mb-4">Define cuándo se debe revisar este departamento para este cliente</p>
+      <div className="grid grid-cols-3 gap-x-6">
+        <InfoField label="Frecuencia de revisión" value={review.frecuencia} />
+        <InfoField label="Alertar con anticipación" value={review.alertar} />
+      </div>
+    </div>
+  )
+}
+
+function FraudEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog, review, onReviewChange }) {
   const [openIdx, setOpenIdx] = useState(null)
   return (
     <>
@@ -616,11 +670,13 @@ function FraudEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog }) {
           <TextInput label="Observaciones adicionales" placeholder="Más observaciones del cliente sobre pagos" />
         </div>
       </div>
+
+      <ProximaRevision review={review} onReviewChange={onReviewChange} editable />
     </>
   )
 }
 
-function FraudView({ checkedItems, waivedItems }) {
+function FraudView({ checkedItems, waivedItems, review }) {
   return (
     <>
       <div className="flex flex-col">
@@ -707,6 +763,8 @@ function FraudView({ checkedItems, waivedItems }) {
           <InfoField label="Observaciones adicionales" value="Más observaciones del cliente sobre pagos" />
         </div>
       </div>
+
+      <ProximaRevision review={review || {}} editable={false} />
     </>
   )
 }
@@ -1804,6 +1862,38 @@ export default function ClientDetailPage() {
     compliance: [], fraud: [], finances: [], sales: [], legal: [], kickoff: [], golive: [], review: [],
   })
 
+  // Fraud review/version state
+  const [fraudReview, setFraudReview] = useState({ frecuencia: '60 días', alertar: '' })
+  const [fraudShowBanner, setFraudShowBanner] = useState(false)
+  const [fraudSnapshots, setFraudSnapshots] = useState([]) // historical snapshots [{ id, name, checked, waived, review }]
+  const [activeFraudVersion, setActiveFraudVersion] = useState('current')
+
+  const fraudVersionNames = ['Setup inicial', '1er revisión', '2da revisión', '3er revisión', '4ta revisión', '5ta revisión']
+  const currentFraudVersionName = fraudVersionNames[fraudSnapshots.length] || `${fraudSnapshots.length + 1}ª revisión`
+  const isViewingFraudSnapshot = activeFraudVersion !== 'current'
+  const currentFraudSnapshot = fraudSnapshots.find(v => v.id === activeFraudVersion)
+
+  const handleStartFraudReview = () => {
+    const previousName = fraudVersionNames[fraudSnapshots.length] || `${fraudSnapshots.length + 1}ª revisión`
+    const newSnapshotId = `v${Date.now()}`
+    setFraudSnapshots(prev => [
+      ...prev,
+      {
+        id: newSnapshotId,
+        name: previousName,
+        checked: new Set(checkedItems.fraud),
+        waived: new Set(waivedItems.fraud),
+        review: { ...fraudReview },
+      },
+    ])
+    setCheckedItems(prev => ({ ...prev, fraud: new Set() }))
+    setWaivedItems(prev => ({ ...prev, fraud: new Set() }))
+    setFraudReview({ frecuencia: fraudReview.frecuencia, alertar: '' })
+    setActiveFraudVersion('current')
+    setFraudShowBanner(false)
+    addLog(`Iniciada nueva revisión`)
+  }
+
   const USER_NAME = 'Agustina Romagnoli'
 
   const addLog = (text) => {
@@ -1962,19 +2052,39 @@ export default function ClientDetailPage() {
                 </h2>
                 <div className="flex items-center gap-3">
                   {!isEditing ? (
-                    <button
-                      onClick={() => setIsEditing(true)}
-                      className="text-[13px] font-medium text-white bg-[#180047] px-5 py-2 rounded-full border-none cursor-pointer hover:bg-[#2a0066] transition-colors"
-                    >
-                      Editar
-                    </button>
+                    !(activeDept === 'fraud' && isViewingFraudSnapshot) && (
+                      <button
+                        onClick={() => setIsEditing(true)}
+                        className="text-[13px] font-medium text-white bg-[#180047] px-5 py-2 rounded-full border-none cursor-pointer hover:bg-[#2a0066] transition-colors"
+                      >
+                        Editar
+                      </button>
+                    )
                   ) : (
                     <button
-                      onClick={() => { setIsEditing(false); addLog('Cambios guardados') }}
+                      onClick={() => {
+                        setIsEditing(false)
+                        addLog('Cambios guardados')
+                        if (activeDept === 'fraud' && fraudReview.alertar && !isViewingFraudSnapshot) {
+                          setFraudShowBanner(true)
+                        }
+                      }}
                       className="text-[13px] font-medium px-5 py-2 rounded-full border-none text-white bg-[#180047] cursor-pointer hover:bg-[#2a0066] transition-colors"
                     >
                       Guardar cambios
                     </button>
+                  )}
+                  {activeDept === 'fraud' && fraudSnapshots.length > 0 && (
+                    <select
+                      value={activeFraudVersion}
+                      onChange={e => setActiveFraudVersion(e.target.value)}
+                      className="border border-[#180047] rounded-full px-4 h-[32px] text-[12px] font-medium text-[#180047] bg-white outline-none cursor-pointer"
+                    >
+                      <option value="current">{currentFraudVersionName}</option>
+                      {fraudSnapshots.map(s => (
+                        <option key={s.id} value={s.id}>{s.name}</option>
+                      ))}
+                    </select>
                   )}
                   <StatusDropdown
                     deptStatus={deptStatuses[activeDept]}
@@ -2008,9 +2118,30 @@ export default function ClientDetailPage() {
                     ? <ComplianceEdit checkedItems={checkedItems.compliance} onCheck={handleCheck} waivedItems={waivedItems.compliance} onWaive={handleWaive} addLog={addLog} />
                     : <ComplianceView checkedItems={checkedItems.compliance} waivedItems={waivedItems.compliance} />
                   )}
-                  {activeDept === 'fraud' && (isEditing
-                    ? <FraudEdit checkedItems={checkedItems.fraud} onCheck={handleCheck} waivedItems={waivedItems.fraud} onWaive={handleWaive} addLog={addLog} />
-                    : <FraudView checkedItems={checkedItems.fraud} waivedItems={waivedItems.fraud} />
+                  {activeDept === 'fraud' && (
+                    <>
+                      {fraudShowBanner && !isViewingFraudSnapshot && (
+                        <div className="flex items-center justify-between gap-3 px-4 py-3 rounded-[10px] bg-[#EDF0FF] border border-[#c7cffb] mb-4">
+                          <div className="min-w-0">
+                            <p className="text-[13px] font-semibold text-[#0A0B0D] m-0">Review requerida</p>
+                            <p className="text-[12px] text-[#4B5563] mt-0.5">Este departamento requiere una nueva revisión periódica</p>
+                          </div>
+                          <button
+                            onClick={handleStartFraudReview}
+                            className="text-[12px] font-medium text-white bg-[#180047] px-4 py-1.5 rounded-full border-none cursor-pointer hover:bg-[#2a0066] whitespace-nowrap shrink-0"
+                          >
+                            Iniciar
+                          </button>
+                        </div>
+                      )}
+                      {isViewingFraudSnapshot && currentFraudSnapshot
+                        ? <FraudView checkedItems={currentFraudSnapshot.checked} waivedItems={currentFraudSnapshot.waived} review={currentFraudSnapshot.review} />
+                        : (isEditing
+                          ? <FraudEdit checkedItems={checkedItems.fraud} onCheck={handleCheck} waivedItems={waivedItems.fraud} onWaive={handleWaive} addLog={addLog} review={fraudReview} onReviewChange={setFraudReview} />
+                          : <FraudView checkedItems={checkedItems.fraud} waivedItems={waivedItems.fraud} review={fraudReview} />
+                        )
+                      }
+                    </>
                   )}
                   {activeDept === 'finances' && (isEditing
                     ? <FinancesEdit checkedItems={checkedItems.finances} onCheck={handleCheck} waivedItems={waivedItems.finances} onWaive={handleWaive} addLog={addLog} />
