@@ -247,7 +247,7 @@ function InfoField({ label, value, info, tooltip }) {
           </span>
         )}
       </div>
-      <div className="flex items-center h-[28px] px-3 text-[13px] text-[#0A0B0D] font-medium border border-transparent rounded-[6px]">{value || '—'}</div>
+      <div className="flex items-center h-[28px] text-[13px] text-[#0A0B0D] font-medium">{value || '—'}</div>
     </div>
   )
 }
