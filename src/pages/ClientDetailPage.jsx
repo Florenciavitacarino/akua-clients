@@ -536,8 +536,8 @@ function ComplianceSubItem({ label, checked, waived, isOpen, onToggle, onMarkDon
 
       {isOpen && editable && (
         <div className="px-4 pb-4 flex flex-col gap-3">
-          <div className="flex items-center gap-2 border border-[#E5E7EB] rounded-full px-3.5 py-2 bg-white focus-within:border-[#5a6dd7] transition-colors">
-            <Link2 size={14} className="text-[#9CA3AF] shrink-0" />
+          <div className="flex items-center gap-2 border border-[#E5E7EB] rounded-full px-3.5 py-2.5 bg-white focus-within:border-[#5a6dd7] transition-colors">
+            <Link2 size={15} className="text-[#9CA3AF] shrink-0" />
             <input
               type="url"
               value={linkValue}
@@ -551,30 +551,30 @@ function ComplianceSubItem({ label, checked, waived, isOpen, onToggle, onMarkDon
             value={noteValue}
             onChange={(e) => setNoteValue(e.target.value)}
             placeholder="Write a note here"
-            rows={2}
-            className="w-full border border-[#E5E7EB] rounded-[10px] px-3.5 py-2.5 text-[13px] bg-white outline-none focus:border-[#5a6dd7] placeholder:text-[#9CA3AF] resize-none"
+            rows={3}
+            className="w-full border border-[#E5E7EB] rounded-[12px] px-3.5 py-3 text-[13px] bg-white outline-none focus:border-[#5a6dd7] placeholder:text-[#9CA3AF] resize-none"
             onClick={(e) => e.stopPropagation()}
           />
           <div className="flex items-center gap-3">
             <button
-              className="text-[13px] font-semibold text-white bg-[#180047] px-4 py-2 rounded-full border-none cursor-pointer hover:bg-[#2a0066] transition-colors"
+              className="text-[13px] font-semibold text-white bg-[#180047] px-5 py-2.5 rounded-full border-none cursor-pointer hover:bg-[#2a0066] transition-colors"
               onClick={(e) => { e.stopPropagation(); onMarkDone(); onToggle?.() }}
             >
               Guardar
             </button>
             {waived ? (
               <button
-                className="flex items-center gap-2 text-[13px] font-medium text-[#374151] bg-white px-4 py-2 rounded-full border border-[#E5E7EB] cursor-pointer hover:bg-[#F9FAFB]"
+                className="flex items-center gap-2 text-[13px] font-medium text-[#374151] bg-white px-5 py-2.5 rounded-full border border-[#E5E7EB] cursor-pointer hover:bg-[#F9FAFB]"
                 onClick={(e) => { e.stopPropagation(); onWaive() }}
               >
-                <RefreshCw size={13} /> Deshacer
+                <RefreshCw size={14} /> Deshacer
               </button>
             ) : (
               <button
-                className="flex items-center gap-2 text-[13px] font-medium text-[#374151] bg-[#EDF0FF] px-4 py-2 rounded-full border-none cursor-pointer hover:bg-[#dde3ff]"
+                className="flex items-center gap-2 text-[13px] font-medium text-[#374151] bg-[#EDF0FF] px-5 py-2.5 rounded-full border-none cursor-pointer hover:bg-[#dde3ff]"
                 onClick={(e) => { e.stopPropagation(); onWaive() }}
               >
-                <Ban size={13} /> Eximir
+                <Ban size={14} /> Eximir
               </button>
             )}
             <span className="flex-1" />
@@ -592,7 +592,7 @@ function ComplianceSubItem({ label, checked, waived, isOpen, onToggle, onMarkDon
 }
 
 /* ─── Compliance Step (outer collapsible card) ─── */
-function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, subChecked, onSubCheck, subWaived, onSubWaive, addLog, editable }) {
+function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, subChecked, onSubCheck, subWaived, onSubWaive, onToggleAllSubs, addLog, editable }) {
   const [openSubIdx, setOpenSubIdx] = useState(null)
   // Auto-check main when all sub-items are checked or eximidos
   const totalSubs = step.subItems?.length || 0
@@ -607,9 +607,13 @@ function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, subChecked, onSub
         onClick={onToggle}
       >
         <div
-          className={`w-[20px] h-[20px] rounded-[5px] shrink-0 flex items-center justify-center cursor-default ${
-            checked ? 'bg-[#180047]' : 'border-[1.5px] border-[#D1D5DB] bg-white'
-          }`}
+          className={`w-[20px] h-[20px] rounded-[5px] shrink-0 flex items-center justify-center ${
+            editable && totalSubs > 0 ? 'cursor-pointer hover:opacity-80' : 'cursor-default'
+          } ${checked ? 'bg-[#180047]' : 'border-[1.5px] border-[#D1D5DB] bg-white'}`}
+          onClick={(e) => {
+            e.stopPropagation()
+            if (editable && totalSubs > 0 && onToggleAllSubs) onToggleAllSubs(!checked)
+          }}
         >
           {checked && <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
         </div>
@@ -753,7 +757,7 @@ function FranchiseSignupFields({ editable }) {
   )
 }
 
-function ComplianceEdit({ addLog, subChecked, subWaived, onSubCheck, onSubWaive }) {
+function ComplianceEdit({ addLog, subChecked, subWaived, onSubCheck, onSubWaive, onToggleAllSubs }) {
   const [openStepIdx, setOpenStepIdx] = useState(0)
   return (
     <div className="flex flex-col">
@@ -768,6 +772,7 @@ function ComplianceEdit({ addLog, subChecked, subWaived, onSubCheck, onSubWaive 
           subWaived={subWaived[i] || new Set()}
           onSubCheck={(j) => onSubCheck(i, j)}
           onSubWaive={(j) => onSubWaive(i, j)}
+          onToggleAllSubs={(nextChecked) => onToggleAllSubs(i, nextChecked)}
           addLog={addLog}
           editable
         />
@@ -2208,6 +2213,20 @@ export default function ClientDetailPage() {
       return { ...prev, [stepIdx]: s }
     })
   }
+  const handleComplianceToggleAllSubs = (stepIdx, nextChecked) => {
+    const step = COMPLIANCE_STEPS[stepIdx]
+    const total = step?.subItems?.length || 0
+    setComplianceSubChecked(prev => ({
+      ...prev,
+      [stepIdx]: nextChecked
+        ? new Set(Array.from({ length: total }, (_, j) => j))
+        : new Set(),
+    }))
+    setComplianceSubWaived(prev => ({ ...prev, [stepIdx]: new Set() }))
+    addLog(nextChecked
+      ? `'${step.title}' marcado como completo (todos los sub-ítems)`
+      : `'${step.title}' desmarcado (todos los sub-ítems)`)
+  }
 
   // Fraud review/version state
   const [fraudReview, setFraudReview] = useState({ frecuencia: '60 días', alertar: '' })
@@ -2475,6 +2494,7 @@ export default function ClientDetailPage() {
                         subWaived={complianceSubWaived}
                         onSubCheck={handleComplianceSubCheck}
                         onSubWaive={handleComplianceSubWaive}
+                        onToggleAllSubs={handleComplianceToggleAllSubs}
                       />
                     : <ComplianceView
                         checkedItems={checkedItems.compliance}
