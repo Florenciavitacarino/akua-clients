@@ -395,7 +395,7 @@ function StatusDropdown({ deptStatus, onStatusChange, disabled }) {
     <div className="relative">
       <button
         onClick={() => !disabled && setDropdownOpen(!dropdownOpen)}
-        className={`text-[13px] font-normal h-[28px] inline-flex items-center gap-1.5 px-3 rounded-[18px] border transition-colors ${
+        className={`text-[13px] font-medium h-[34px] inline-flex items-center gap-1.5 px-4 rounded-full border transition-colors ${
           disabled ? 'cursor-default' : 'cursor-pointer'
         }`}
         style={{ borderColor, color: textColor }}
@@ -2057,7 +2057,7 @@ export default function ClientDetailPage() {
                       <select
                         value={activeFraudVersion}
                         onChange={e => setActiveFraudVersion(e.target.value)}
-                        className="border border-[#E5E7EB] rounded-full px-4 h-[32px] text-[12px] font-medium text-[#0A0B0D] bg-white outline-none cursor-pointer"
+                        className="border border-[#E5E7EB] rounded-full px-4 h-[34px] text-[13px] font-medium text-[#0A0B0D] bg-white outline-none cursor-pointer"
                       >
                         <option value="current">{currentFraudVersionName}</option>
                         {fraudSnapshots.map(s => (
