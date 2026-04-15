@@ -519,6 +519,103 @@ function ConditionsModal({ initialConditions = [], onCancel, onConfirm }) {
   )
 }
 
+/* ─── Request Document to Sales Modal ─── */
+function RequestToSalesModal({ documentName = '', onCancel, onSend }) {
+  const [doc, setDoc] = useState(documentName)
+  const [message, setMessage] = useState('')
+  const [channels, setChannels] = useState(new Set(['slack']))
+  const canSend = doc.trim().length > 0 && message.trim().length > 0
+
+  const toggleChannel = (ch) => {
+    setChannels(prev => {
+      const next = new Set(prev)
+      if (next.has(ch)) next.delete(ch); else next.add(ch)
+      return next
+    })
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+      <div className="bg-white rounded-[16px] w-[620px] max-w-[90vw] shadow-xl p-5 flex flex-col gap-6">
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-[20px] font-semibold text-[#0A0B0D] m-0 leading-tight">Solicitar documento a Sales</h3>
+            <button onClick={onCancel} className="text-[#9CA3AF] hover:text-[#374151] bg-transparent border-none cursor-pointer"><X size={18} /></button>
+          </div>
+          <p className="text-[14px] text-[#868e96] leading-[20px] m-0">
+            Sales recibirá una notificación y quedará registrado en el Activity del cliente.
+          </p>
+        </div>
+
+        <div>
+          <label className="flex items-center text-[16px] font-semibold text-[#0A0B0D] mb-1">
+            Documento requerido <span className="text-[#fa5252] ml-0.5">*</span>
+          </label>
+          <input
+            value={doc}
+            onChange={e => setDoc(e.target.value)}
+            className="w-full border border-[#dee2e6] rounded-[4px] px-4 py-2 text-[14px] text-[#0A0B0D] outline-none focus:border-[#180047] bg-white"
+          />
+        </div>
+
+        <div>
+          <label className="flex items-center text-[16px] font-semibold text-[#0A0B0D] mb-1">
+            Mensaje para Sales <span className="text-[#fa5252] ml-0.5">*</span>
+          </label>
+          <textarea
+            value={message}
+            onChange={e => setMessage(e.target.value)}
+            rows={3}
+            placeholder="Escribí un mensaje para Sales..."
+            className="w-full border border-[#dee2e6] rounded-[4px] px-4 py-2 text-[14px] text-[#0A0B0D] outline-none focus:border-[#180047] bg-white resize-none placeholder:text-[#adb5bd]"
+          />
+        </div>
+
+        <div>
+          <p className="text-[14px] font-semibold text-[#0A0B0D] m-0 mb-2">Notificar por</p>
+          <div className="flex items-center gap-2">
+            {['slack', 'email'].map(ch => {
+              const isOn = channels.has(ch)
+              return (
+                <button
+                  key={ch}
+                  onClick={() => toggleChannel(ch)}
+                  className={`flex items-center gap-2 text-[14px] px-4 h-[28px] rounded-full cursor-pointer transition-colors ${
+                    isOn
+                      ? 'bg-[#e6e4ec] text-[#180047] border-none'
+                      : 'bg-white text-[#212529] border border-[#dee2e6]'
+                  }`}
+                >
+                  {isOn && <Check size={14} />}
+                  {ch === 'slack' ? 'Slack' : 'Email'}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        <div className="flex items-center justify-end gap-2">
+          <button
+            onClick={onCancel}
+            className="text-[14px] font-normal text-[#212529] bg-white px-4 h-[32px] rounded-full border border-[#dee2e6] cursor-pointer hover:bg-[#F9FAFB]"
+          >
+            Cancelar
+          </button>
+          <button
+            onClick={() => canSend && onSend({ document: doc.trim(), message: message.trim(), channels: Array.from(channels) })}
+            disabled={!canSend}
+            className={`text-[14px] font-normal text-white px-4 h-[32px] rounded-full border-none ${
+              canSend ? 'bg-[#180047] cursor-pointer hover:bg-[#2a0066]' : 'bg-[#9CA3AF] cursor-not-allowed'
+            }`}
+          >
+            Enviar solicitud
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 /* ─── Conditions Banner (shown when dept is Completado con condiciones) ─── */
 function ConditionsBanner({ title = 'Aprobado con condiciones', conditions = [] }) {
   if (!conditions || conditions.length === 0) return null
@@ -606,7 +703,7 @@ const COMPLIANCE_STEPS = [
 const COMPLIANCE_CHECKLIST = COMPLIANCE_STEPS.map(s => ({ label: s.title }))
 
 /* ─── Compliance Sub-item (checkbox row with expand panel) ─── */
-function ComplianceSubItem({ label, checked, waived, isOpen, onToggle, onMarkDone, onWaive, addLog, editable }) {
+function ComplianceSubItem({ label, checked, waived, isOpen, onToggle, onMarkDone, onWaive, addLog, editable, onRequestSales }) {
   const [linkValue, setLinkValue] = useState('')
   const [noteValue, setNoteValue] = useState('')
 
@@ -682,8 +779,8 @@ function ComplianceSubItem({ label, checked, waived, isOpen, onToggle, onMarkDon
             )}
             <span className="flex-1" />
             <button
-              className="flex items-center gap-1 text-[13px] font-medium text-[#374151] bg-transparent border-none cursor-pointer hover:text-[#180047]"
-              onClick={(e) => { e.stopPropagation(); addLog?.(`Solicitud enviada a Sales para '${label}'`) }}
+              className="flex items-center gap-1 text-[13px] font-medium text-[#180047] bg-transparent border-none cursor-pointer hover:text-[#2a0066]"
+              onClick={(e) => { e.stopPropagation(); onRequestSales?.(label) }}
             >
               Solicitar a sales <ArrowUpRight size={13} />
             </button>
@@ -695,7 +792,7 @@ function ComplianceSubItem({ label, checked, waived, isOpen, onToggle, onMarkDon
 }
 
 /* ─── Compliance Step (outer collapsible card) ─── */
-function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, subChecked, onSubCheck, subWaived, onSubWaive, onToggleAllSubs, addLog, editable }) {
+function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, subChecked, onSubCheck, subWaived, onSubWaive, onToggleAllSubs, onRequestSales, addLog, editable }) {
   const [openSubIdx, setOpenSubIdx] = useState(null)
   // Auto-check main when all sub-items are checked or eximidos
   const totalSubs = step.subItems?.length || 0
@@ -744,6 +841,7 @@ function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, subChecked, onSub
               onWaive={() => onSubWaive(j)}
               addLog={addLog}
               editable={editable}
+              onRequestSales={onRequestSales}
             />
           ))}
 
@@ -851,6 +949,7 @@ function FranchiseSignupFields({ editable }) {
 
 function ComplianceEdit({ addLog, subChecked, subWaived, onSubCheck, onSubWaive, onToggleAllSubs }) {
   const [openStepIdx, setOpenStepIdx] = useState(0)
+  const [requestModalDoc, setRequestModalDoc] = useState(null)
   return (
     <div className="flex flex-col">
       {COMPLIANCE_STEPS.map((step, i) => (
@@ -865,10 +964,21 @@ function ComplianceEdit({ addLog, subChecked, subWaived, onSubCheck, onSubWaive,
           onSubCheck={(j) => onSubCheck(i, j)}
           onSubWaive={(j) => onSubWaive(i, j)}
           onToggleAllSubs={(nextChecked) => onToggleAllSubs(i, nextChecked)}
+          onRequestSales={(docName) => setRequestModalDoc(docName)}
           addLog={addLog}
           editable
         />
       ))}
+      {requestModalDoc !== null && (
+        <RequestToSalesModal
+          documentName={requestModalDoc}
+          onCancel={() => setRequestModalDoc(null)}
+          onSend={(data) => {
+            addLog?.(`Solicitud a Sales: '${data.document}' (${data.channels.join(', ')})`)
+            setRequestModalDoc(null)
+          }}
+        />
+      )}
     </div>
   )
 }
