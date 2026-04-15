@@ -523,7 +523,7 @@ function ConditionsModal({ initialConditions = [], onCancel, onConfirm }) {
 function ConditionsBanner({ title = 'Aprobado con condiciones', conditions = [] }) {
   if (!conditions || conditions.length === 0) return null
   return (
-    <div className="mb-4 p-4 rounded-[10px] bg-[#EDF0FF]">
+    <div className="p-4 rounded-[10px] bg-[#EDF0FF]">
       <p className="text-[14px] font-semibold text-[#0A0B0D] m-0 mb-2">{title}</p>
       <ul className="list-disc pl-5 text-[13px] text-[#1F2937] m-0 leading-relaxed">
         {conditions.map((c, i) => <li key={i}>{c}</li>)}
@@ -2593,9 +2593,26 @@ export default function ClientDetailPage() {
               {/* Content based on inner tab */}
               {innerTab === 'information' && (
                 <>
-                  {deptStatuses[activeDept] === 'completed_conditions' && (deptConditions[activeDept]?.length > 0) && (
-                    <ConditionsBanner conditions={deptConditions[activeDept]} />
-                  )}
+                  {(() => {
+                    const DEPT_LABELS = { compliance: 'Compliance', fraud: 'Fraud', finances: 'Finance', sales: 'Sales', legal: 'Legal and Contract', kickoff: 'Kickoff & Integration', golive: 'Go Live', review: '1st Review' }
+                    const activeBanners = Object.entries(deptConditions)
+                      .filter(([dept, list]) => list?.length > 0 && deptStatuses[dept] === 'completed_conditions')
+                    // On legal/finances, show ALL banners from any dept. On the owner dept, show its own. Otherwise hidden.
+                    const bannersToShow = (activeDept === 'legal' || activeDept === 'finances')
+                      ? activeBanners
+                      : activeBanners.filter(([dept]) => dept === activeDept)
+                    return bannersToShow.length > 0 ? (
+                      <div className="flex flex-col gap-3 mb-4">
+                        {bannersToShow.map(([dept, list]) => (
+                          <ConditionsBanner
+                            key={dept}
+                            title={dept === activeDept ? 'Aprobado con condiciones' : `${DEPT_LABELS[dept] || dept} — Aprobado con condiciones`}
+                            conditions={list}
+                          />
+                        ))}
+                      </div>
+                    ) : null
+                  })()}
                   {activeDept === 'compliance' && (isEditing
                     ? <ComplianceEdit
                         checkedItems={checkedItems.compliance}
