@@ -925,6 +925,16 @@ const SALES_CHECKLIST = [
 
 const SALES_DOC_LABELS = ['Contrato firmado', 'Pagos', 'Cargos de impuestos', 'Depósito']
 
+const SALES_OTROS_SERVICIOS = [
+  'Merchants Engine',
+  '3DS Secure (3DS)',
+  'Account Updater (ABU)',
+  'Settlement Engine',
+  'Fraud Prevention',
+  'KYB/KYC Checks',
+  'Payment Links',
+]
+
 function SalesEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog }) {
   const [openIdx, setOpenIdx] = useState(null)
   return (
@@ -942,12 +952,6 @@ function SalesEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog }) {
               addLog={addLog}
             />
           ))}
-        </div>
-      </div>
-      <div className="w-1/2 min-w-0 flex flex-col gap-4">
-        <div className="bg-white border border-[#E5E7EB] rounded-[8px] p-4">
-          <p className="text-[13px] font-semibold text-[#0A0B0D] mb-3">Documentación</p>
-          {SALES_DOC_LABELS.map((label, i) => <DocLinkInput key={i} label={label} />)}
         </div>
         <div className="bg-white border border-[#E5E7EB] rounded-[8px] p-4">
           <p className="text-[13px] font-semibold text-[#0A0B0D] mb-3">Información general</p>
@@ -985,13 +989,17 @@ function SalesEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog }) {
             <div className="flex items-center gap-2">
               <select className="flex-1 border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white">
                 <option>Seleccionar</option>
-                <option>Antifraude</option>
-                <option>Tokenización</option>
-                <option>Reportes avanzados</option>
+                {SALES_OTROS_SERVICIOS.map(s => <option key={s}>{s}</option>)}
               </select>
               <button className="text-[12px] font-medium text-[#180047] bg-white px-3 py-1.5 rounded-full border border-[#180047] cursor-pointer hover:bg-[#F3F0FF] whitespace-nowrap shrink-0">+ Agregar otro</button>
             </div>
           </div>
+        </div>
+      </div>
+      <div className="w-1/2 min-w-0 flex flex-col gap-4">
+        <div className="bg-white border border-[#E5E7EB] rounded-[8px] p-4">
+          <p className="text-[13px] font-semibold text-[#0A0B0D] mb-3">Documentación</p>
+          {SALES_DOC_LABELS.map((label, i) => <DocLinkInput key={i} label={label} />)}
         </div>
       </div>
     </div>
@@ -1006,12 +1014,6 @@ function SalesView({ checkedItems, waivedItems }) {
           {SALES_CHECKLIST.map((label, i) => (
             <ChecklistItemView key={i} label={label} checked={checkedItems.has(i)} waived={waivedItems.has(i)} />
           ))}
-        </div>
-      </div>
-      <div className="w-1/2 min-w-0 flex flex-col gap-4">
-        <div className="bg-white border border-[#E5E7EB] rounded-[8px] p-4">
-          <p className="text-[13px] font-semibold text-[#0A0B0D] mb-3">Documentación</p>
-          {SALES_DOC_LABELS.map((label, i) => <DocLinkInput key={i} label={label} disabled />)}
         </div>
         <div className="bg-white border border-[#E5E7EB] rounded-[8px] p-4">
           <p className="text-[13px] font-semibold text-[#0A0B0D] mb-3">Información general</p>
@@ -1034,6 +1036,12 @@ function SalesView({ checkedItems, waivedItems }) {
             <p className="text-[11px] font-semibold text-[#6B7280] uppercase tracking-wide mb-2">Otros servicios</p>
             <p className="text-[13px] text-[#0A0B0D] font-medium">—</p>
           </div>
+        </div>
+      </div>
+      <div className="w-1/2 min-w-0 flex flex-col gap-4">
+        <div className="bg-white border border-[#E5E7EB] rounded-[8px] p-4">
+          <p className="text-[13px] font-semibold text-[#0A0B0D] mb-3">Documentación</p>
+          {SALES_DOC_LABELS.map((label, i) => <DocLinkInput key={i} label={label} disabled />)}
         </div>
       </div>
     </div>
