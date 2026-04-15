@@ -130,7 +130,7 @@ function ChecklistItemEdit({ label, tag, checked, isOpen, onToggle, onMarkDone, 
         <span className={`text-[14px] ${checked ? 'text-[#374151]' : 'text-[#1F2937]'}`}>{label}</span>
         {tag && <DeptTag dept={tag} />}
         {waived && (
-          <span className="text-[11px] font-semibold text-[#5a6dd7] bg-[#EDF0FF] px-2.5 py-0.5 rounded-full uppercase tracking-wide">WAIVED</span>
+          <span className="text-[11px] font-semibold text-[#5a6dd7] bg-[#EDF0FF] px-2.5 py-0.5 rounded-full uppercase tracking-wide">EXIMIDO</span>
         )}
         <span className="flex-1" />
         {isOpen
@@ -192,7 +192,7 @@ function ChecklistItemEdit({ label, tag, checked, isOpen, onToggle, onMarkDone, 
                 onClick={(e) => { e.stopPropagation(); onWaive() }}
               >
                 <RefreshCw size={14} />
-                Undo waive
+                Deshacer
               </button>
             ) : (
               <button
@@ -200,7 +200,7 @@ function ChecklistItemEdit({ label, tag, checked, isOpen, onToggle, onMarkDone, 
                 onClick={(e) => { e.stopPropagation(); onWaive() }}
               >
                 <Ban size={14} />
-                Waive
+                Eximir
               </button>
             )}
           </div>
@@ -222,7 +222,7 @@ function ChecklistItemView({ label, tag, checked, waived }) {
       <span className={`text-[14px] ${checked ? 'text-[#374151]' : 'text-[#9CA3AF]'}`}>{label}</span>
       {tag && <DeptTag dept={tag} />}
       {waived && (
-        <span className="text-[11px] font-semibold text-[#5a6dd7] bg-[#EDF0FF] px-2.5 py-0.5 rounded-full uppercase tracking-wide">WAIVED</span>
+        <span className="text-[11px] font-semibold text-[#5a6dd7] bg-[#EDF0FF] px-2.5 py-0.5 rounded-full uppercase tracking-wide">EXIMIDO</span>
       )}
       <span className="flex-1" />
       <ChevronDown size={18} className="text-[#D1D5DB] shrink-0" />
@@ -525,7 +525,7 @@ function ComplianceSubItem({ label, checked, waived, isOpen, onToggle, onMarkDon
         </div>
         <span className={`text-[13px] ${checked ? 'text-[#374151]' : 'text-[#1F2937]'}`}>{label}</span>
         {waived && (
-          <span className="text-[10px] font-semibold text-[#5a6dd7] bg-[#EDF0FF] px-2 py-0.5 rounded-full uppercase tracking-wide">WAIVED</span>
+          <span className="text-[10px] font-semibold text-[#5a6dd7] bg-[#EDF0FF] px-2 py-0.5 rounded-full uppercase tracking-wide">EXIMIDO</span>
         )}
         <span className="flex-1" />
         {isOpen
@@ -567,14 +567,14 @@ function ComplianceSubItem({ label, checked, waived, isOpen, onToggle, onMarkDon
                 className="flex items-center gap-2 text-[13px] font-medium text-[#374151] bg-white px-4 py-2 rounded-full border border-[#E5E7EB] cursor-pointer hover:bg-[#F9FAFB]"
                 onClick={(e) => { e.stopPropagation(); onWaive() }}
               >
-                <RefreshCw size={13} /> Undo waive
+                <RefreshCw size={13} /> Deshacer
               </button>
             ) : (
               <button
                 className="flex items-center gap-2 text-[13px] font-medium text-[#374151] bg-[#EDF0FF] px-4 py-2 rounded-full border-none cursor-pointer hover:bg-[#dde3ff]"
                 onClick={(e) => { e.stopPropagation(); onWaive() }}
               >
-                <Ban size={13} /> Waive
+                <Ban size={13} /> Eximir
               </button>
             )}
             <span className="flex-1" />
@@ -592,8 +592,14 @@ function ComplianceSubItem({ label, checked, waived, isOpen, onToggle, onMarkDon
 }
 
 /* ─── Compliance Step (outer collapsible card) ─── */
-function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, checked, onCheckMain, subChecked, onSubCheck, subWaived, onSubWaive, addLog, editable }) {
+function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, subChecked, onSubCheck, subWaived, onSubWaive, addLog, editable }) {
   const [openSubIdx, setOpenSubIdx] = useState(null)
+  // Auto-check main when all sub-items are checked or eximidos
+  const totalSubs = step.subItems?.length || 0
+  const completedSubs = totalSubs
+    ? step.subItems.filter((_, j) => subChecked.has(j) || subWaived.has(j)).length
+    : 0
+  const checked = totalSubs > 0 && completedSubs === totalSubs
   return (
     <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-[10px] mb-3">
       <div
@@ -601,10 +607,9 @@ function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, checked, onCheckM
         onClick={onToggle}
       >
         <div
-          className={`w-[20px] h-[20px] rounded-[5px] shrink-0 flex items-center justify-center ${
-            editable ? 'cursor-pointer hover:opacity-80' : 'cursor-default'
-          } ${checked ? 'bg-[#180047]' : 'border-[1.5px] border-[#D1D5DB] bg-white'}`}
-          onClick={(e) => { e.stopPropagation(); if (editable) onCheckMain() }}
+          className={`w-[20px] h-[20px] rounded-[5px] shrink-0 flex items-center justify-center cursor-default ${
+            checked ? 'bg-[#180047]' : 'border-[1.5px] border-[#D1D5DB] bg-white'
+          }`}
         >
           {checked && <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
         </div>
@@ -748,7 +753,7 @@ function FranchiseSignupFields({ editable }) {
   )
 }
 
-function ComplianceEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog, subChecked, subWaived, onSubCheck, onSubWaive }) {
+function ComplianceEdit({ addLog, subChecked, subWaived, onSubCheck, onSubWaive }) {
   const [openStepIdx, setOpenStepIdx] = useState(0)
   return (
     <div className="flex flex-col">
@@ -759,8 +764,6 @@ function ComplianceEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog, s
           stepIdx={i}
           isOpen={openStepIdx === i}
           onToggle={() => setOpenStepIdx(openStepIdx === i ? null : i)}
-          checked={checkedItems.has(i)}
-          onCheckMain={() => onCheck(i)}
           subChecked={subChecked[i] || new Set()}
           subWaived={subWaived[i] || new Set()}
           onSubCheck={(j) => onSubCheck(i, j)}
@@ -773,7 +776,7 @@ function ComplianceEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog, s
   )
 }
 
-function ComplianceView({ checkedItems, waivedItems, subChecked = {}, subWaived = {} }) {
+function ComplianceView({ subChecked = {}, subWaived = {} }) {
   const [openStepIdx, setOpenStepIdx] = useState(null)
   return (
     <div className="flex flex-col">
@@ -784,8 +787,6 @@ function ComplianceView({ checkedItems, waivedItems, subChecked = {}, subWaived 
           stepIdx={i}
           isOpen={openStepIdx === i}
           onToggle={() => setOpenStepIdx(openStepIdx === i ? null : i)}
-          checked={checkedItems.has(i)}
-          onCheckMain={() => {}}
           subChecked={subChecked[i] || new Set()}
           subWaived={subWaived[i] || new Set()}
           onSubCheck={() => {}}
@@ -2313,7 +2314,7 @@ export default function ClientDetailPage() {
     const wasWaived = (waivedItems[activeDept] || new Set()).has(idx)
     const item = list[idx] || ''
     const label = typeof item === 'string' ? item : item.label
-    addLog(wasWaived ? `'${label}' waive revertido` : `'${label}' marcado como waived`)
+    addLog(wasWaived ? `'${label}' exención deshecha` : `'${label}' marcado como eximido`)
     setHasChanges(true)
     setWaivedItems(prev => {
       const next = new Set(prev[activeDept] || [])
