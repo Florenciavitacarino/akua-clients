@@ -560,13 +560,13 @@ function RequestToSalesModal({ documentName = '', onCancel, onSend }) {
 
         <div>
           <label className="flex items-center text-[16px] font-semibold text-[#0A0B0D] mb-1">
-            Mensaje para Sales <span className="text-[#fa5252] ml-0.5">*</span>
+            Mensaje <span className="text-[#fa5252] ml-0.5">*</span>
           </label>
           <textarea
             value={message}
             onChange={e => setMessage(e.target.value)}
             rows={3}
-            placeholder="Escribí un mensaje para Sales..."
+            placeholder="Escribí un mensaje..."
             className="w-full border border-[#dee2e6] rounded-[4px] px-4 py-2 text-[14px] text-[#0A0B0D] outline-none focus:border-[#180047] bg-white resize-none placeholder:text-[#adb5bd]"
           />
         </div>
