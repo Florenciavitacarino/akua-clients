@@ -247,8 +247,19 @@ function InfoField({ label, value, info, tooltip }) {
           </span>
         )}
       </div>
-      <div className="flex items-center h-[28px] text-[13px] text-[#0A0B0D] font-medium">{value || '—'}</div>
+      <div className="flex items-center h-[28px] text-[13px] text-[#0A0B0D] font-medium">
+        {value ? value : <EmptyBadge />}
+      </div>
     </div>
+  )
+}
+
+/* ─── Empty placeholder badge (when no info) ─── */
+function EmptyBadge() {
+  return (
+    <span className="inline-flex items-center justify-center min-w-[44px] h-[22px] px-2 rounded-full bg-[#E5E7EB] text-[#9CA3AF] text-[12px] font-medium leading-none">
+      —
+    </span>
   )
 }
 
@@ -1034,7 +1045,7 @@ function SalesView({ checkedItems, waivedItems }) {
           </div>
           <div className="bg-[#F9FAFB] rounded-[8px] p-3 mt-3">
             <p className="text-[11px] font-semibold text-[#6B7280] uppercase tracking-wide mb-2">Otros servicios</p>
-            <p className="text-[13px] text-[#0A0B0D] font-medium">—</p>
+            <EmptyBadge />
           </div>
         </div>
       </div>
