@@ -5,7 +5,7 @@ import {
   CheckCircle2, Circle, ChevronDown, ChevronUp, ChevronRight, Lock, LockOpen,
   Link2, ExternalLink, Info, RefreshCw, Flag, FileText, Ban, Trash2,
   Store, ShieldCheck, KeyRound, Settings, ShieldAlert, UserCheck, Link as LinkIcon,
-  Shield, DollarSign, Users, Scale, Rocket, Clock, ArrowUpRight
+  Shield, DollarSign, Users, Scale, Rocket, Clock, ArrowUpRight, X, Plus, Check
 } from 'lucide-react'
 
 /* ─── Department menu icons (Lucide) ─── */
@@ -37,12 +37,21 @@ const TABS = ['Resumen', 'Revisión por áreas', 'Features', 'Contactos', 'Docum
 /* ─── Shared UI ─── */
 
 /* Status dot: 16px circle — completed (green+check), in_progress (yellow+loading), not_started (grey+minus) */
-const STATUS_TOOLTIPS = { completed: 'Completado', in_progress: 'En progreso', not_started: 'Sin iniciar' }
+const STATUS_TOOLTIPS = {
+  completed: 'Completado',
+  in_progress: 'En progreso',
+  not_started: 'Sin iniciar',
+  completed_conditions: 'Completado con condiciones',
+}
 
 function StatusDot({ status }) {
   const tooltip = STATUS_TOOLTIPS[status] || STATUS_TOOLTIPS.not_started
   const dot = status === 'completed' ? (
     <span className="w-[16px] h-[16px] rounded-full bg-[#2ecc71] flex items-center justify-center shrink-0">
+      <svg width="9" height="9" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+    </span>
+  ) : status === 'completed_conditions' ? (
+    <span className="w-[16px] h-[16px] rounded-full bg-[#5a6dd7] flex items-center justify-center shrink-0">
       <svg width="9" height="9" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
     </span>
   ) : status === 'in_progress' ? (
@@ -382,6 +391,7 @@ const STATUS_OPTIONS = [
   { value: 'not_started', label: 'No iniciado' },
   { value: 'in_progress', label: 'En progreso' },
   { value: 'completed', label: 'Completado' },
+  { value: 'completed_conditions', label: 'Completado con condiciones', separator: true },
 ]
 
 function StatusDropdown({ deptStatus, onStatusChange, disabled }) {
@@ -406,25 +416,118 @@ function StatusDropdown({ deptStatus, onStatusChange, disabled }) {
       {dropdownOpen && !disabled && (
         <>
           <div className="fixed inset-0 z-20" onClick={() => setDropdownOpen(false)} />
-          <div className="absolute right-0 top-full mt-1 bg-white border border-[#E5E7EB] rounded-[12px] shadow-[0_4px_16px_rgba(0,0,0,0.12)] py-1 z-30 min-w-[180px]">
-            {STATUS_OPTIONS.map((opt) => (
-              <button
-                key={opt.value}
-                onClick={() => {
-                  onStatusChange(opt.value)
-                  setDropdownOpen(false)
-                }}
-                className="flex items-center justify-between w-full px-4 py-3 text-[14px] text-[#1F2937] bg-transparent border-none cursor-pointer hover:bg-[#F9FAFB] text-left"
-              >
-                {opt.label}
-                {deptStatus === opt.value && (
-                  <svg width="16" height="16" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                )}
-              </button>
+          <div className="absolute right-0 top-full mt-1 bg-white border border-[#E5E7EB] rounded-[12px] shadow-[0_4px_16px_rgba(0,0,0,0.12)] py-1 z-30 min-w-[240px]">
+            {STATUS_OPTIONS.map((opt, idx) => (
+              <div key={opt.value}>
+                {opt.separator && idx > 0 && <div className="border-t border-[#E5E7EB] my-1" />}
+                <button
+                  onClick={() => {
+                    onStatusChange(opt.value)
+                    setDropdownOpen(false)
+                  }}
+                  className="flex items-center justify-between w-full px-4 py-3 text-[14px] text-[#1F2937] bg-transparent border-none cursor-pointer hover:bg-[#F9FAFB] text-left"
+                >
+                  {opt.label}
+                  {deptStatus === opt.value && (
+                    <svg width="16" height="16" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                  )}
+                </button>
+              </div>
             ))}
           </div>
         </>
       )}
+    </div>
+  )
+}
+
+/* ─── Conditions Modal (Aprobado con condiciones) ─── */
+function ConditionsModal({ initialConditions = [], onCancel, onConfirm }) {
+  const [conditions, setConditions] = useState(initialConditions.length ? initialConditions : [])
+  const [draft, setDraft] = useState('')
+  const canConfirm = conditions.length > 0 || draft.trim().length > 0
+
+  const handleAdd = () => {
+    const v = draft.trim()
+    if (!v) return
+    setConditions(prev => [...prev, v])
+    setDraft('')
+  }
+  const handleRemove = (i) => setConditions(prev => prev.filter((_, idx) => idx !== i))
+  const handleConfirm = () => {
+    if (!canConfirm) return
+    const final = draft.trim() ? [...conditions, draft.trim()] : conditions
+    onConfirm(final)
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+      <div className="bg-white rounded-[16px] w-[560px] max-w-[90vw] shadow-xl p-6">
+        <div className="flex items-start justify-between mb-2">
+          <h3 className="text-[18px] font-semibold text-[#0A0B0D] m-0">Aprobado con condiciones</h3>
+          <button onClick={onCancel} className="text-[#9CA3AF] hover:text-[#374151] bg-transparent border-none cursor-pointer"><X size={18} /></button>
+        </div>
+        <p className="text-[13px] text-[#374151] leading-relaxed mb-5">
+          Listá las condiciones que el cliente debe cumplir para avanzar. Este campo es obligatorio.*
+        </p>
+        <div className="flex flex-col gap-2 mb-6">
+          {conditions.map((c, i) => (
+            <div key={i} className="flex items-center gap-2">
+              <input
+                readOnly
+                value={c}
+                className="flex-1 border border-[#D1D5DB] rounded-full px-4 h-[40px] text-[13px] text-[#0A0B0D] outline-none bg-white"
+              />
+              <button
+                onClick={() => handleRemove(i)}
+                className="w-[40px] h-[40px] rounded-[8px] bg-[#F3F4F6] text-[#9CA3AF] border-none cursor-pointer hover:bg-[#E5E7EB] flex items-center justify-center shrink-0"
+              >
+                <X size={16} />
+              </button>
+            </div>
+          ))}
+          <div className="flex items-center gap-2">
+            <input
+              value={draft}
+              onChange={e => setDraft(e.target.value)}
+              onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleAdd() } }}
+              placeholder="Agregar condición"
+              className="flex-1 border border-[#D1D5DB] rounded-full px-4 h-[40px] text-[13px] text-[#374151] outline-none focus:border-[#180047] bg-white placeholder:text-[#9CA3AF]"
+            />
+            <button
+              onClick={handleAdd}
+              className="flex items-center gap-1.5 text-[13px] font-medium text-[#180047] bg-white px-4 h-[40px] rounded-full border border-[#180047] cursor-pointer hover:bg-[#F3F0FF] whitespace-nowrap shrink-0"
+            >
+              Agregar <Plus size={13} />
+            </button>
+          </div>
+        </div>
+        <div className="flex items-center justify-end gap-3">
+          <button onClick={onCancel} className="text-[13px] font-medium text-[#374151] bg-white px-5 py-2 rounded-full border border-[#E5E7EB] cursor-pointer hover:bg-[#F9FAFB]">Cancelar</button>
+          <button
+            onClick={handleConfirm}
+            disabled={!canConfirm}
+            className={`text-[13px] font-medium text-white px-5 py-2 rounded-full border-none transition-colors ${
+              canConfirm ? 'bg-[#180047] cursor-pointer hover:bg-[#2a0066]' : 'bg-[#9CA3AF] cursor-not-allowed'
+            }`}
+          >
+            Confirmar
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* ─── Conditions Banner (shown when dept is Completado con condiciones) ─── */
+function ConditionsBanner({ title = 'Aprobado con condiciones', conditions = [] }) {
+  if (!conditions || conditions.length === 0) return null
+  return (
+    <div className="mb-4 p-4 rounded-[10px] bg-[#EDF0FF]">
+      <p className="text-[14px] font-semibold text-[#0A0B0D] m-0 mb-2">{title}</p>
+      <ul className="list-disc pl-5 text-[13px] text-[#1F2937] m-0 leading-relaxed">
+        {conditions.map((c, i) => <li key={i}>{c}</li>)}
+      </ul>
     </div>
   )
 }
@@ -650,17 +753,6 @@ function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, subChecked, onSub
 
           {step.note && (
             <p className="text-[12px] text-[#6B7280] italic mt-1">{step.note}</p>
-          )}
-
-          {editable && (
-            <div>
-              <button
-                onClick={() => addLog?.(`Solicitud enviada a Sales para: ${step.title}`)}
-                className="flex items-center gap-1.5 text-[13px] font-medium text-white bg-[#180047] px-4 py-2 rounded-full border-none cursor-pointer hover:bg-[#2a0066] mt-2"
-              >
-                Solicitar a Sales <ArrowUpRight size={13} />
-              </button>
-            </div>
           )}
         </div>
       )}
@@ -2271,11 +2363,29 @@ export default function ClientDetailPage() {
 
   const [hasChanges, setHasChanges] = useState(false)
 
+  // Dept conditions (for 'Completado con condiciones' status)
+  const [deptConditions, setDeptConditions] = useState({}) // { [deptKey]: string[] }
+  const [conditionsModalDept, setConditionsModalDept] = useState(null)
+
   const handleStatusChange = (status) => {
     const label = STATUS_OPTIONS.find(o => o.value === status)?.label
+    if (status === 'completed_conditions') {
+      // Open modal; status is applied when user confirms
+      setConditionsModalDept(activeDept)
+      return
+    }
     addLog(`Cambio de estado del departamento a "${label}"`)
     setDeptStatuses(prev => ({ ...prev, [activeDept]: status }))
     setHasChanges(true)
+  }
+
+  const handleConfirmConditions = (list) => {
+    const dept = conditionsModalDept
+    setDeptConditions(prev => ({ ...prev, [dept]: list }))
+    setDeptStatuses(prev => ({ ...prev, [dept]: 'completed_conditions' }))
+    setConditionsModalDept(null)
+    setHasChanges(true)
+    addLog(`Cambio de estado del departamento a "Completado con condiciones" (${list.length} condiciones)`)
   }
 
   const CHECKLISTS = { compliance: COMPLIANCE_CHECKLIST, fraud: FRAUD_CHECKLIST, finances: FINANCES_CHECKLIST, sales: SALES_CHECKLIST, legal: LEGAL_CHECKLIST, kickoff: KICKOFF_CHECKLIST }
@@ -2483,6 +2593,9 @@ export default function ClientDetailPage() {
               {/* Content based on inner tab */}
               {innerTab === 'information' && (
                 <>
+                  {deptStatuses[activeDept] === 'completed_conditions' && (deptConditions[activeDept]?.length > 0) && (
+                    <ConditionsBanner conditions={deptConditions[activeDept]} />
+                  )}
                   {activeDept === 'compliance' && (isEditing
                     ? <ComplianceEdit
                         checkedItems={checkedItems.compliance}
@@ -2565,8 +2678,22 @@ export default function ClientDetailPage() {
               <p className="text-[13px] text-[#9CA3AF]">Los datos aparecerán cuando el cliente esté activo</p>
             </div>
           )
+          const DEPT_LABELS = { compliance: 'Compliance', fraud: 'Fraud', finances: 'Finance', sales: 'Sales', legal: 'Legal and Contract', kickoff: 'Kickoff & Integration', golive: 'Go Live', review: '1st Review' }
+          const conditionsToShow = Object.entries(deptConditions)
+            .filter(([dept, list]) => list?.length > 0 && deptStatuses[dept] === 'completed_conditions')
           return (
             <div className="flex flex-col gap-5">
+              {conditionsToShow.length > 0 && (
+                <div className="flex flex-col gap-3">
+                  {conditionsToShow.map(([dept, list]) => (
+                    <ConditionsBanner
+                      key={dept}
+                      title={`${DEPT_LABELS[dept] || dept} — Aprobado con condiciones`}
+                      conditions={list}
+                    />
+                  ))}
+                </div>
+              )}
               {/* General Details */}
               <div className="border border-[#E5E7EB] rounded-[8px] p-5 bg-white">
                 <h3 className="text-[15px] font-semibold text-[#0A0B0D] mb-5">General Details</h3>
@@ -2719,6 +2846,14 @@ export default function ClientDetailPage() {
           )
         })()}
       </div>
+
+      {conditionsModalDept && (
+        <ConditionsModal
+          initialConditions={deptConditions[conditionsModalDept] || []}
+          onCancel={() => setConditionsModalDept(null)}
+          onConfirm={handleConfirmConditions}
+        />
+      )}
     </>
   )
 }
