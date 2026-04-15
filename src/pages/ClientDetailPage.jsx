@@ -181,6 +181,7 @@ function ChecklistItemEdit({ label, tag, checked, isOpen, onToggle, onMarkDone, 
               onClick={(e) => {
                 e.stopPropagation()
                 onMarkDone()
+                if (isOpen) onToggle?.()
               }}
             >
               Guardar
@@ -2051,6 +2052,26 @@ export default function ClientDetailPage() {
                   {currentDept?.name === 'Compliance' ? 'Compliance Review' : currentDept?.name}
                 </h2>
                 <div className="flex items-center gap-3">
+                  {activeDept === 'fraud' && fraudSnapshots.length > 0 && (
+                    <>
+                      <select
+                        value={activeFraudVersion}
+                        onChange={e => setActiveFraudVersion(e.target.value)}
+                        className="border border-[#E5E7EB] rounded-full px-4 h-[32px] text-[12px] font-medium text-[#0A0B0D] bg-white outline-none cursor-pointer"
+                      >
+                        <option value="current">{currentFraudVersionName}</option>
+                        {fraudSnapshots.map(s => (
+                          <option key={s.id} value={s.id}>{s.name}</option>
+                        ))}
+                      </select>
+                      <div className="w-px h-6 bg-[#E5E7EB]" />
+                    </>
+                  )}
+                  <StatusDropdown
+                    deptStatus={deptStatuses[activeDept]}
+                    onStatusChange={handleStatusChange}
+                    disabled={!isEditing}
+                  />
                   {!isEditing ? (
                     !(activeDept === 'fraud' && isViewingFraudSnapshot) && (
                       <button
@@ -2074,23 +2095,6 @@ export default function ClientDetailPage() {
                       Guardar cambios
                     </button>
                   )}
-                  {activeDept === 'fraud' && fraudSnapshots.length > 0 && (
-                    <select
-                      value={activeFraudVersion}
-                      onChange={e => setActiveFraudVersion(e.target.value)}
-                      className="border border-[#180047] rounded-full px-4 h-[32px] text-[12px] font-medium text-[#180047] bg-white outline-none cursor-pointer"
-                    >
-                      <option value="current">{currentFraudVersionName}</option>
-                      {fraudSnapshots.map(s => (
-                        <option key={s.id} value={s.id}>{s.name}</option>
-                      ))}
-                    </select>
-                  )}
-                  <StatusDropdown
-                    deptStatus={deptStatuses[activeDept]}
-                    onStatusChange={handleStatusChange}
-                    disabled={!isEditing}
-                  />
                 </div>
               </div>
 
