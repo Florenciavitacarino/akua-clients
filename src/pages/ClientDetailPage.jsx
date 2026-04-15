@@ -183,7 +183,7 @@ function ChecklistItemEdit({ label, tag, checked, isOpen, onToggle, onMarkDone, 
                 onMarkDone()
               }}
             >
-              Mark as done
+              Guardar
             </button>
             {waived ? (
               <button
