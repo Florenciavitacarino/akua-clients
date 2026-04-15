@@ -707,12 +707,11 @@ function ComplianceSubItem({ label, checked, waived, isOpen, onToggle, onMarkDon
   const [linkValue, setLinkValue] = useState('')
   const [noteValue, setNoteValue] = useState('')
 
-  const canExpand = editable
   return (
     <div className={`rounded-[8px] border border-[#E5E7EB] bg-white ${isOpen ? 'shadow-[0_1px_4px_rgba(0,0,0,0.06)]' : ''}`}>
       <div
-        className={`flex items-center gap-3 ${canExpand ? 'cursor-pointer' : 'cursor-default'} ${isOpen ? 'px-4 pt-3 pb-2' : 'px-4 py-2.5'}`}
-        onClick={(e) => { if (canExpand) onToggle?.() }}
+        className={`flex items-center gap-3 cursor-pointer ${isOpen ? 'px-4 pt-3 pb-2' : 'px-4 py-2.5'}`}
+        onClick={() => onToggle?.()}
       >
         <div
           className={`w-[18px] h-[18px] rounded-[4px] shrink-0 flex items-center justify-center ${
@@ -729,14 +728,13 @@ function ComplianceSubItem({ label, checked, waived, isOpen, onToggle, onMarkDon
           <span className="text-[10px] font-semibold text-[#5a6dd7] bg-[#EDF0FF] px-2 py-0.5 rounded-full uppercase tracking-wide">EXIMIDO</span>
         )}
         <span className="flex-1" />
-        {canExpand && (
-          isOpen
-            ? <ChevronUp size={16} className="text-[#374151] shrink-0" />
-            : <ChevronDown size={16} className="text-[#9CA3AF] shrink-0" />
-        )}
+        {isOpen
+          ? <ChevronUp size={16} className="text-[#374151] shrink-0" />
+          : <ChevronDown size={16} className="text-[#9CA3AF] shrink-0" />
+        }
       </div>
 
-      {isOpen && editable && (
+      {isOpen && (
         <div className="px-4 pb-4 flex flex-col gap-3">
           <div className="flex items-center gap-2 border border-[#E5E7EB] rounded-full px-3.5 py-2.5 bg-white focus-within:border-[#5a6dd7] transition-colors">
             <Link2 size={15} className="text-[#9CA3AF] shrink-0" />
@@ -745,7 +743,8 @@ function ComplianceSubItem({ label, checked, waived, isOpen, onToggle, onMarkDon
               value={linkValue}
               onChange={(e) => setLinkValue(e.target.value)}
               placeholder="Add document link"
-              className="flex-1 bg-transparent border-none outline-none text-[13px] text-[#374151] placeholder:text-[#9CA3AF] min-w-0"
+              disabled={!editable}
+              className="flex-1 bg-transparent border-none outline-none text-[13px] text-[#374151] placeholder:text-[#9CA3AF] min-w-0 disabled:cursor-default"
               onClick={(e) => e.stopPropagation()}
             />
           </div>
@@ -754,39 +753,42 @@ function ComplianceSubItem({ label, checked, waived, isOpen, onToggle, onMarkDon
             onChange={(e) => setNoteValue(e.target.value)}
             placeholder="Write a note here"
             rows={3}
-            className="w-full border border-[#E5E7EB] rounded-[12px] px-3.5 py-3 text-[13px] bg-white outline-none focus:border-[#5a6dd7] placeholder:text-[#9CA3AF] resize-none"
+            disabled={!editable}
+            className="w-full border border-[#E5E7EB] rounded-[12px] px-3.5 py-3 text-[13px] bg-white outline-none focus:border-[#5a6dd7] placeholder:text-[#9CA3AF] resize-none disabled:cursor-default"
             onClick={(e) => e.stopPropagation()}
           />
-          <div className="flex items-center gap-3">
-            <button
-              className="text-[13px] font-semibold text-white bg-[#180047] px-5 py-2.5 rounded-full border-none cursor-pointer hover:bg-[#2a0066] transition-colors"
-              onClick={(e) => { e.stopPropagation(); onMarkDone(); onToggle?.() }}
-            >
-              Guardar
-            </button>
-            {waived ? (
+          {editable && (
+            <div className="flex items-center gap-3">
               <button
-                className="flex items-center gap-2 text-[13px] font-medium text-[#374151] bg-white px-5 py-2.5 rounded-full border border-[#E5E7EB] cursor-pointer hover:bg-[#F9FAFB]"
-                onClick={(e) => { e.stopPropagation(); onWaive() }}
+                className="text-[13px] font-semibold text-white bg-[#180047] px-5 py-2.5 rounded-full border-none cursor-pointer hover:bg-[#2a0066] transition-colors"
+                onClick={(e) => { e.stopPropagation(); onMarkDone(); onToggle?.() }}
               >
-                <RefreshCw size={14} /> Deshacer
+                Guardar
               </button>
-            ) : (
+              {waived ? (
+                <button
+                  className="flex items-center gap-2 text-[13px] font-medium text-[#374151] bg-white px-5 py-2.5 rounded-full border border-[#E5E7EB] cursor-pointer hover:bg-[#F9FAFB]"
+                  onClick={(e) => { e.stopPropagation(); onWaive() }}
+                >
+                  <RefreshCw size={14} /> Deshacer
+                </button>
+              ) : (
+                <button
+                  className="flex items-center gap-2 text-[13px] font-medium text-[#374151] bg-[#EDF0FF] px-5 py-2.5 rounded-full border-none cursor-pointer hover:bg-[#dde3ff]"
+                  onClick={(e) => { e.stopPropagation(); onWaive() }}
+                >
+                  <Ban size={14} /> Eximir
+                </button>
+              )}
+              <span className="flex-1" />
               <button
-                className="flex items-center gap-2 text-[13px] font-medium text-[#374151] bg-[#EDF0FF] px-5 py-2.5 rounded-full border-none cursor-pointer hover:bg-[#dde3ff]"
-                onClick={(e) => { e.stopPropagation(); onWaive() }}
+                className="flex items-center gap-1 text-[13px] font-medium text-[#180047] bg-transparent border-none cursor-pointer hover:text-[#2a0066]"
+                onClick={(e) => { e.stopPropagation(); onRequestSales?.(label) }}
               >
-                <Ban size={14} /> Eximir
+                Solicitar a sales <ArrowUpRight size={13} />
               </button>
-            )}
-            <span className="flex-1" />
-            <button
-              className="flex items-center gap-1 text-[13px] font-medium text-[#180047] bg-transparent border-none cursor-pointer hover:text-[#2a0066]"
-              onClick={(e) => { e.stopPropagation(); onRequestSales?.(label) }}
-            >
-              Solicitar a sales <ArrowUpRight size={13} />
-            </button>
-          </div>
+            </div>
+          )}
         </div>
       )}
     </div>
