@@ -2137,28 +2137,53 @@ function LegalSections({ editable }) {
   ) : (
     <>
       <div className="grid grid-cols-2 gap-x-6 gap-y-4">
-        <InfoField label="Fecha de firma" value="18/02/2029" />
-        <InfoField label="Fecha de vencimiento" value="30/09/2026" />
+        <InfoField label="Fecha de firma" value="20/03/2025" />
+        <InfoField label="Fecha de vencimiento" value="20/03/2025" />
       </div>
       <div className="grid grid-cols-2 gap-x-6 gap-y-4">
-        <InfoField label="Tipo de contrato" value="Marco" />
+        <InfoField label="Tipo de contrato" value="Text" />
         <InfoField label="Contraparte" value="Efecty S.A" />
       </div>
       <div className="grid grid-cols-2 gap-x-6 gap-y-4">
         <InfoField label="Entidad Akua" value="Akua Colombia S.A" />
         <InfoField label="País" value="Colombia" />
       </div>
-      <InfoField label="Contrato V5 completo" value="—" />
-      <InfoField label="Anexo I – Descripción técnica y alcance" value="—" />
+      <div>
+        <p className="text-[13px] font-semibold text-[#0A0B0D] mb-2">Contrato V5 completo</p>
+        <div className="flex items-center gap-3 bg-[#F9FAFB] rounded-[10px] px-3 py-2.5">
+          <div className="w-[36px] h-[36px] rounded-[8px] bg-[#FEE2E2] flex items-center justify-center shrink-0">
+            <span className="text-[10px] font-bold text-[#DC2626]">PDF</span>
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-[13px] text-[#0A0B0D] font-medium m-0">name.pdf</p>
+            <p className="text-[11px] text-[#9CA3AF] m-0">2.4 MB</p>
+          </div>
+          <button className="flex items-center gap-1 text-[13px] font-medium text-[#374151] bg-transparent border-none cursor-pointer hover:text-[#180047] shrink-0">Abrir <ExternalLink size={13} /></button>
+          <button className="text-[#9CA3AF] bg-transparent border-none cursor-pointer hover:text-[#DC2626] shrink-0"><Trash2 size={15} /></button>
+        </div>
+      </div>
       <div className="flex flex-wrap gap-1.5">
-        {['PCI CUMPLIMIENTO', 'DE AUTORIZACIÓN', 'VISA & MASTERCARD', 'PCI DSS · AML · KYC'].map(b => (
-          <span key={b} className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-[#DBEAFE] text-[#1E40AF]">{b}</span>
+        {['99% DISPONIBILIDAD', '<1S AUTORIZACIÓN', 'VISA & MASTERCARD', 'PCI DSS · AML · KYC'].map(b => (
+          <span key={b} className="text-[10px] font-medium uppercase px-2.5 py-1 rounded-full bg-[#F3F4F6] text-[#6B7280] border border-[#E5E7EB]">{b}</span>
         ))}
       </div>
-      <InfoField label="Anexo II – SLA" value="—" />
+      <div>
+        <p className="text-[13px] font-semibold text-[#0A0B0D] mb-2">Anexo II – SLA</p>
+        <div className="flex items-center gap-3 bg-[#F9FAFB] rounded-[10px] px-3 py-2.5">
+          <div className="w-[36px] h-[36px] rounded-[8px] bg-[#FEE2E2] flex items-center justify-center shrink-0">
+            <span className="text-[10px] font-bold text-[#DC2626]">PDF</span>
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-[13px] text-[#0A0B0D] font-medium m-0">name.pdf</p>
+            <p className="text-[11px] text-[#9CA3AF] m-0">2.4 MB</p>
+          </div>
+          <button className="flex items-center gap-1 text-[13px] font-medium text-[#374151] bg-transparent border-none cursor-pointer hover:text-[#180047] shrink-0">Abrir <ExternalLink size={13} /></button>
+          <button className="text-[#9CA3AF] bg-transparent border-none cursor-pointer hover:text-[#DC2626] shrink-0"><Trash2 size={15} /></button>
+        </div>
+      </div>
       <div className="flex flex-wrap gap-1.5">
         {['PENALIDAD MÁX. 30%', 'PROCESAMIENTO TRANSACCIONAL'].map(b => (
-          <span key={b} className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-[#DBEAFE] text-[#1E40AF]">{b}</span>
+          <span key={b} className="text-[10px] font-medium uppercase px-2.5 py-1 rounded-full bg-[#F3F4F6] text-[#6B7280] border border-[#E5E7EB]">{b}</span>
         ))}
       </div>
     </>
@@ -2187,14 +2212,27 @@ function LegalSections({ editable }) {
   ) : (
     <>
       <div className="grid grid-cols-2 gap-x-6 gap-y-4">
-        <InfoField label="Fecha de entrada" value="18/11/2029" />
-        <InfoField label="Nombre" value="—" />
+        <InfoField label="Fecha de entrada" value="20/03/2025" />
+        <InfoField label="Nombre" value="Text" />
       </div>
       <div className="grid grid-cols-2 gap-x-6 gap-y-4">
         <InfoField label="Estado actual" value="En negociación" />
-        <InfoField label="Desde" value="01/03/2024" />
+        <InfoField label="Desde" value="01/03/2026" />
       </div>
-      <InfoField label="NDA vigente" value="—" />
+      <div>
+        <p className="text-[13px] font-semibold text-[#0A0B0D] mb-2">NDA vigente</p>
+        <div className="flex items-center gap-3 bg-[#F9FAFB] rounded-[10px] px-3 py-2.5">
+          <div className="w-[36px] h-[36px] rounded-[8px] bg-[#FEE2E2] flex items-center justify-center shrink-0">
+            <span className="text-[10px] font-bold text-[#DC2626]">PDF</span>
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-[13px] text-[#0A0B0D] font-medium m-0">name.pdf</p>
+            <p className="text-[11px] text-[#9CA3AF] m-0">2.4 MB</p>
+          </div>
+          <button className="flex items-center gap-1 text-[13px] font-medium text-[#374151] bg-transparent border-none cursor-pointer hover:text-[#180047] shrink-0">Abrir <ExternalLink size={13} /></button>
+          <button className="text-[#9CA3AF] bg-transparent border-none cursor-pointer hover:text-[#DC2626] shrink-0"><Trash2 size={15} /></button>
+        </div>
+      </div>
     </>
   )
 
