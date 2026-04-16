@@ -1248,41 +1248,63 @@ function ProximaRevision({ review, onReviewChange, editable }) {
 function FraudSections({ editable }) {
   // Form contents per section, used as children of SectionCard
   const verticalDeNegocio = editable ? (
-    <div className="grid grid-cols-3 gap-x-6 gap-y-4">
-      <TextInput label="Vertical" placeholder="Text" />
-      <TextInput label="MCCs esperados" placeholder="Text" />
-      <TextInput label="Descripción del producto o servicio" placeholder="Text" />
-    </div>
+    <>
+      <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+        <TextInput label="Vertical" placeholder="Text" />
+        <TextInput label="MCCs esperados" placeholder="Text" />
+      </div>
+      <TextInput label="Descripción del producto/servicio" placeholder="Text" />
+    </>
   ) : (
-    <div className="grid grid-cols-3 gap-x-6 gap-y-4">
-      <InfoField label="Vertical" value="Text" />
-      <InfoField label="MCCs esperados" value="Text" />
-      <InfoField label="Descripción del producto o servicio" value="Text" />
-    </div>
+    <>
+      <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+        <InfoField label="Vertical" value="Text" />
+        <InfoField label="MCCs esperados" value="Text" />
+      </div>
+      <InfoField label="Descripción del producto/servicio" value="Text" />
+    </>
   )
 
   const perfilTransaccional = editable ? (
-    <div className="grid grid-cols-3 gap-x-6 gap-y-4">
-      <TextInput label="Volumen mensual" placeholder="Text" info tooltip="Estimado por cantidad de transacciones" />
-      <TextInput label="Monto procesado mensual" placeholder="Text" info tooltip="Estimado en USD" />
-      <TextInput label="Ticket promedio USD" placeholder="1000 usd" />
-      <TextInput label="Ticket mínimo USD" placeholder="400 usd" />
-      <TextInput label="Ticket máximo USD" placeholder="1000 usd" />
-      <TextInput label="Mix estimado" placeholder="Text" info tooltip="Tarjetas domésticas vs. internacionales" />
-      <TextInput label="Países de origen de tarjetas frecuentes" placeholder="Text" />
-      <TextInput label="Monedas de transacción" placeholder="Text" />
-    </div>
+    <>
+      <div className="grid grid-cols-3 gap-x-6 gap-y-4">
+        <TextInput label="Volumen mensual" placeholder="Text" info tooltip="Estimado por cantidad de transacciones" />
+        <TextInput label="Monto procesado mensual" placeholder="Text" info tooltip="Estimado en USD" />
+        <TextInput label="Ticket promedio USD" placeholder="1000 usd" />
+        <TextInput label="Ticket mínimo USD" placeholder="400 usd" />
+        <TextInput label="Ticket máximo USD" placeholder="1000 usd" />
+        <TextInput label="Mix estimado" placeholder="Text" info tooltip="Tarjetas domésticas vs. internacionales" />
+      </div>
+      <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+        <div>
+          <span className="text-[12px] text-[#374151] font-medium block mb-1">Países de origen de tarjetas frecuentes</span>
+          <div className="flex items-center gap-1 border border-[#D1D5DB] rounded-[6px] px-2 h-[28px] bg-white">
+            {['Perú', 'Chile', 'Brasil'].map(t => (
+              <span key={t} className="inline-flex items-center gap-1 text-[11px] bg-[#F3F4F6] text-[#374151] px-2 py-0.5 rounded-full">
+                {t} <X size={10} className="text-[#9CA3AF] cursor-pointer" />
+              </span>
+            ))}
+            <ChevronDown size={12} className="text-[#9CA3AF] ml-auto shrink-0" />
+          </div>
+        </div>
+        <TextInput label="Monedas de transacción" placeholder="Text" />
+      </div>
+    </>
   ) : (
-    <div className="grid grid-cols-3 gap-x-6 gap-y-4">
-      <InfoField label="Volumen mensual" value="Text" info tooltip="Estimado por cantidad de transacciones" />
-      <InfoField label="Monto procesado mensual" value="Text" info tooltip="Estimado en USD" />
-      <InfoField label="Ticket promedio USD" value="1000 usd" />
-      <InfoField label="Ticket mínimo USD" value="400 usd" />
-      <InfoField label="Ticket máximo USD" value="1000 usd" />
-      <InfoField label="Mix estimado" value="Text" info tooltip="Tarjetas domésticas vs. internacionales" />
-      <InfoField label="Países de origen de tarjetas frecuentes" value="Colombia" />
-      <InfoField label="Monedas de transacción" value="Text" />
-    </div>
+    <>
+      <div className="grid grid-cols-3 gap-x-6 gap-y-4">
+        <InfoField label="Volumen mensual" value="Text" info tooltip="Estimado por cantidad de transacciones" />
+        <InfoField label="Monto procesado mensual" value="Text" info tooltip="Estimado en USD" />
+        <InfoField label="Ticket promedio USD" value="1000 usd" />
+        <InfoField label="Ticket mínimo USD" value="400 usd" />
+        <InfoField label="Ticket máximo USD" value="1000 usd" />
+        <InfoField label="Mix estimado" value="Text" info tooltip="Tarjetas domésticas vs. internacionales" />
+      </div>
+      <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+        <InfoField label="Países de origen de tarjetas frecuentes" value="Perú, Chile, Brasil" />
+        <InfoField label="Monedas de transacción" value="Text" />
+      </div>
+    </>
   )
 
   const tipoOperatoria = editable ? (
@@ -1333,33 +1355,33 @@ function FraudSections({ editable }) {
 
   const apetitoRiesgo = editable ? (
     <>
-      <div>
-        <div className="flex items-center gap-1 mb-2">
-          <span className="text-[12px] text-[#374151] font-medium">Prioridad del cliente</span>
-          <span className="relative group/pc shrink-0">
-            <Info size={12} className="text-[#D1D5DB] cursor-pointer" />
-            <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-[#1F2937] text-white text-[12px] rounded-[8px] w-[280px] whitespace-normal opacity-0 group-hover/pc:opacity-100 transition-opacity pointer-events-none z-20 leading-relaxed">
-              Máxima protección (acepta menor conversión) / Balance protección-conversión / Máxima conversión (acepta mayor riesgo)
-              <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-[#1F2937]" />
-            </div>
-          </span>
+      <div className="grid grid-cols-2 gap-x-6">
+        <div>
+          <div className="flex items-center gap-1 mb-2">
+            <span className="text-[12px] text-[#374151] font-medium">Prioridad del cliente</span>
+            <span className="relative group/pc shrink-0">
+              <Info size={12} className="text-[#D1D5DB] cursor-pointer" />
+              <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-[#1F2937] text-white text-[12px] rounded-[8px] w-[280px] whitespace-normal opacity-0 group-hover/pc:opacity-100 transition-opacity pointer-events-none z-20 leading-relaxed">
+                Máxima protección / Balance / Máxima conversión
+                <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-[#1F2937]" />
+              </div>
+            </span>
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className="flex items-center gap-2 text-[12px] text-[#374151] cursor-pointer">
+              <input type="radio" name="prioridad" className="accent-[#180047] w-[14px] h-[14px]" /> Máxima protección (acepta menor conversión)
+            </label>
+            <label className="flex items-center gap-2 text-[12px] text-[#374151] cursor-pointer">
+              <input type="radio" name="prioridad" className="accent-[#180047] w-[14px] h-[14px]" /> Balance protección-conversión
+            </label>
+            <label className="flex items-center gap-2 text-[12px] text-[#374151] cursor-pointer">
+              <input type="radio" name="prioridad" className="accent-[#180047] w-[14px] h-[14px]" /> Máxima conversión (acepta mayor riesgo)
+            </label>
+          </div>
         </div>
-        <div className="flex flex-col gap-2">
-          <label className="flex items-center gap-2 text-[12px] text-[#374151] cursor-pointer">
-            <input type="radio" name="prioridad" className="accent-[#180047] w-[14px] h-[14px]" /> Máxima protección (acepta menor conversión)
-          </label>
-          <label className="flex items-center gap-2 text-[12px] text-[#374151] cursor-pointer">
-            <input type="radio" name="prioridad" className="accent-[#180047] w-[14px] h-[14px]" /> Balance protección-conversión
-          </label>
-          <label className="flex items-center gap-2 text-[12px] text-[#374151] cursor-pointer">
-            <input type="radio" name="prioridad" className="accent-[#180047] w-[14px] h-[14px]" /> Máxima conversión (acepta mayor riesgo)
-          </label>
-        </div>
-      </div>
-      <div className="grid grid-cols-2 gap-x-6 gap-y-5">
         <RadioField label="Restricciones contractuales o regulatorias" info tooltip="Exigencia de 3DS en ciertos flujos" />
-        <TextInput label="Detalle" placeholder="Añadé detalle de las restricciones" />
       </div>
+      <TextInput label="Detalle" placeholder="Añadé detalle de las restricciones" />
       <div className="grid grid-cols-2 gap-x-6 gap-y-5">
         <RadioField label="Exención específica" info tooltip="TRA, low-value, whitelist" />
         <TextInput label="Detalle de exención específica" placeholder="Añadé detalle de las restricciones" />
@@ -1370,16 +1392,21 @@ function FraudSections({ editable }) {
       </div>
     </>
   ) : (
-    <div className="grid grid-cols-3 gap-x-6 gap-y-4">
-      <InfoField label="Prioridad del cliente" value="Máxima protección (acepta menor conversión)" info tooltip="Máxima protección (acepta menor conversión) / Balance protección-conversión / Máxima conversión (acepta mayor riesgo)" />
-      <InfoField label="Restricciones contractuales o regulatorias" value="No" info tooltip="Exigencia de 3DS en ciertos flujos" />
+    <>
+      <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+        <InfoField label="Prioridad del cliente" value="Máxima protección (acepta menor conversión)" info tooltip="Máxima protección / Balance / Máxima conversión" />
+        <InfoField label="Restricciones contractuales o regulatorias" value="No" info tooltip="Exigencia de 3DS en ciertos flujos" />
+      </div>
       <InfoField label="Detalle" value="Detalles de las restricciones" />
-      <InfoField label="Exención específica" value="No" info tooltip="TRA, low-value, whitelist" />
-      <InfoField label="Detalle de exención específica" value="Detalle de las restricciones" />
-      <div />
-      <InfoField label="Fallo de autenticación (fail-closed)" value="No" info tooltip="Si falla la autenticación, se declina la transacción" />
-      <InfoField label="Observaciones adicionales" value="Más observaciones del cliente sobre pagos" />
-    </div>
+      <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+        <InfoField label="Exención específica" value="No" info tooltip="TRA, low-value, whitelist" />
+        <InfoField label="Detalle de exención específica" value="Detalle de las restricciones" />
+      </div>
+      <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+        <InfoField label="Fallo de autenticación (fail-closed)" value="No" info tooltip="Si falla la autenticación, se declina la transacción" />
+        <InfoField label="Observaciones adicionales" value="Más observaciones del cliente sobre pagos" />
+      </div>
+    </>
   )
 
   // Section 0 (Datos de equipo) has no form — link/note/buttons only
@@ -1390,7 +1417,7 @@ function FraudSections({ editable }) {
     { content: verticalDeNegocio, subtitle: 'Indicar el tipo de negocio principal del cliente. Esta información determina el nivel de riesgo base y los MCCs involucrados.' },
     { content: perfilTransaccional, subtitle: 'Esta sección permite calibrar los umbrales de monto y el mix de tarjetas.', info: true, tooltip: 'Estimado por cantidad de transacciones' },
     { content: tipoOperatoria, subtitle: 'Indicar cómo el cliente procesa sus pagos. Esta sección determina si aplica el Perfil D (recurrencia) y cómo se trata el primer cobro.' },
-    { content: historialRiesgo, subtitle: null },
+    { content: historialRiesgo, subtitle: 'Esta sección es obligatoria para clientes que migran desde otro procesador o que ya tienen operatoria previa.' },
     { content: apetitoRiesgo, subtitle: 'Indicar cómo el cliente prioriza entre seguridad y conversión, el Perfil D (recurrencia) y cómo se trata el primer cobro.' },
   ]
 }
