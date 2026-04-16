@@ -781,28 +781,30 @@ function SectionCard({
 
           {!hideLinkNote && (
             <>
-              <hr className="border-t border-[#E5E7EB] m-0" />
-              <div className="flex items-center gap-2 border border-[#E5E7EB] rounded-full px-3.5 py-2.5 bg-white focus-within:border-[#5a6dd7] transition-colors">
-                <Link2 size={15} className="text-[#9CA3AF] shrink-0" />
-                <input
-                  type="url"
-                  value={linkValue}
-                  onChange={(e) => setLinkValue(e.target.value)}
-                  placeholder="Add document link"
+              <hr className="border-t border-[#E5E7EB] m-0 mt-2" />
+              <div className="flex flex-col gap-4 mt-1">
+                <div className="flex items-center gap-2 border border-[#E5E7EB] rounded-full px-4 py-3 bg-white focus-within:border-[#5a6dd7] transition-colors">
+                  <Link2 size={16} className="text-[#9CA3AF] shrink-0" />
+                  <input
+                    type="url"
+                    value={linkValue}
+                    onChange={(e) => setLinkValue(e.target.value)}
+                    placeholder="Add document link"
+                    disabled={!editable}
+                    className="flex-1 bg-transparent border-none outline-none text-[14px] text-[#374151] placeholder:text-[#9CA3AF] min-w-0"
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                </div>
+                <textarea
+                  value={noteValue}
+                  onChange={(e) => setNoteValue(e.target.value)}
+                  placeholder="Write a note here"
+                  rows={5}
                   disabled={!editable}
-                  className="flex-1 bg-transparent border-none outline-none text-[13px] text-[#374151] placeholder:text-[#9CA3AF] min-w-0"
+                  className="w-full border border-[#E5E7EB] rounded-[12px] px-4 py-3 text-[14px] bg-white outline-none focus:border-[#5a6dd7] placeholder:text-[#9CA3AF] resize-none"
                   onClick={(e) => e.stopPropagation()}
                 />
               </div>
-              <textarea
-                value={noteValue}
-                onChange={(e) => setNoteValue(e.target.value)}
-                placeholder="Write a note here"
-                rows={3}
-                disabled={!editable}
-                className="w-full border border-[#E5E7EB] rounded-[12px] px-3.5 py-3 text-[13px] bg-white outline-none focus:border-[#5a6dd7] placeholder:text-[#9CA3AF] resize-none"
-                onClick={(e) => e.stopPropagation()}
-              />
             </>
           )}
 
