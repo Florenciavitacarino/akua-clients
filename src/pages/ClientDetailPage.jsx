@@ -410,21 +410,20 @@ function ActivityPanel({ logs }) {
 
   return (
     <div className="max-h-[500px] overflow-y-auto">
-        {logs.map((item, i) => (
-          <div key={i} className="flex items-start gap-2.5 py-2.5 relative">
-            {i < logs.length - 1 && (
-              <div className="absolute left-[11px] top-[30px] bottom-0 w-[2px] bg-[#5a6dd7]" />
-            )}
-            <span className="w-[22px] h-[22px] rounded-full bg-[#5a6dd7] flex items-center justify-center shrink-0 z-10">
-              <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-            </span>
-            <div className="min-w-0 pt-0.5">
-              <p className="text-[13px] text-[#1F2937] font-medium leading-snug">{item.text}</p>
-              <p className="text-[11px] text-[#9CA3AF] mt-0.5">{item.user} · {item.date}</p>
-            </div>
+      {logs.map((item, i) => (
+        <div key={i} className="flex items-start gap-2.5 py-2.5 relative">
+          {i < logs.length - 1 && (
+            <div className="absolute left-[11px] top-[30px] bottom-0 w-[2px] bg-[#5a6dd7]" />
+          )}
+          <span className="w-[22px] h-[22px] rounded-full bg-[#5a6dd7] flex items-center justify-center shrink-0 z-10">
+            <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          </span>
+          <div className="min-w-0 pt-0.5">
+            <p className="text-[13px] text-[#1F2937] font-medium leading-snug">{item.text}</p>
+            <p className="text-[11px] text-[#9CA3AF] mt-0.5">{item.user} · {item.date}</p>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   )
 }
