@@ -264,6 +264,60 @@ function InfoField({ label, value, info, tooltip }) {
   )
 }
 
+/* ─── Si/No pill badge for view mode ─── */
+function SiNoPill({ value }) {
+  if (!value) return <EmptyBadge />
+  const isSi = value.toLowerCase() === 'si' || value.toLowerCase() === 'sí'
+  return (
+    <span className={`inline-flex items-center justify-center min-w-[36px] h-[22px] px-2.5 rounded-full text-[12px] font-medium leading-none ${
+      isSi ? 'bg-[#d1fae5] text-[#047857]' : 'bg-[#fee2e2] text-[#dc2626]'
+    }`}>
+      {isSi ? 'Sí' : 'No'}
+    </span>
+  )
+}
+
+/* ─── InfoField for Si/No values (shows pill instead of text) ─── */
+function InfoFieldSiNo({ label, value, info, tooltip }) {
+  return (
+    <div className="min-w-0">
+      <div className="flex items-center gap-1 mb-1">
+        <span className="text-[12px] text-[#374151] font-medium">{label}</span>
+        {info && (
+          <span className="relative group/ifo shrink-0">
+            <Info size={12} className="text-[#D1D5DB] cursor-pointer" />
+            {tooltip && (
+              <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-[#1F2937] text-white text-[12px] rounded-[8px] w-[260px] whitespace-normal leading-relaxed opacity-0 group-hover/ifo:opacity-100 transition-opacity pointer-events-none z-20">
+                {tooltip}
+                <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-[#1F2937]" />
+              </div>
+            )}
+          </span>
+        )}
+      </div>
+      <div className="flex items-center h-[28px]">
+        <SiNoPill value={value} />
+      </div>
+    </div>
+  )
+}
+
+/* ─── Tag pills for view mode (countries, etc.) ─── */
+function TagPills({ label, values = [] }) {
+  return (
+    <div className="min-w-0">
+      <span className="text-[12px] text-[#374151] font-medium block mb-1">{label}</span>
+      <div className="flex items-center h-[28px] gap-1 flex-wrap">
+        {values.length > 0 ? values.map((v, i) => (
+          <span key={i} className="inline-flex items-center text-[12px] text-[#0A0B0D] font-medium bg-[#F3F4F6] px-2.5 py-0.5 rounded-full">
+            {v}
+          </span>
+        )) : <EmptyBadge />}
+      </div>
+    </div>
+  )
+}
+
 /* ─── Empty placeholder badge (when no info) ─── */
 function EmptyBadge() {
   return (
@@ -1295,13 +1349,13 @@ function FraudSections({ editable }) {
       <div className="grid grid-cols-3 gap-x-6 gap-y-4">
         <InfoField label="Volumen mensual" value="Text" info tooltip="Estimado por cantidad de transacciones" />
         <InfoField label="Monto procesado mensual" value="Text" info tooltip="Estimado en USD" />
-        <InfoField label="Ticket promedio USD" value="1000 usd" />
+        <InfoField label="Ticket promedio USD" value="8000 usd" />
         <InfoField label="Ticket mínimo USD" value="400 usd" />
         <InfoField label="Ticket máximo USD" value="1000 usd" />
         <InfoField label="Mix estimado" value="Text" info tooltip="Tarjetas domésticas vs. internacionales" />
       </div>
       <div className="grid grid-cols-2 gap-x-6 gap-y-4">
-        <InfoField label="Países de origen de tarjetas frecuentes" value="Perú, Chile, Brasil" />
+        <TagPills label="Países de origen de tarjetas frecuentes" values={['Perú', 'Chile', 'Brasil']} />
         <InfoField label="Monedas de transacción" value="Text" />
       </div>
     </>
@@ -1317,11 +1371,11 @@ function FraudSections({ editable }) {
     </div>
   ) : (
     <div className="grid grid-cols-3 gap-x-6 gap-y-4">
-      <InfoField label="Pagos únicos" value="Si" />
-      <InfoField label="Pagos recurrentes" value="Si" info tooltip="Suscripciones / cobros automáticos" />
+      <InfoFieldSiNo label="Pagos únicos" value="Si" />
+      <InfoFieldSiNo label="Pagos recurrentes" value="Si" info tooltip="Suscripciones / cobros automáticos" />
       <InfoField label="Frecuencia de cobro" value="Mensual" />
       <InfoField label="Presencia del tarjetahabiente" value="Siempre" />
-      <InfoField label="Tokenización de tarjetas" value="Si" />
+      <InfoFieldSiNo label="Tokenización de tarjetas" value="Si" />
     </div>
   )
 
@@ -1342,12 +1396,12 @@ function FraudSections({ editable }) {
   ) : (
     <>
       <div className="grid grid-cols-3 gap-x-6 gap-y-4">
-        <InfoField label="Historial de procesamiento" value="Si" />
-        <InfoField label="Tasa de chargebacks" value="Si" info tooltip="Promedio (últimos 3 meses)" />
-        <InfoField label="Chargebacks > 0.9%" value="Si" />
+        <InfoFieldSiNo label="Historial de procesamiento" value="Si" />
+        <InfoFieldSiNo label="Tasa de chargebacks" value="Si" info tooltip="Promedio (últimos 3 meses)" />
+        <InfoFieldSiNo label="Chargebacks > 0.9%" value="Si" />
         <InfoField label="Fecha" value="01/12/2023" />
-        <InfoField label="Participación de monitoreo" value="Si" info tooltip="Entre Visa o Mastercard (VAMP, ECP, FMP)" />
-        <InfoField label="Incidentes de fraude" value="No" />
+        <InfoFieldSiNo label="Participación de monitoreo" value="Si" info tooltip="Entre Visa o Mastercard (VAMP, ECP, FMP)" />
+        <InfoFieldSiNo label="Incidentes de fraude" value="No" />
       </div>
       <InfoField label="Descripción del incidente" value="Descripción del incidente" />
     </>
@@ -1394,16 +1448,16 @@ function FraudSections({ editable }) {
   ) : (
     <>
       <div className="grid grid-cols-2 gap-x-6 gap-y-4">
-        <InfoField label="Prioridad del cliente" value="Máxima protección (acepta menor conversión)" info tooltip="Máxima protección / Balance / Máxima conversión" />
-        <InfoField label="Restricciones contractuales o regulatorias" value="No" info tooltip="Exigencia de 3DS en ciertos flujos" />
+        <InfoField label="Prioridad del cliente" value="Máxima protección" info tooltip="Máxima protección / Balance / Máxima conversión" />
+        <InfoFieldSiNo label="Restricciones contractuales o regulatorias" value="No" info tooltip="Exigencia de 3DS en ciertos flujos" />
       </div>
-      <InfoField label="Detalle" value="Detalles de las restricciones" />
+      <InfoField label="Detalles" value="Detalles de las restricciones" />
       <div className="grid grid-cols-2 gap-x-6 gap-y-4">
-        <InfoField label="Exención específica" value="No" info tooltip="TRA, low-value, whitelist" />
-        <InfoField label="Detalle de exención específica" value="Detalle de las restricciones" />
+        <InfoFieldSiNo label="Exención específica" value="No" info tooltip="TRA, low-value, whitelist" />
+        <InfoField label="Detalle de exención específica" value="Máxima protección" />
       </div>
       <div className="grid grid-cols-2 gap-x-6 gap-y-4">
-        <InfoField label="Fallo de autenticación (fail-closed)" value="No" info tooltip="Si falla la autenticación, se declina la transacción" />
+        <InfoFieldSiNo label="Fallo de autenticación (fail-closed)" value="No" info tooltip="Si falla la autenticación, se declina la transacción" />
         <InfoField label="Observaciones adicionales" value="Más observaciones del cliente sobre pagos" />
       </div>
     </>
