@@ -855,46 +855,46 @@ const COMPLIANCE_STEPS = [
   {
     title: '1 — KYB: revisión documental',
     subItems: [
-      'Estatutos y modificaciones',
-      'Certificado de existencia y representación',
-      'Regularidad fiscal y laboral',
-      'Licencias operativas',
-      'Estados financieros auditados',
+      { label: 'Estatutos y modificaciones', pdfName: 'Estatutos y modificaciones.pdf', pdfSize: '2.4 MB' },
+      { label: 'Certificado de existencia y representación', pdfName: 'Certificado de existencia y representación.pdf', pdfSize: '1.1 MB' },
+      { label: 'Regularidad fiscal y laboral', pdfName: 'Regularidad fiscal y laboral.pdf', pdfSize: '890 KB' },
+      { label: 'Licencias operativas', pdfName: 'Licencias operativas.pdf', pdfSize: '3.2 MB' },
+      { label: 'Estados financieros auditados', pdfName: '', pdfSize: '' },
     ],
   },
   {
     title: '2 — Estructura societaria y UBO',
     subItems: [
-      'Organigrama completo',
-      'UBOs identificados',
-      'Estructuras complejas documentadas (offshore, trusts, camadas)',
-      'Documentos societarios adjuntos',
+      { label: 'Organigrama completo', pdfName: 'Organigrama completo.pdf', pdfSize: '1.8 MB' },
+      { label: 'UBOs identificados', pdfName: 'UBOs identificados.pdf', pdfSize: '760 KB' },
+      { label: 'Estructuras complejas documentadas (offshore, trusts, camadas)', pdfName: 'Estructuras complejas documentadas (offshore, trusts, camadas).pdf', pdfSize: '2.1 MB' },
+      { label: 'Documentos societarios adjuntos', pdfName: 'Documentos societarios adjuntos.pdf', pdfSize: '4.5 MB' },
     ],
   },
   {
     title: '3 — KYC de representantes y firmantes',
     subItems: [
-      'Lista de firmantes/rep legales (nombre + rol)',
-      'ID foto frente — por persona',
-      'ID foto dorso — por persona',
+      { label: 'Lista de firmantes/rep legales (nombre + rol)', pdfName: 'Lista de firmantes_rep legales (nombre + rol).pdf', pdfSize: '540 KB' },
+      { label: 'ID foto frente — por persona', pdfName: 'ID foto frente — por persona.pdf', pdfSize: '1.2 MB' },
+      { label: 'ID foto dorso — por persona', pdfName: 'ID foto dorso — por persona.pdf', pdfSize: '1.1 MB' },
     ],
     note: 'Si falta alguno → bloquea avance',
   },
   {
     title: '4 — Screening listas restrictivas',
     subItems: [
-      'Empresa verificada',
-      'Rep legal verificado',
-      'UBOs verificados',
+      { label: 'Empresa verificada', pdfName: 'Empresa verificada.pdf', pdfSize: '430 KB' },
+      { label: 'Rep legal verificado', pdfName: 'Rep legal verificado.pdf', pdfSize: '390 KB' },
+      { label: 'UBOs verificados', pdfName: 'UBOs verificados.pdf', pdfSize: '410 KB' },
     ],
     note: 'Futuro API Noto',
   },
   {
     title: '5 — Evaluación del negocio',
     subItems: [
-      'Revisión sitio web con Ballerine (link + resultado)',
-      'MCC contrastado',
-      'Actividades prohibidas verificadas',
+      { label: 'Revisión sitio web con Ballerine', isLink: true },
+      { label: 'MCC contrastado' },
+      { label: 'Actividades prohibidas verificadas' },
     ],
   },
   {
@@ -905,9 +905,9 @@ const COMPLIANCE_STEPS = [
     title: '7 — Programa de compliance',
     subtitle: 'Solo Payfac/PSP/Fintech, no blocker',
     subItems: [
-      'Políticas AML/KYC revisadas',
-      'Estructura interna de compliance revisada',
-      'Histórico regulatorio revisado',
+      { label: 'Políticas AML/KYC revisadas', pdfName: 'Políticas AML_KYC revisadas.pdf', pdfSize: '1.6 MB' },
+      { label: 'Estructura interna de compliance revisada', pdfName: 'Estructura interna de compliance revisada.pdf', pdfSize: '2.0 MB' },
+      { label: 'Histórico regulatorio revisado', pdfName: 'Histórico regulatorio revisado.pdf', pdfSize: '970 KB' },
     ],
   },
   {
@@ -923,24 +923,25 @@ const COMPLIANCE_STEPS = [
 
 const COMPLIANCE_CHECKLIST = COMPLIANCE_STEPS.map(s => ({ label: s.title }))
 
-/* ─── Compliance Sub-item (checkbox row with expand panel) ─── */
-function ComplianceSubItem({ label, checked, waived, isOpen, onToggle, onMarkDone, onWaive, addLog, editable, onRequestSales, requestedToSales }) {
-  const [linkValue, setLinkValue] = useState('')
+/* ─── Compliance Sub-item (non-collapsible) ─── */
+function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, onMarkDone, onWaive, editable, onRequestSales, requestedToSales }) {
   const [noteValue, setNoteValue] = useState('')
+  const [linkValue, setLinkValue] = useState('')
+
+  // Checkbox-only items (step 5 non-link sub-items)
+  const isCheckboxOnly = !pdfName && !isLink && !editable
 
   return (
-    <div className={`rounded-[8px] border border-[#E5E7EB] bg-white ${isOpen ? 'shadow-[0_1px_4px_rgba(0,0,0,0.06)]' : ''}`}>
-      <div
-        className={`flex items-center gap-3 cursor-pointer ${isOpen ? 'px-4 pt-3 pb-2' : 'px-4 py-2.5'}`}
-        onClick={() => onToggle?.()}
-      >
+    <div className="rounded-[8px] border border-[#E5E7EB] bg-white">
+      {/* Header row: checkbox + label + badges */}
+      <div className="flex items-center gap-3 px-4 py-2.5">
         <div
           className={`w-[18px] h-[18px] rounded-[4px] shrink-0 flex items-center justify-center ${
             waived
               ? 'border-[1.5px] border-[#E5E7EB] bg-[#F3F4F6] cursor-not-allowed opacity-50'
               : editable ? 'cursor-pointer hover:opacity-80' : 'cursor-default'
           } ${checked && !waived ? 'bg-[#180047]' : !waived ? 'border-[1.5px] border-[#D1D5DB] bg-white' : ''}`}
-          onClick={(e) => { e.stopPropagation(); if (editable && !waived) onMarkDone() }}
+          onClick={() => { if (editable && !waived) onMarkDone() }}
         >
           {checked && !waived && <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
         </div>
@@ -952,62 +953,63 @@ function ComplianceSubItem({ label, checked, waived, isOpen, onToggle, onMarkDon
           <span className="text-[10px] font-semibold text-[#dc6038] bg-[#FFE9D9] px-2 py-0.5 rounded-full uppercase tracking-wide">SOLICITADO A SALES</span>
         )}
         <span className="flex-1" />
-        {isOpen
-          ? <ChevronUp size={16} className="text-[#374151] shrink-0" />
-          : <ChevronDown size={16} className="text-[#9CA3AF] shrink-0" />
-        }
       </div>
 
-      {isOpen && (
-        <div className="px-4 pb-4 flex flex-col gap-3">
-          <div className="flex items-center gap-2 border border-[#E5E7EB] rounded-full px-3.5 py-2.5 bg-white focus-within:border-[#5a6dd7] transition-colors">
-            <Link2 size={15} className="text-[#9CA3AF] shrink-0" />
+      {/* PDF preview row (only if pdfName is set) */}
+      {pdfName && (
+        <div className="px-4 pb-2 flex items-center gap-2">
+          <span className="text-[10px] font-bold text-white bg-[#DC2626] px-1.5 py-0.5 rounded-[3px] uppercase tracking-wide shrink-0">PDF</span>
+          <span className="text-[12px] text-[#374151] truncate">{pdfName}</span>
+          {pdfSize && <span className="text-[11px] text-[#9CA3AF] shrink-0">{pdfSize}</span>}
+        </div>
+      )}
+
+      {/* Link input row (for step 5 first sub-item) */}
+      {isLink && (
+        <div className="px-4 pb-2">
+          <div className="flex items-center gap-2 border border-[#E5E7EB] rounded-full px-3.5 py-2 bg-white focus-within:border-[#5a6dd7] transition-colors">
+            <Link2 size={14} className="text-[#9CA3AF] shrink-0" />
             <input
               type="url"
               value={linkValue}
               onChange={(e) => setLinkValue(e.target.value)}
-              placeholder="Add document link"
+              placeholder="Agregar link"
               disabled={!editable}
               className="flex-1 bg-transparent border-none outline-none text-[13px] text-[#374151] placeholder:text-[#9CA3AF] min-w-0 disabled:cursor-default"
-              onClick={(e) => e.stopPropagation()}
             />
           </div>
+        </div>
+      )}
+
+      {/* Comment textarea + buttons (shown when has PDF, link, or editable with buttons) */}
+      {(pdfName !== undefined || isLink) && (
+        <div className="px-4 pb-3 flex flex-col gap-2.5">
           <textarea
             value={noteValue}
             onChange={(e) => setNoteValue(e.target.value)}
-            placeholder="Write a note here"
-            rows={3}
+            placeholder="Agregar un comentario"
+            rows={2}
             disabled={!editable}
-            className="w-full border border-[#E5E7EB] rounded-[12px] px-3.5 py-3 text-[13px] bg-white outline-none focus:border-[#5a6dd7] placeholder:text-[#9CA3AF] resize-none disabled:cursor-default"
-            onClick={(e) => e.stopPropagation()}
+            className="w-full border border-[#E5E7EB] rounded-[10px] px-3.5 py-2.5 text-[13px] bg-white outline-none focus:border-[#5a6dd7] placeholder:text-[#9CA3AF] resize-none disabled:cursor-default disabled:bg-[#F9FAFB]"
           />
           {editable && (
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <button
-                className="text-[13px] font-semibold text-white bg-[#180047] px-5 py-2.5 rounded-full border-none cursor-pointer hover:bg-[#2a0066] transition-colors"
-                onClick={(e) => { e.stopPropagation(); onMarkDone(); onToggle?.() }}
+                className="flex items-center gap-1.5 text-[13px] font-semibold text-white bg-[#180047] px-4 py-2 rounded-full border-none cursor-pointer hover:bg-[#2a0066] transition-colors"
+                onClick={() => onMarkDone()}
               >
-                Guardar
+                <Check size={13} /> Guardar
               </button>
-              {waived ? (
-                <button
-                  className="flex items-center gap-2 text-[13px] font-medium text-[#374151] bg-white px-5 py-2.5 rounded-full border border-[#E5E7EB] cursor-pointer hover:bg-[#F9FAFB]"
-                  onClick={(e) => { e.stopPropagation(); onWaive() }}
-                >
-                  <RefreshCw size={14} /> Deshacer
-                </button>
-              ) : (
-                <button
-                  className="flex items-center gap-2 text-[13px] font-medium text-[#374151] bg-[#EDF0FF] px-5 py-2.5 rounded-full border-none cursor-pointer hover:bg-[#dde3ff]"
-                  onClick={(e) => { e.stopPropagation(); onWaive() }}
-                >
-                  <Ban size={14} /> Eximir
-                </button>
-              )}
+              <button
+                className="flex items-center gap-1.5 text-[13px] font-medium text-[#5a6dd7] bg-[#EDF0FF] px-4 py-2 rounded-full border-none cursor-pointer hover:bg-[#dde3ff] transition-colors"
+                onClick={() => onWaive()}
+              >
+                <Ban size={13} /> Eximir
+              </button>
               <span className="flex-1" />
               <button
                 className="flex items-center gap-1 text-[13px] font-medium text-[#180047] bg-transparent border-none cursor-pointer hover:text-[#2a0066]"
-                onClick={(e) => { e.stopPropagation(); onRequestSales?.(label) }}
+                onClick={() => onRequestSales?.(label)}
               >
                 Solicitar a sales <ArrowUpRight size={13} />
               </button>
@@ -1021,7 +1023,6 @@ function ComplianceSubItem({ label, checked, waived, isOpen, onToggle, onMarkDon
 
 /* ─── Compliance Step (outer collapsible card) ─── */
 function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, subChecked, onSubCheck, subWaived, onSubWaive, onToggleAllSubs, onRequestSales, salesRequested, addLog, editable }) {
-  const [openSubIdx, setOpenSubIdx] = useState(null)
   // Auto-check main when all sub-items are checked or eximidos
   const totalSubs = step.subItems?.length || 0
   const completedSubs = totalSubs
@@ -1045,6 +1046,10 @@ function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, subChecked, onSub
         >
           {checked && <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
         </div>
+        {/* Green numbered circle */}
+        <div className="w-[20px] h-[20px] rounded-full bg-[#10B981] shrink-0 flex items-center justify-center">
+          <span className="text-[10px] font-bold text-white leading-none">{stepIdx + 1}</span>
+        </div>
         <span className="text-[14px] font-medium text-[#0A0B0D]">{step.title}</span>
         <span className="flex-1" />
         {isOpen
@@ -1060,11 +1065,12 @@ function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, subChecked, onSub
           {step.subItems && step.subItems.map((sub, j) => (
             <ComplianceSubItem
               key={j}
-              label={sub}
+              label={sub.label}
+              pdfName={sub.pdfName}
+              pdfSize={sub.pdfSize}
+              isLink={sub.isLink}
               checked={subChecked.has(j)}
               waived={subWaived.has(j)}
-              isOpen={openSubIdx === j}
-              onToggle={() => setOpenSubIdx(prev => prev === j ? null : j)}
               onMarkDone={() => onSubCheck(j)}
               onWaive={() => onSubWaive(j)}
               addLog={addLog}
@@ -1088,65 +1094,82 @@ function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, subChecked, onSub
 }
 
 function RiskProfileFields({ editable }) {
-  const [classification, setClassification] = useState('')
-  const [drivers, setDrivers] = useState('')
-  if (editable) {
-    return (
-      <div className="flex flex-col gap-3 bg-white border border-[#E5E7EB] rounded-[8px] p-4">
-        <div>
-          <span className="text-[12px] text-[#374151] font-medium block mb-1">Clasificación</span>
-          <select value={classification} onChange={e => setClassification(e.target.value)} className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white">
-            <option value="">Seleccionar</option>
-            <option>Bajo</option><option>Medio</option><option>Alto</option>
-          </select>
-        </div>
-        <div>
-          <span className="text-[12px] text-[#374151] font-medium block mb-1">Drivers</span>
-          <textarea value={drivers} onChange={e => setDrivers(e.target.value)} placeholder="Jurisdicción, industria, producto, canal, tipo de cliente" rows={3} className="w-full border border-[#D1D5DB] rounded-[6px] px-3 py-2 text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white resize-none placeholder:text-[#9CA3AF]" />
-        </div>
-      </div>
-    )
-  }
+  const [riskLevel, setRiskLevel] = useState('')
+  const [comment, setComment] = useState('')
+  const RISK_LEVELS = ['Alto', 'Medio', 'Bajo']
   return (
     <div className="flex flex-col gap-3 bg-white border border-[#E5E7EB] rounded-[8px] p-4">
-      <InfoField label="Clasificación" value={classification} />
-      <InfoField label="Drivers" value={drivers} />
+      {/* Pill segmented control */}
+      <div>
+        <span className="text-[12px] text-[#374151] font-medium block mb-2">Clasificación de riesgo</span>
+        <div className="flex gap-1 bg-[#F3F4F6] rounded-full p-1 w-fit">
+          {RISK_LEVELS.map(level => (
+            <button
+              key={level}
+              disabled={!editable}
+              onClick={() => editable && setRiskLevel(prev => prev === level ? '' : level)}
+              className={`flex items-center gap-1.5 text-[13px] font-medium px-4 py-1.5 rounded-full border-none transition-colors cursor-pointer disabled:cursor-default ${
+                riskLevel === level
+                  ? 'bg-white text-[#180047] shadow-[0_1px_3px_rgba(0,0,0,0.12)]'
+                  : 'bg-transparent text-[#6B7280] hover:text-[#374151]'
+              }`}
+            >
+              {riskLevel === level && <Check size={12} />}
+              {level}
+            </button>
+          ))}
+        </div>
+      </div>
+      {/* Comment textarea */}
+      <div>
+        <textarea
+          value={comment}
+          onChange={e => setComment(e.target.value)}
+          placeholder="Agregar un comentario"
+          rows={3}
+          disabled={!editable}
+          className="w-full border border-[#E5E7EB] rounded-[10px] px-3.5 py-2.5 text-[13px] text-[#374151] outline-none focus:border-[#5a6dd7] bg-white resize-none placeholder:text-[#9CA3AF] disabled:cursor-default disabled:bg-[#F9FAFB]"
+        />
+      </div>
     </div>
   )
 }
 
 function FinalDecisionFields({ editable }) {
   const [decision, setDecision] = useState('')
-  const [date, setDate] = useState('')
-  const [owner, setOwner] = useState('')
-  if (editable) {
-    return (
-      <div className="grid grid-cols-3 gap-3 bg-white border border-[#E5E7EB] rounded-[8px] p-4">
-        <div>
-          <span className="text-[12px] text-[#374151] font-medium block mb-1">Decisión</span>
-          <select value={decision} onChange={e => setDecision(e.target.value)} className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white">
+  const [responsible, setResponsible] = useState('')
+  const [nextReview, setNextReview] = useState('')
+  return (
+    <div className="grid grid-cols-3 gap-3 bg-white border border-[#E5E7EB] rounded-[8px] p-4">
+      <div>
+        <span className="text-[12px] text-[#374151] font-medium block mb-1">Decisión</span>
+        {editable ? (
+          <select value={decision} onChange={e => setDecision(e.target.value)} className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[34px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white">
             <option value="">Seleccionar</option>
             <option>Aprobado</option>
             <option>Aprobado con condiciones</option>
             <option>Reprobado</option>
           </select>
-        </div>
-        <div>
-          <span className="text-[12px] text-[#374151] font-medium block mb-1">Fecha próxima revisión</span>
-          <input type="text" value={date} onChange={e => setDate(e.target.value)} placeholder="DD/MM/AAAA" className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white placeholder:text-[#9CA3AF]" />
-        </div>
-        <div>
-          <span className="text-[12px] text-[#374151] font-medium block mb-1">Responsable de la decisión</span>
-          <input type="text" value={owner} onChange={e => setOwner(e.target.value)} placeholder="Nombre" className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white placeholder:text-[#9CA3AF]" />
-        </div>
+        ) : (
+          <InfoField label="" value={decision} />
+        )}
       </div>
-    )
-  }
-  return (
-    <div className="grid grid-cols-3 gap-3 bg-white border border-[#E5E7EB] rounded-[8px] p-4">
-      <InfoField label="Decisión" value={decision} />
-      <InfoField label="Fecha próxima revisión" value={date} />
-      <InfoField label="Responsable de la decisión" value={owner} />
+      <div>
+        <span className="text-[12px] text-[#374151] font-medium block mb-1">Responsable</span>
+        {editable ? (
+          <input type="text" value={responsible} onChange={e => setResponsible(e.target.value)} placeholder="Nombre" className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[34px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white placeholder:text-[#9CA3AF]" />
+        ) : (
+          <InfoField label="" value={responsible} />
+        )}
+      </div>
+      <div>
+        <span className="text-[12px] text-[#374151] font-medium block mb-1">Fecha de próxima revisión</span>
+        {editable ? (
+          <input type="text" value={nextReview} onChange={e => setNextReview(e.target.value)} placeholder="DD/MM/AAAA" className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[34px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white placeholder:text-[#9CA3AF]" />
+        ) : (
+          <InfoField label="" value={nextReview} />
+        )}
+      </div>
     </div>
   )
 }
@@ -2745,8 +2768,9 @@ export default function ClientDetailPage() {
     const step = COMPLIANCE_STEPS[stepIdx]
     const sub = step?.subItems?.[subIdx]
     if (sub) {
+      const subLabel = typeof sub === 'object' ? sub.label : sub
       const was = (complianceSubChecked[stepIdx] || new Set()).has(subIdx)
-      addLog(was ? `'${sub}' desmarcado` : `'${sub}' se ha marcado como lista`)
+      addLog(was ? `'${subLabel}' desmarcado` : `'${subLabel}' se ha marcado como lista`)
     }
   }
   const handleComplianceSubWaive = (stepIdx, subIdx) => {
