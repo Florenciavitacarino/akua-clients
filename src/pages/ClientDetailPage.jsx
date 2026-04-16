@@ -524,6 +524,7 @@ function RequestToSalesModal({ documentName = '', onCancel, onSend }) {
   const [doc, setDoc] = useState(documentName)
   const [message, setMessage] = useState('')
   const [channels, setChannels] = useState(new Set(['slack']))
+  const [sent, setSent] = useState(false)
   const canSend = doc.trim().length > 0 && message.trim().length > 0
 
   const toggleChannel = (ch) => {
@@ -532,6 +533,45 @@ function RequestToSalesModal({ documentName = '', onCancel, onSend }) {
       if (next.has(ch)) next.delete(ch); else next.add(ch)
       return next
     })
+  }
+
+  const handleSend = () => {
+    if (!canSend) return
+    onSend({ document: doc.trim(), message: message.trim(), channels: Array.from(channels) })
+    setSent(true)
+  }
+
+  if (sent) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+        <div className="bg-white rounded-[16px] w-[620px] max-w-[90vw] shadow-xl p-5 flex flex-col gap-6">
+          <div className="flex items-center justify-between">
+            <h3 className="text-[20px] font-semibold text-[#0A0B0D] m-0 leading-tight">Solicitar documento a Sales</h3>
+            <button onClick={onCancel} className="text-[#9CA3AF] hover:text-[#374151] bg-transparent border-none cursor-pointer"><X size={18} /></button>
+          </div>
+          <div className="flex flex-col items-center justify-center py-12 gap-6">
+            <div className="w-[80px] h-[80px] rounded-full bg-gradient-to-br from-[#34D399] to-[#10B981] flex items-center justify-center relative">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13"/>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+              </svg>
+              <div className="absolute -bottom-1 -right-1 w-[28px] h-[28px] rounded-full bg-[#10B981] border-[3px] border-white flex items-center justify-center">
+                <Check size={14} className="text-white" strokeWidth={3} />
+              </div>
+            </div>
+            <p className="text-[16px] font-medium text-[#0A0B0D] m-0">La solicitud fue enviada con éxito</p>
+          </div>
+          <div className="flex items-center justify-end">
+            <button
+              onClick={onCancel}
+              className="text-[14px] font-normal text-[#212529] bg-white px-5 h-[36px] rounded-full border border-[#dee2e6] cursor-pointer hover:bg-[#F9FAFB]"
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -602,7 +642,7 @@ function RequestToSalesModal({ documentName = '', onCancel, onSend }) {
             Cancelar
           </button>
           <button
-            onClick={() => canSend && onSend({ document: doc.trim(), message: message.trim(), channels: Array.from(channels) })}
+            onClick={handleSend}
             disabled={!canSend}
             className={`text-[14px] font-normal text-white px-4 h-[32px] rounded-full border-none ${
               canSend ? 'bg-[#180047] cursor-pointer hover:bg-[#2a0066]' : 'bg-[#9CA3AF] cursor-not-allowed'
@@ -703,7 +743,7 @@ const COMPLIANCE_STEPS = [
 const COMPLIANCE_CHECKLIST = COMPLIANCE_STEPS.map(s => ({ label: s.title }))
 
 /* ─── Compliance Sub-item (checkbox row with expand panel) ─── */
-function ComplianceSubItem({ label, checked, waived, isOpen, onToggle, onMarkDone, onWaive, addLog, editable, onRequestSales }) {
+function ComplianceSubItem({ label, checked, waived, isOpen, onToggle, onMarkDone, onWaive, addLog, editable, onRequestSales, requestedToSales }) {
   const [linkValue, setLinkValue] = useState('')
   const [noteValue, setNoteValue] = useState('')
 
@@ -726,6 +766,9 @@ function ComplianceSubItem({ label, checked, waived, isOpen, onToggle, onMarkDon
         <span className={`text-[13px] ${checked ? 'text-[#374151]' : 'text-[#1F2937]'}`}>{label}</span>
         {waived && (
           <span className="text-[10px] font-semibold text-[#5a6dd7] bg-[#EDF0FF] px-2 py-0.5 rounded-full uppercase tracking-wide">EXIMIDO</span>
+        )}
+        {requestedToSales && (
+          <span className="text-[10px] font-semibold text-[#dc6038] bg-[#FFE9D9] px-2 py-0.5 rounded-full uppercase tracking-wide">SOLICITADO A SALES</span>
         )}
         <span className="flex-1" />
         {isOpen
@@ -796,7 +839,7 @@ function ComplianceSubItem({ label, checked, waived, isOpen, onToggle, onMarkDon
 }
 
 /* ─── Compliance Step (outer collapsible card) ─── */
-function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, subChecked, onSubCheck, subWaived, onSubWaive, onToggleAllSubs, onRequestSales, addLog, editable }) {
+function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, subChecked, onSubCheck, subWaived, onSubWaive, onToggleAllSubs, onRequestSales, salesRequested, addLog, editable }) {
   const [openSubIdx, setOpenSubIdx] = useState(null)
   // Auto-check main when all sub-items are checked or eximidos
   const totalSubs = step.subItems?.length || 0
@@ -845,7 +888,8 @@ function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, subChecked, onSub
               onWaive={() => onSubWaive(j)}
               addLog={addLog}
               editable={editable}
-              onRequestSales={onRequestSales}
+              onRequestSales={onRequestSales ? (label) => onRequestSales(stepIdx, j, label) : undefined}
+              requestedToSales={salesRequested?.has?.(`${stepIdx}.${j}`)}
             />
           ))}
 
@@ -951,9 +995,9 @@ function FranchiseSignupFields({ editable }) {
   )
 }
 
-function ComplianceEdit({ addLog, subChecked, subWaived, onSubCheck, onSubWaive, onToggleAllSubs }) {
+function ComplianceEdit({ addLog, subChecked, subWaived, onSubCheck, onSubWaive, onToggleAllSubs, salesRequested, onRequestSalesConfirm }) {
   const [openStepIdx, setOpenStepIdx] = useState(0)
-  const [requestModalDoc, setRequestModalDoc] = useState(null)
+  const [requestModal, setRequestModal] = useState(null) // { stepIdx, subIdx, label }
   return (
     <div className="flex flex-col">
       {COMPLIANCE_STEPS.map((step, i) => (
@@ -968,18 +1012,19 @@ function ComplianceEdit({ addLog, subChecked, subWaived, onSubCheck, onSubWaive,
           onSubCheck={(j) => onSubCheck(i, j)}
           onSubWaive={(j) => onSubWaive(i, j)}
           onToggleAllSubs={(nextChecked) => onToggleAllSubs(i, nextChecked)}
-          onRequestSales={(docName) => setRequestModalDoc(docName)}
+          onRequestSales={(stepIdx, subIdx, label) => setRequestModal({ stepIdx, subIdx, label })}
+          salesRequested={salesRequested}
           addLog={addLog}
           editable
         />
       ))}
-      {requestModalDoc !== null && (
+      {requestModal && (
         <RequestToSalesModal
-          documentName={requestModalDoc}
-          onCancel={() => setRequestModalDoc(null)}
+          documentName={requestModal.label}
+          onCancel={() => setRequestModal(null)}
           onSend={(data) => {
             addLog?.(`Solicitud a Sales: '${data.document}' (${data.channels.join(', ')})`)
-            setRequestModalDoc(null)
+            onRequestSalesConfirm?.(requestModal.stepIdx, requestModal.subIdx)
           }}
         />
       )}
@@ -987,7 +1032,7 @@ function ComplianceEdit({ addLog, subChecked, subWaived, onSubCheck, onSubWaive,
   )
 }
 
-function ComplianceView({ subChecked = {}, subWaived = {} }) {
+function ComplianceView({ subChecked = {}, subWaived = {}, salesRequested }) {
   const [openStepIdx, setOpenStepIdx] = useState(null)
   return (
     <div className="flex flex-col">
@@ -1002,6 +1047,7 @@ function ComplianceView({ subChecked = {}, subWaived = {} }) {
           subWaived={subWaived[i] || new Set()}
           onSubCheck={() => {}}
           onSubWaive={() => {}}
+          salesRequested={salesRequested}
           addLog={() => {}}
           editable={false}
         />
@@ -2399,6 +2445,14 @@ export default function ClientDetailPage() {
   // Compliance sub-items state: per-step Sets of sub-indices
   const [complianceSubChecked, setComplianceSubChecked] = useState({})
   const [complianceSubWaived, setComplianceSubWaived] = useState({})
+  const [complianceSalesRequested, setComplianceSalesRequested] = useState(new Set())
+  const handleComplianceSalesConfirm = (stepIdx, subIdx) => {
+    setComplianceSalesRequested(prev => {
+      const next = new Set(prev)
+      next.add(`${stepIdx}.${subIdx}`)
+      return next
+    })
+  }
   const handleComplianceSubCheck = (stepIdx, subIdx) => {
     setComplianceSubChecked(prev => {
       const s = new Set(prev[stepIdx] || [])
@@ -2739,12 +2793,15 @@ export default function ClientDetailPage() {
                         onSubCheck={handleComplianceSubCheck}
                         onSubWaive={handleComplianceSubWaive}
                         onToggleAllSubs={handleComplianceToggleAllSubs}
+                        salesRequested={complianceSalesRequested}
+                        onRequestSalesConfirm={handleComplianceSalesConfirm}
                       />
                     : <ComplianceView
                         checkedItems={checkedItems.compliance}
                         waivedItems={waivedItems.compliance}
                         subChecked={complianceSubChecked}
                         subWaived={complianceSubWaived}
+                        salesRequested={complianceSalesRequested}
                       />
                   )}
                   {activeDept === 'fraud' && (
