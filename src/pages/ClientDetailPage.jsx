@@ -550,15 +550,7 @@ function RequestToSalesModal({ documentName = '', onCancel, onSend }) {
             <button onClick={onCancel} className="text-[#9CA3AF] hover:text-[#374151] bg-transparent border-none cursor-pointer"><X size={18} /></button>
           </div>
           <div className="flex flex-col items-center justify-center py-12 gap-6">
-            <div className="w-[80px] h-[80px] rounded-full bg-gradient-to-br from-[#34D399] to-[#10B981] flex items-center justify-center relative">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="22" y1="2" x2="11" y2="13"/>
-                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-              </svg>
-              <div className="absolute -bottom-1 -right-1 w-[28px] h-[28px] rounded-full bg-[#10B981] border-[3px] border-white flex items-center justify-center">
-                <Check size={14} className="text-white" strokeWidth={3} />
-              </div>
-            </div>
+            <img src="/link-success.svg" alt="Success" className="w-[120px] h-[120px]" />
             <p className="text-[16px] font-medium text-[#0A0B0D] m-0">La solicitud fue enviada con éxito</p>
           </div>
           <div className="flex items-center justify-end">
