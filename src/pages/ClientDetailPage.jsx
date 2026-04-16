@@ -400,27 +400,16 @@ function ActivityPanel({ logs }) {
 
   if (!logs || logs.length === 0) {
     return (
-      <div className="bg-white border border-[#E5E7EB] rounded-[8px] w-full h-full flex flex-col">
-        <div className="flex items-center gap-2 px-4 pt-4 pb-2">
-          {activityIcon}
-          <p className="text-[14px] font-semibold text-[#0A0B0D]">Actividad</p>
-        </div>
-        <div className="flex-1 flex flex-col items-center justify-center px-4 pb-6">
-          <img src="/empty-activity.svg" alt="No activity" className="w-full max-w-[200px]" />
-          <p className="text-[14px] font-semibold text-[#0A0B0D] mt-4">Aún no se registró actividad</p>
-          <p className="text-[13px] text-[#9CA3AF] mt-1">Las acciones que realices aparecerán aquí.</p>
-        </div>
+      <div className="flex flex-col items-center justify-center py-10">
+        <img src="/empty-activity.svg" alt="No activity" className="w-full max-w-[200px]" />
+        <p className="text-[14px] font-semibold text-[#0A0B0D] mt-4">Aún no se registró actividad</p>
+        <p className="text-[13px] text-[#9CA3AF] mt-1">Las acciones que realices aparecerán aquí.</p>
       </div>
     )
   }
 
   return (
-    <div className="bg-white border border-[#E5E7EB] rounded-[8px] w-full h-full">
-      <div className="flex items-center gap-2 px-4 pt-4 pb-2">
-        {activityIcon}
-        <p className="text-[14px] font-semibold text-[#0A0B0D]">Actividad</p>
-      </div>
-      <div className="px-4 pb-3 max-h-[500px] overflow-y-auto">
+    <div className="max-h-[500px] overflow-y-auto">
         {logs.map((item, i) => (
           <div key={i} className="flex items-start gap-2.5 py-2.5 relative">
             {i < logs.length - 1 && (
@@ -2954,7 +2943,7 @@ export default function ClientDetailPage() {
       </div>
 
       {/* Main card */}
-      <div className="bg-white border border-[#dee2e6] rounded-[16px] p-4 min-h-[640px]">
+      <div className="bg-white border border-[#dee2e6] rounded-[16px] p-4">
         {/* Tabs row - segmented style */}
         <div className="flex items-center mb-4">
           <div className="inline-flex items-center gap-0 bg-white border border-[#E5E7EB] rounded-[10px] p-1">
