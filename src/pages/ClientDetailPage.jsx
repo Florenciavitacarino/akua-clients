@@ -1320,7 +1320,7 @@ function FraudSections({ editable }) {
       <InfoField label="Pagos únicos" value="Si" />
       <InfoField label="Pagos recurrentes" value="Si" info tooltip="Suscripciones / cobros automáticos" />
       <InfoField label="Frecuencia de cobro" value="Mensual" />
-      <InfoField label="Tarjetahabiente presente en el momento" value="Si" />
+      <InfoField label="Presencia del tarjetahabiente" value="Siempre" />
       <InfoField label="Tokenización de tarjetas" value="Si" />
     </div>
   )
@@ -1458,8 +1458,15 @@ function FraudEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog, review
 }
 
 function FraudView({ checkedItems, waivedItems, review }) {
-  const [openIdx, setOpenIdx] = useState(null)
+  // In view mode, all sections with content are expanded by default
   const sections = FraudSections({ editable: false })
+  const defaultOpen = new Set(FRAUD_CHECKLIST.map((_, i) => i).filter(i => sections[i]?.content !== null))
+  const [openSet, setOpenSet] = useState(defaultOpen)
+  const toggleIdx = (i) => setOpenSet(prev => {
+    const next = new Set(prev)
+    if (next.has(i)) next.delete(i); else next.add(i)
+    return next
+  })
   return (
     <>
       <div className="flex flex-col">
@@ -1475,9 +1482,10 @@ function FraudView({ checkedItems, waivedItems, review }) {
               tooltip={sec.tooltip}
               checked={checkedItems.has(i)}
               waived={waivedItems.has(i)}
-              isOpen={openIdx === i}
-              onToggle={() => setOpenIdx(prev => prev === i ? null : i)}
+              isOpen={openSet.has(i)}
+              onToggle={() => toggleIdx(i)}
               editable={false}
+              hideLinkNote
             >
               {sec.content}
             </SectionCard>
