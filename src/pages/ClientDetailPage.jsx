@@ -924,7 +924,7 @@ const COMPLIANCE_STEPS = [
 const COMPLIANCE_CHECKLIST = COMPLIANCE_STEPS.map(s => ({ label: s.title }))
 
 /* ─── Compliance Sub-item (non-collapsible) ─── */
-function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, onMarkDone, onWaive, editable, onRequestSales, requestedToSales }) {
+function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, onMarkDone, onWaive, editable, onRequestSales, requestedToSales, showViewComment }) {
   const [noteValue, setNoteValue] = useState('')
   const [linkValue, setLinkValue] = useState('')
 
@@ -1001,11 +1001,11 @@ function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, o
               rows={2}
               className="w-full border border-[#E5E7EB] rounded-[10px] px-3.5 py-2.5 text-[13px] bg-white outline-none focus:border-[#5a6dd7] placeholder:text-[#9CA3AF] resize-none"
             />
-          ) : (
+          ) : showViewComment ? (
             <div className="bg-[#F3F4F6] rounded-[10px] px-4 py-3 text-[13px] text-[#0A0B0D]">
-              {noteValue || 'Este es un comentario'}
+              Este es un comentario
             </div>
-          )}
+          ) : null}
           {editable && (
             <div className="flex items-center gap-2">
               <button
@@ -1061,8 +1061,8 @@ function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, subChecked, onSub
           {checked && <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
         </div>
         {/* Green numbered circle */}
-        <div className="w-[20px] h-[20px] rounded-full bg-[#10B981] shrink-0 flex items-center justify-center">
-          <span className="text-[10px] font-bold text-white leading-none">{stepIdx + 1}</span>
+        <div className="w-[20px] h-[20px] rounded-full bg-[#F2EDF9] shrink-0 flex items-center justify-center">
+          <span className="text-[10px] font-bold text-[#180047] leading-none">{stepIdx + 1}</span>
         </div>
         <span className="text-[14px] font-medium text-[#0A0B0D]">{step.title}</span>
         <span className="flex-1" />
@@ -1091,6 +1091,7 @@ function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, subChecked, onSub
               editable={editable}
               onRequestSales={onRequestSales ? (label) => onRequestSales(stepIdx, j, label) : undefined}
               requestedToSales={salesRequested?.has?.(`${stepIdx}.${j}`)}
+              showViewComment={!editable && stepIdx === 0 && j === 0}
             />
           ))}
 
