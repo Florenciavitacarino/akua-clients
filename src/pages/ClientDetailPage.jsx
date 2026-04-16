@@ -1814,9 +1814,8 @@ function UploadZone({ label }) {
   )
 }
 
-function SalesEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog }) {
-  const [openIdx, setOpenIdx] = useState(null)
-  const defaultSections = new Set([4, 5, 6]) // Info general, Docs, Config expanded by default
+function SalesEdit({ addLog }) {
+  const defaultSections = new Set([0, 1, 2])
   const [openSet, setOpenSet] = useState(defaultSections)
   const toggleSection = (i) => setOpenSet(prev => {
     const next = new Set(prev)
@@ -1826,28 +1825,12 @@ function SalesEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog }) {
 
   return (
     <div className="flex flex-col">
-      {/* 4 checklist items */}
-      {SALES_CHECKLIST.map((label, i) => (
-        <SectionCard
-          key={i}
-          title={label}
-          checked={checkedItems.has(i)}
-          waived={waivedItems.has(i)}
-          isOpen={openIdx === i}
-          onToggle={() => setOpenIdx(prev => prev === i ? null : i)}
-          onMarkDone={() => onCheck(i)}
-          onWaive={() => onWaive(i)}
-          addLog={addLog}
-          editable
-        />
-      ))}
-
       {/* Información general */}
       <SectionCard
         title="Información general"
         checked={false}
-        isOpen={openSet.has(4)}
-        onToggle={() => toggleSection(4)}
+        isOpen={openSet.has(0)}
+        onToggle={() => toggleSection(0)}
         editable
         hideLinkNote
       >
@@ -1862,8 +1845,8 @@ function SalesEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog }) {
       <SectionCard
         title="Documentación"
         checked={false}
-        isOpen={openSet.has(5)}
-        onToggle={() => toggleSection(5)}
+        isOpen={openSet.has(1)}
+        onToggle={() => toggleSection(1)}
         editable
         hideLinkNote
       >
@@ -1874,8 +1857,8 @@ function SalesEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog }) {
       <SectionCard
         title="Configuración del servicio"
         checked={false}
-        isOpen={openSet.has(6)}
-        onToggle={() => toggleSection(6)}
+        isOpen={openSet.has(2)}
+        onToggle={() => toggleSection(2)}
         editable
         hideLinkNote
       >
@@ -1913,25 +1896,22 @@ function SalesEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog }) {
   )
 }
 
-function SalesView({ checkedItems, waivedItems }) {
+function SalesView() {
   return (
     <div className="flex gap-4">
-      {/* Left column: collapsed items + Configuración */}
-      <div className="w-1/2 min-w-0 flex flex-col">
-        {SALES_CHECKLIST.map((label, i) => (
-          <SectionCard
-            key={i}
-            title={label}
-            checked={checkedItems.has(i)}
-            waived={waivedItems.has(i)}
-            isOpen={false}
-            onToggle={() => {}}
-            editable={false}
-            hideLinkNote
-          />
-        ))}
-        {/* Configuración del servicio expanded */}
-        <div className="border border-[#E5E7EB] rounded-[10px] p-4 bg-white mt-1">
+      {/* Left column: Información general + Configuración */}
+      <div className="w-1/2 min-w-0 flex flex-col gap-4">
+        <div className="border border-[#E5E7EB] rounded-[10px] p-4 bg-white">
+          <p className="text-[14px] font-semibold text-[#0A0B0D] mb-4">Información general</p>
+          <div className="flex flex-col gap-3">
+            <div className="grid grid-cols-2 gap-x-6">
+              <InfoField label="Nombre legal" value="Nombre" />
+              <InfoField label="Tenant" value="20/03/2026" />
+            </div>
+            <InfoField label="Website" value="www.hola.com" />
+          </div>
+        </div>
+        <div className="border border-[#E5E7EB] rounded-[10px] p-4 bg-white">
           <p className="text-[14px] font-semibold text-[#0A0B0D] mb-4">Configuración del servicio</p>
           <div className="flex flex-col gap-3">
             <InfoField label="Deal Type" value="Processing" />
