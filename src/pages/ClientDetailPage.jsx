@@ -957,10 +957,19 @@ function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, o
 
       {/* PDF preview row (only if pdfName is set) */}
       {pdfName && (
-        <div className="px-4 pb-2 flex items-center gap-2">
-          <span className="text-[10px] font-bold text-white bg-[#DC2626] px-1.5 py-0.5 rounded-[3px] uppercase tracking-wide shrink-0">PDF</span>
-          <span className="text-[12px] text-[#374151] truncate">{pdfName}</span>
-          {pdfSize && <span className="text-[11px] text-[#9CA3AF] shrink-0">{pdfSize}</span>}
+        <div className="mx-4 mb-2 flex items-center gap-3 bg-[#F9FAFB] rounded-[10px] px-3 py-2.5">
+          <div className="w-[36px] h-[36px] rounded-[8px] bg-[#FEE2E2] flex items-center justify-center shrink-0">
+            <span className="text-[10px] font-bold text-[#DC2626]">PDF</span>
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-[13px] text-[#0A0B0D] font-medium truncate m-0">{pdfName}</p>
+            {pdfSize && <p className="text-[11px] text-[#9CA3AF] m-0">{pdfSize}</p>}
+          </div>
+          {!editable && (
+            <button className="flex items-center gap-1 text-[13px] font-medium text-[#374151] bg-transparent border-none cursor-pointer hover:text-[#180047] shrink-0">
+              Abrir <ExternalLink size={13} />
+            </button>
+          )}
         </div>
       )}
 
@@ -984,14 +993,19 @@ function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, o
       {/* Comment textarea + buttons (shown when has PDF, link, or editable with buttons) */}
       {(pdfName !== undefined || isLink) && (
         <div className="px-4 pb-3 flex flex-col gap-2.5">
-          <textarea
-            value={noteValue}
-            onChange={(e) => setNoteValue(e.target.value)}
-            placeholder="Agregar un comentario"
-            rows={2}
-            disabled={!editable}
-            className="w-full border border-[#E5E7EB] rounded-[10px] px-3.5 py-2.5 text-[13px] bg-white outline-none focus:border-[#5a6dd7] placeholder:text-[#9CA3AF] resize-none disabled:cursor-default disabled:bg-[#F9FAFB]"
-          />
+          {editable ? (
+            <textarea
+              value={noteValue}
+              onChange={(e) => setNoteValue(e.target.value)}
+              placeholder="Agregar un comentario"
+              rows={2}
+              className="w-full border border-[#E5E7EB] rounded-[10px] px-3.5 py-2.5 text-[13px] bg-white outline-none focus:border-[#5a6dd7] placeholder:text-[#9CA3AF] resize-none"
+            />
+          ) : (
+            <div className="bg-[#F3F4F6] rounded-[10px] px-4 py-3 text-[13px] text-[#0A0B0D]">
+              {noteValue || 'Este es un comentario'}
+            </div>
+          )}
           {editable && (
             <div className="flex items-center gap-2">
               <button
