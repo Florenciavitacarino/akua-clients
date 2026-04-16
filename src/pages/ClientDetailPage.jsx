@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import DocumentsTab from '../components/DocumentsTab'
 import {
@@ -1788,73 +1788,127 @@ const SALES_OTROS_SERVICIOS = [
   'Payment Links',
 ]
 
+/* Upload zone component for Sales docs */
+function UploadZone({ label }) {
+  const [file, setFile] = useState(null)
+  const fileRef = useRef(null)
+  return (
+    <div>
+      <p className="text-[12px] font-semibold text-[#1F2937] mb-1.5">{label}</p>
+      <div
+        onClick={() => fileRef.current?.click()}
+        className="border border-dashed border-[#D1D5DB] rounded-[8px] py-5 flex flex-col items-center justify-center cursor-pointer hover:border-[#9CA3AF] transition-colors bg-white"
+      >
+        <input ref={fileRef} type="file" accept=".pdf" className="hidden" onChange={e => { if (e.target.files[0]) setFile(e.target.files[0]) }} />
+        {file ? (
+          <p className="text-[12px] text-[#0A0B0D] font-medium">{file.name}</p>
+        ) : (
+          <>
+            <ArrowUpRight size={16} className="text-[#9CA3AF] mb-1 rotate-45" />
+            <p className="text-[12px] text-[#374151]">Arrastra o hace click para subir</p>
+            <p className="text-[10px] text-[#9CA3AF] mt-0.5">Sólo archivos PDF - Máx 10 mb</p>
+          </>
+        )}
+      </div>
+    </div>
+  )
+}
+
 function SalesEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog }) {
   const [openIdx, setOpenIdx] = useState(null)
+  const defaultSections = new Set([4, 5, 6]) // Info general, Docs, Config expanded by default
+  const [openSet, setOpenSet] = useState(defaultSections)
+  const toggleSection = (i) => setOpenSet(prev => {
+    const next = new Set(prev)
+    if (next.has(i)) next.delete(i); else next.add(i)
+    return next
+  })
+
   return (
-    <div className="flex gap-4">
-      <div className="w-1/2 min-w-0 flex flex-col gap-4">
+    <div className="flex flex-col">
+      {/* 4 checklist items */}
+      {SALES_CHECKLIST.map((label, i) => (
+        <SectionCard
+          key={i}
+          title={label}
+          checked={checkedItems.has(i)}
+          waived={waivedItems.has(i)}
+          isOpen={openIdx === i}
+          onToggle={() => setOpenIdx(prev => prev === i ? null : i)}
+          onMarkDone={() => onCheck(i)}
+          onWaive={() => onWaive(i)}
+          addLog={addLog}
+          editable
+        />
+      ))}
+
+      {/* Información general */}
+      <SectionCard
+        title="Información general"
+        checked={false}
+        isOpen={openSet.has(4)}
+        onToggle={() => toggleSection(4)}
+        editable
+        hideLinkNote
+      >
+        <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+          <TextInput label="Nombre legal" placeholder="Nombre" />
+          <TextInput label="Tenant" placeholder="20/03/2026" />
+        </div>
+        <TextInput label="Website" placeholder="www.hola.com" />
+      </SectionCard>
+
+      {/* Documentación */}
+      <SectionCard
+        title="Documentación"
+        checked={false}
+        isOpen={openSet.has(5)}
+        onToggle={() => toggleSection(5)}
+        editable
+        hideLinkNote
+      >
+        {SALES_DOC_LABELS.map((label, i) => <UploadZone key={i} label={label} />)}
+      </SectionCard>
+
+      {/* Configuración del servicio */}
+      <SectionCard
+        title="Configuración del servicio"
+        checked={false}
+        isOpen={openSet.has(6)}
+        onToggle={() => toggleSection(6)}
+        editable
+        hideLinkNote
+      >
         <div>
-          {SALES_CHECKLIST.map((label, i) => (
-            <ChecklistItemEdit
-              key={i} label={label}
-              checked={checkedItems.has(i)} waived={waivedItems.has(i)}
-              isOpen={openIdx === i}
-              onToggle={() => setOpenIdx(openIdx === i ? null : i)}
-              onMarkDone={() => onCheck(i)}
-              onWaive={() => onWaive(i)}
-              addLog={addLog}
-            />
-          ))}
+          <span className="text-[12px] text-[#374151] font-medium block mb-1">Deal Type</span>
+          <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white">
+            <option>Processing</option><option>Acquiring</option><option>Issuing</option>
+          </select>
         </div>
-        <div className="bg-white border border-[#E5E7EB] rounded-[8px] p-4">
-          <p className="text-[13px] font-semibold text-[#0A0B0D] mb-3">Información general</p>
-          <div className="grid grid-cols-2 gap-3">
-            <TextInput label="Nombre legal" placeholder="Nombre legal del cliente" />
-            <TextInput label="Tenant" placeholder="20/03/2026" />
-            <TextInput label="Website" placeholder="www.hola.com" />
+        <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+          <TextInput label="3DS incluido" placeholder="No" />
+          <TextInput label="Tap on Phone incluído" placeholder="Si" />
+        </div>
+        <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+          <TextInput label="Set Up Fee" placeholder="1000 USD" />
+          <div>
+            <span className="text-[12px] text-[#374151] font-medium block mb-1">Collteral</span>
+            <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white">
+              <option>Depósito</option><option>Garantía bancaria</option><option>Sin colateral</option>
+            </select>
           </div>
         </div>
-        <div className="bg-white border border-[#E5E7EB] rounded-[8px] p-4">
-          <p className="text-[13px] font-semibold text-[#0A0B0D] mb-3">Configuración del servicio</p>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <span className="text-[12px] text-[#374151] font-medium block mb-1">Deal Type</span>
-              <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white">
-                <option>Processing</option>
-                <option>Acquiring</option>
-                <option>Issuing</option>
-              </select>
-            </div>
-            <RadioField label="3DS incluido" />
-            <RadioField label="Tap on Phone incluído" />
-            <TextInput label="Set Up Fee" placeholder="1000 USD" />
-            <div>
-              <span className="text-[12px] text-[#374151] font-medium block mb-1">Collteral</span>
-              <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white">
-                <option>Depósito</option>
-                <option>Garantía bancaria</option>
-                <option>Sin colateral</option>
-              </select>
-            </div>
-          </div>
-          <div className="bg-[#F9FAFB] rounded-[8px] p-3 mt-3">
-            <p className="text-[11px] font-semibold text-[#6B7280] uppercase tracking-wide mb-2">Otros servicios</p>
-            <div className="flex items-center gap-2">
-              <select className="flex-1 border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white">
-                <option>Seleccionar</option>
-                {SALES_OTROS_SERVICIOS.map(s => <option key={s}>{s}</option>)}
-              </select>
-              <button className="text-[12px] font-medium text-[#180047] bg-white px-3 py-1.5 rounded-full border border-[#180047] cursor-pointer hover:bg-[#F3F0FF] whitespace-nowrap shrink-0">+ Agregar otro</button>
-            </div>
+        <div className="bg-[#F9FAFB] rounded-[8px] p-3">
+          <p className="text-[11px] font-semibold text-[#6B7280] uppercase tracking-wide mb-2">Otros servicios</p>
+          <div className="flex items-center gap-2">
+            <select className="flex-1 border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white">
+              <option>Seleccionar</option>
+              {SALES_OTROS_SERVICIOS.map(s => <option key={s}>{s}</option>)}
+            </select>
+            <button className="text-[12px] font-medium text-[#180047] bg-white px-3 py-1.5 rounded-full border border-[#180047] cursor-pointer hover:bg-[#F3F0FF] whitespace-nowrap shrink-0">+ Agregar otro</button>
           </div>
         </div>
-      </div>
-      <div className="w-1/2 min-w-0 flex flex-col gap-4">
-        <div className="bg-white border border-[#E5E7EB] rounded-[8px] p-4">
-          <p className="text-[13px] font-semibold text-[#0A0B0D] mb-3">Documentación</p>
-          {SALES_DOC_LABELS.map((label, i) => <DocLinkInput key={i} label={label} />)}
-        </div>
-      </div>
+      </SectionCard>
     </div>
   )
 }
@@ -1862,38 +1916,44 @@ function SalesEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog }) {
 function SalesView({ checkedItems, waivedItems }) {
   return (
     <div className="flex gap-4">
-      <div className="w-1/2 min-w-0 flex flex-col gap-4">
-        <div>
-          {SALES_CHECKLIST.map((label, i) => (
-            <ChecklistItemView key={i} label={label} checked={checkedItems.has(i)} waived={waivedItems.has(i)} />
-          ))}
-        </div>
-        <div className="bg-white border border-[#E5E7EB] rounded-[8px] p-4">
-          <p className="text-[13px] font-semibold text-[#0A0B0D] mb-3">Información general</p>
-          <div className="grid grid-cols-2 gap-3">
-            <InfoField label="Nombre legal" value="Akua Pagos S.A." />
-            <InfoField label="Tenant" value="20/03/2026" />
-            <InfoField label="Website" value="www.hola.com" />
-          </div>
-        </div>
-        <div className="bg-white border border-[#E5E7EB] rounded-[8px] p-4">
-          <p className="text-[13px] font-semibold text-[#0A0B0D] mb-3">Configuración del servicio</p>
-          <div className="grid grid-cols-2 gap-3">
+      {/* Left column: collapsed items + Configuración */}
+      <div className="w-1/2 min-w-0 flex flex-col">
+        {SALES_CHECKLIST.map((label, i) => (
+          <SectionCard
+            key={i}
+            title={label}
+            checked={checkedItems.has(i)}
+            waived={waivedItems.has(i)}
+            isOpen={false}
+            onToggle={() => {}}
+            editable={false}
+            hideLinkNote
+          />
+        ))}
+        {/* Configuración del servicio expanded */}
+        <div className="border border-[#E5E7EB] rounded-[10px] p-4 bg-white mt-1">
+          <p className="text-[14px] font-semibold text-[#0A0B0D] mb-4">Configuración del servicio</p>
+          <div className="flex flex-col gap-3">
             <InfoField label="Deal Type" value="Processing" />
-            <InfoField label="3DS incluido" value="No" />
-            <InfoField label="Tap on Phone incluído" value="Si" />
-            <InfoField label="Set Up Fee" value="1000 USD" />
-            <InfoField label="Collteral" value="Depósito" />
-          </div>
-          <div className="bg-[#F9FAFB] rounded-[8px] p-3 mt-3">
-            <p className="text-[11px] font-semibold text-[#6B7280] uppercase tracking-wide mb-2">Otros servicios</p>
-            <EmptyBadge />
+            <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+              <InfoField label="3DS incluido" value="No" />
+              <InfoField label="Tap on Phone incluído" value="Si" />
+            </div>
+            <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+              <InfoField label="Set Up Fee" value="1000 USD" />
+              <InfoField label="Collteral" value="Depósito" />
+            </div>
+            <div className="bg-[#F9FAFB] rounded-[8px] p-3">
+              <p className="text-[11px] font-semibold text-[#6B7280] uppercase tracking-wide mb-2">Otros servicios</p>
+              <EmptyBadge />
+            </div>
           </div>
         </div>
       </div>
-      <div className="w-1/2 min-w-0 flex flex-col gap-4">
-        <div className="bg-white border border-[#E5E7EB] rounded-[8px] p-4">
-          <p className="text-[13px] font-semibold text-[#0A0B0D] mb-3">Documentación</p>
+      {/* Right column: Documentación */}
+      <div className="w-1/2 min-w-0">
+        <div className="border border-[#E5E7EB] rounded-[10px] p-4 bg-white">
+          <p className="text-[14px] font-semibold text-[#0A0B0D] mb-4">Documentación</p>
           {SALES_DOC_LABELS.map((label, i) => <DocLinkInput key={i} label={label} disabled />)}
         </div>
       </div>
