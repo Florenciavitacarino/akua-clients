@@ -887,7 +887,7 @@ const COMPLIANCE_STEPS = [
   },
   {
     title: 'Programa de compliance',
-    subtitle: 'Solo Payfac/PSP/Fintech, no blocker',
+    badge: 'SOLO PAYFAC / PSP / FINTECH',
     subItems: [
       { label: 'Políticas AML/KYC revisadas', pdfName: 'Políticas AML_KYC revisadas.pdf', pdfSize: '1.6 MB' },
       { label: 'Estructura interna de compliance revisada', pdfName: 'Estructura interna de compliance revisada.pdf', pdfSize: '2.0 MB' },
@@ -900,7 +900,7 @@ const COMPLIANCE_STEPS = [
   },
   {
     title: 'Inscripción en franquicias',
-    subtitle: 'Disponible post go-live',
+    badge: 'POST GO-LIVE',
     special: 'franchise_signup',
   },
 ]
@@ -1050,7 +1050,9 @@ function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, subChecked, onSub
         </div>
         <span className="text-[14px] font-medium text-[#0A0B0D]">{step.title}</span>
         {step.badge && (
-          <span className="text-[10px] font-semibold text-[#DC2626] bg-[#FEE2E2] px-2.5 py-0.5 rounded-full uppercase tracking-wide">{step.badge}</span>
+          <span className={`text-[10px] font-semibold px-2.5 py-0.5 rounded-full uppercase tracking-wide ${
+            step.badge === 'BLOQUEADO' ? 'text-[#DC2626] bg-[#FEE2E2]' : 'text-[#1E40AF] bg-[#DBEAFE]'
+          }`}>{step.badge}</span>
         )}
         <span className="flex-1" />
         {isOpen
@@ -1250,20 +1252,20 @@ function FranchiseSignupFields({ editable }) {
   const [visa, setVisa] = useState('')
   if (editable) {
     return (
-      <div className="grid grid-cols-2 gap-3 bg-white border border-[#E5E7EB] rounded-[8px] p-4">
+      <div className="grid grid-cols-2 gap-x-6">
         <div>
-          <span className="text-[12px] text-[#374151] font-medium block mb-1">Inscripción Mastercard — ID de registro</span>
-          <input type="text" value={mc} onChange={e => setMc(e.target.value)} placeholder="MC-ID" className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white placeholder:text-[#9CA3AF]" />
+          <span className="text-[12px] text-[#374151] font-semibold block mb-1">Inscripción Mastercard — ID de registro</span>
+          <input type="text" value={mc} onChange={e => setMc(e.target.value)} placeholder="Ingresar número" className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white placeholder:text-[#9CA3AF]" />
         </div>
         <div>
-          <span className="text-[12px] text-[#374151] font-medium block mb-1">Inscripción Visa — ID de registro</span>
-          <input type="text" value={visa} onChange={e => setVisa(e.target.value)} placeholder="VISA-ID" className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white placeholder:text-[#9CA3AF]" />
+          <span className="text-[12px] text-[#374151] font-semibold block mb-1">Inscripción Visa — ID de registro</span>
+          <input type="text" value={visa} onChange={e => setVisa(e.target.value)} placeholder="Ingresar número" className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white placeholder:text-[#9CA3AF]" />
         </div>
       </div>
     )
   }
   return (
-    <div className="grid grid-cols-2 gap-3 bg-white border border-[#E5E7EB] rounded-[8px] p-4">
+    <div className="grid grid-cols-2 gap-x-6">
       <InfoField label="Inscripción Mastercard — ID de registro" value={mc} />
       <InfoField label="Inscripción Visa — ID de registro" value={visa} />
     </div>
