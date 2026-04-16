@@ -3071,26 +3071,6 @@ export default function ClientDetailPage() {
               {/* Content based on inner tab */}
               {innerTab === 'information' && (
                 <>
-                  {(() => {
-                    const DEPT_LABELS = { compliance: 'Compliance', fraud: 'Fraud', finances: 'Finance', sales: 'Sales', legal: 'Legal and Contract', kickoff: 'Kickoff & Integration', golive: 'Go Live', review: '1st Review' }
-                    const activeBanners = Object.entries(deptConditions)
-                      .filter(([dept, list]) => list?.length > 0 && deptStatuses[dept] === 'completed_conditions')
-                    // On legal/finances, show ALL banners from any dept. On the owner dept, show its own. Otherwise hidden.
-                    const bannersToShow = (activeDept === 'legal' || activeDept === 'finances')
-                      ? activeBanners
-                      : activeBanners.filter(([dept]) => dept === activeDept)
-                    return bannersToShow.length > 0 ? (
-                      <div className="flex flex-col gap-3 mb-4">
-                        {bannersToShow.map(([dept, list]) => (
-                          <ConditionsBanner
-                            key={dept}
-                            title={dept === activeDept ? 'Aprobado con condiciones' : `${DEPT_LABELS[dept] || dept} — Aprobado con condiciones`}
-                            conditions={list}
-                          />
-                        ))}
-                      </div>
-                    ) : null
-                  })()}
                   {activeDept === 'compliance' && (isEditing
                     ? <ComplianceEdit
                         checkedItems={checkedItems.compliance}
