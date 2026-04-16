@@ -861,12 +861,8 @@ const COMPLIANCE_STEPS = [
   },
   {
     title: 'KYC de representantes y firmantes',
-    subItems: [
-      { label: 'Lista de firmantes/rep legales (nombre + rol)', pdfName: 'Lista de firmantes_rep legales (nombre + rol).pdf', pdfSize: '540 KB' },
-      { label: 'ID foto frente — por persona', pdfName: 'ID foto frente — por persona.pdf', pdfSize: '1.2 MB' },
-      { label: 'ID foto dorso — por persona', pdfName: 'ID foto dorso — por persona.pdf', pdfSize: '1.1 MB' },
-    ],
-    note: 'Si falta alguno → bloquea avance',
+    special: 'kyc_firmantes',
+    badge: 'BLOQUEADO',
   },
   {
     title: 'Screening en listas restrictivas',
@@ -1053,6 +1049,9 @@ function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, subChecked, onSub
           <span className="text-[10px] font-bold text-[#180047] leading-none">{stepIdx + 1}</span>
         </div>
         <span className="text-[14px] font-medium text-[#0A0B0D]">{step.title}</span>
+        {step.badge && (
+          <span className="text-[10px] font-semibold text-[#DC2626] bg-[#FEE2E2] px-2.5 py-0.5 rounded-full uppercase tracking-wide">{step.badge}</span>
+        )}
         <span className="flex-1" />
         {isOpen
           ? <ChevronUp size={18} className="text-[#374151] shrink-0" />
@@ -1083,6 +1082,7 @@ function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, subChecked, onSub
             />
           ))}
 
+          {step.special === 'kyc_firmantes' && <KycFirmantesFields editable={editable} />}
           {step.special === 'risk_profile' && <RiskProfileFields editable={editable} />}
           {step.special === 'final_decision' && <FinalDecisionFields editable={editable} />}
           {step.special === 'franchise_signup' && <FranchiseSignupFields editable={editable} />}
@@ -1092,6 +1092,74 @@ function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, subChecked, onSub
           )}
         </div>
       )}
+    </div>
+  )
+}
+
+function KycDocCard({ label, pdfName, pdfSize, onRequestSales }) {
+  const hasPdf = !!pdfName
+  return (
+    <div className={`flex items-center gap-3 rounded-[10px] px-3 py-2.5 ${hasPdf ? 'bg-[#F9FAFB]' : 'bg-white border border-[#E5E7EB]'}`}>
+      {hasPdf && (
+        <div className="w-[36px] h-[36px] rounded-[8px] bg-[#FEE2E2] flex items-center justify-center shrink-0">
+          <span className="text-[10px] font-bold text-[#DC2626]">PDF</span>
+        </div>
+      )}
+      <div className="min-w-0 flex-1">
+        <p className="text-[13px] text-[#0A0B0D] font-medium m-0">{label}</p>
+        {hasPdf && pdfSize && <p className="text-[11px] text-[#9CA3AF] m-0">{pdfSize}</p>}
+      </div>
+      {hasPdf ? (
+        <button className="flex items-center gap-1 text-[13px] font-medium text-[#374151] bg-transparent border-none cursor-pointer hover:text-[#180047] shrink-0">
+          Abrir <ExternalLink size={13} />
+        </button>
+      ) : onRequestSales ? (
+        <button
+          className="flex items-center gap-1 text-[13px] font-medium text-[#180047] bg-transparent border-none cursor-pointer hover:text-[#2a0066] shrink-0"
+          onClick={() => onRequestSales(label)}
+        >
+          Solicitar a sales <ArrowUpRight size={13} />
+        </button>
+      ) : null}
+    </div>
+  )
+}
+
+function KycFirmantesFields() {
+  return (
+    <div className="flex flex-col gap-4">
+      {/* Warning banner */}
+      <div className="flex items-center gap-2 bg-[#FFFBEB] border border-[#FDE68A] rounded-[8px] px-4 py-2.5">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+        <p className="text-[13px] text-[#0A0B0D] m-0">Falta completar al menos un firmante para poder avanzar</p>
+      </div>
+
+      {/* Person 1 */}
+      <div>
+        <p className="text-[14px] text-[#0A0B0D] m-0 mb-2">
+          <span className="font-semibold">Alan Juárex</span>
+          <span className="text-[#9CA3AF] font-normal"> · Representante legal</span>
+        </p>
+        <div className="grid grid-cols-2 gap-3">
+          <KycDocCard label="ID frente" pdfName="ID_frente_alan.pdf" pdfSize="2.4 MB" />
+          <KycDocCard label="ID dorso" pdfName="ID_dorso_alan.pdf" pdfSize="2.4 MB" />
+        </div>
+      </div>
+
+      {/* Person 2 */}
+      <div>
+        <p className="text-[14px] text-[#0A0B0D] m-0 mb-2">
+          <span className="font-semibold">María López</span>
+          <span className="text-[#9CA3AF] font-normal"> · Firmante</span>
+        </p>
+        <div className="grid grid-cols-2 gap-3">
+          <KycDocCard label="ID frente" pdfName="ID_frente_maria.pdf" pdfSize="2.4 MB" />
+          <KycDocCard label="ID dorso" />
+        </div>
+      </div>
     </div>
   )
 }
