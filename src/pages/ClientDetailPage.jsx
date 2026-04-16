@@ -715,6 +715,7 @@ function SectionCard({
   onRequestSales,
   requestedToSales,
   hideLinkNote,
+  headerBadge,
 }) {
   const [linkValue, setLinkValue] = useState('')
   const [noteValue, setNoteValue] = useState('')
@@ -748,6 +749,7 @@ function SectionCard({
           </span>
         )}
         {tag && <DeptTag dept={tag} />}
+        {headerBadge && <LegalStatusBadge badge={headerBadge} />}
         {waived && (
           <span className="text-[10px] font-semibold text-[#5a6dd7] bg-[#EDF0FF] px-2 py-0.5 rounded-full uppercase tracking-wide">EXIMIDO</span>
         )}
@@ -2078,471 +2080,396 @@ function SalesView() {
 
 /* ─── LEGAL AND CONTRACT CONTENT ─── */
 const LEGAL_CHECKLIST = [
-  "Contrato firmado por ambas partes",
-  "Depósito en garantía constituido",
-  "NDA vigente",
-  "Poderes del firmante verificados",
-  "Cargos 3DS acordados",
-  "Anexos I y II aceptados",
+  { label: 'Contrato', badge: 'POR VENCER' },
+  { label: 'NDA', badge: 'SIN AVANCE · 12 DÍAS' },
+  { label: 'Cargo de implementación' },
+  { label: 'Cargo recurrentes mensuales' },
+  { label: 'Cargos 3DS' },
+  { label: 'Forma de pago' },
+  { label: 'Depósito de garantía' },
 ]
 
-const LEGAL_DOC_LABELS = ['Certificados de Cámara de comercio', 'Poderes', 'Actas de asamblea', 'Histórico transaccional']
-
-function LegalDocsPanel({ disabled }) {
-  const Badge = ({ color, children }) => (
-    <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full" style={{
-      background: color === 'green' ? '#d1fae5' : color === 'blue' ? '#dbeafe' : color === 'gray' ? '#F3F4F6' : '#fef3c7',
-      color: color === 'green' ? '#047857' : color === 'blue' ? '#1e40af' : color === 'gray' ? '#6B7280' : '#b45309',
-    }}>{children}</span>
-  )
-  return (
-    <div className="bg-white border border-[#E5E7EB] rounded-[8px] p-4">
-      <p className="text-[14px] font-semibold text-[#0A0B0D] mb-3">Documentación</p>
-      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-2">Cargo de Implementación</p>
-      <DocLinkInput label="Certificados de Cámara de comercio" disabled={disabled} />
-      <DocLinkInput label="Poderes" disabled={disabled} />
-      <DocLinkInput label="Actas de asamblea" disabled={disabled} />
-      <DocLinkInput label="Histórico transaccional" disabled={disabled} />
-      <hr className="border-t border-[#E5E7EB] my-3" />
-      <p className="text-[14px] font-semibold text-[#0A0B0D] mb-3">Documentos de Constitución</p>
-      <DocLinkInput label="" disabled={disabled} />
-      <DocLinkInput label="" disabled={disabled} />
-      <hr className="border-t border-[#E5E7EB] my-3" />
-      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-2">Documentos del Contrato</p>
-      <DocLinkInput label="Contrato V5 completo" disabled={disabled} />
-      <p className="text-[13px] font-semibold text-[#0A0B0D] mt-3 mb-1.5">Anexo I – Descripción técnica y alcance</p>
-      <DocLinkInput label="" disabled={disabled} />
-      <div className="flex flex-wrap gap-1.5 mb-3">
-        <Badge color="green">99% Disponibilidad</Badge>
-        <Badge color="green">{'<'}1S Autorización</Badge>
-        <Badge color="blue">Visa & Mastercard</Badge>
-        <Badge color="gray">PCI DSS · AML · KYC</Badge>
+function LegalSections({ editable }) {
+  /* ── 0: Contrato ── */
+  const contrato = editable ? (
+    <>
+      <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+        <TextInput label="Fecha de firma" placeholder="18/02/2029" />
+        <TextInput label="Fecha de vencimiento" placeholder="30/09/2026" />
       </div>
-      <p className="text-[13px] font-semibold text-[#0A0B0D] mt-3 mb-1.5">Anexo II – SLA</p>
-      <DocLinkInput label="" disabled={disabled} />
+      <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+        <div>
+          <span className="text-[12px] text-[#374151] font-medium block mb-1">Tipo de contrato</span>
+          <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white">
+            <option>Seleccionar</option>
+            <option>Marco</option>
+            <option>Específico</option>
+          </select>
+        </div>
+        <TextInput label="Contraparte" placeholder="Efecty S.A" />
+      </div>
+      <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+        <TextInput label="Entidad Akua" placeholder="Akua Colombia S.A" />
+        <div>
+          <span className="text-[12px] text-[#374151] font-medium block mb-1">País</span>
+          <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white">
+            <option>Seleccionar</option>
+            <option>Colombia</option>
+            <option>Argentina</option>
+            <option>Uruguay</option>
+          </select>
+        </div>
+      </div>
+      <UploadZone label="Contrato V5 completo" />
+      <UploadZone label="Anexo I – Descripción técnica y alcance" />
       <div className="flex flex-wrap gap-1.5">
-        <Badge color="yellow">Penalidad Máx. 30%</Badge>
-        <Badge color="gray">Procesamiento Transaccional</Badge>
+        {['PCI CUMPLIMIENTO', 'DE AUTORIZACIÓN', 'VISA & MASTERCARD', 'PCI DSS · AML · KYC'].map(b => (
+          <span key={b} className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-[#DBEAFE] text-[#1E40AF]">{b}</span>
+        ))}
       </div>
-    </div>
+      <UploadZone label="Anexo II – SLA" />
+      <div className="flex flex-wrap gap-1.5">
+        {['PENALIDAD MÁX. 30%', 'PROCESAMIENTO TRANSACCIONAL'].map(b => (
+          <span key={b} className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-[#DBEAFE] text-[#1E40AF]">{b}</span>
+        ))}
+      </div>
+    </>
+  ) : (
+    <>
+      <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+        <InfoField label="Fecha de firma" value="18/02/2029" />
+        <InfoField label="Fecha de vencimiento" value="30/09/2026" />
+      </div>
+      <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+        <InfoField label="Tipo de contrato" value="Marco" />
+        <InfoField label="Contraparte" value="Efecty S.A" />
+      </div>
+      <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+        <InfoField label="Entidad Akua" value="Akua Colombia S.A" />
+        <InfoField label="País" value="Colombia" />
+      </div>
+      <InfoField label="Contrato V5 completo" value="—" />
+      <InfoField label="Anexo I – Descripción técnica y alcance" value="—" />
+      <div className="flex flex-wrap gap-1.5">
+        {['PCI CUMPLIMIENTO', 'DE AUTORIZACIÓN', 'VISA & MASTERCARD', 'PCI DSS · AML · KYC'].map(b => (
+          <span key={b} className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-[#DBEAFE] text-[#1E40AF]">{b}</span>
+        ))}
+      </div>
+      <InfoField label="Anexo II – SLA" value="—" />
+      <div className="flex flex-wrap gap-1.5">
+        {['PENALIDAD MÁX. 30%', 'PROCESAMIENTO TRANSACCIONAL'].map(b => (
+          <span key={b} className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-[#DBEAFE] text-[#1E40AF]">{b}</span>
+        ))}
+      </div>
+    </>
   )
-}
 
-function CargosCobroEdit() {
-  return (
-    <div className="border border-[#E5E7EB] rounded-[8px] p-4 bg-white mt-4">
-      <p className="text-[14px] font-semibold text-[#0A0B0D] mb-4">Cargos y formas de cobro</p>
+  /* ── 1: NDA ── */
+  const nda = editable ? (
+    <>
+      <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+        <TextInput label="Fecha de entrada" placeholder="18/11/2029" />
+        <TextInput label="Nombre" placeholder="Escribir nombre" />
+      </div>
+      <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+        <div>
+          <span className="text-[12px] text-[#374151] font-medium block mb-1">Estado actual</span>
+          <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white">
+            <option>En negociación</option>
+            <option>Firmado</option>
+            <option>Vencido</option>
+          </select>
+        </div>
+        <TextInput label="Desde" placeholder="01/03/2024" />
+      </div>
+      <UploadZone label="NDA vigente" />
+    </>
+  ) : (
+    <>
+      <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+        <InfoField label="Fecha de entrada" value="18/11/2029" />
+        <InfoField label="Nombre" value="—" />
+      </div>
+      <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+        <InfoField label="Estado actual" value="En negociación" />
+        <InfoField label="Desde" value="01/03/2024" />
+      </div>
+      <InfoField label="NDA vigente" value="—" />
+    </>
+  )
 
-      {/* Cargo de implementación */}
-      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Cargo de Implementación</p>
-      <div className="grid grid-cols-3 gap-x-4 gap-y-4 mb-3">
-        <TextInput label="Monto" placeholder="USD 15.000  + IVA" info />
+  /* ── 2: Cargo de implementación ── */
+  const cargoImpl = editable ? (
+    <>
+      <div className="grid grid-cols-3 gap-x-6 gap-y-4">
+        <TextInput label="Monto" placeholder="USD 15,000 + IVA" />
         <div>
           <span className="text-[12px] text-[#374151] font-medium block mb-1">Tipo de cambio</span>
           <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white">
             <option>Pago único</option>
+            <option>Mensual</option>
           </select>
         </div>
         <div>
-          <span className="text-[12px] text-[#374151] font-medium block mb-1">Estado</span>
+          <span className="text-[12px] text-[#374151] font-medium block mb-1">Estatus</span>
           <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white">
             <option>Pendiente</option>
             <option>Pagado</option>
           </select>
         </div>
       </div>
-      <div className="flex items-start gap-2 bg-[#F9FAFB] rounded-[8px] p-3 mb-4">
+      <div className="flex items-start gap-2 bg-[#F9FAFB] rounded-[8px] p-3">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        <p className="text-[11px] text-[#6B7280]">Facturación: 30 días post-firma o día siguiente del Kickoff (lo que ocurra primero).</p>
+        <p className="text-[11px] text-[#6B7280]">Facturación: 30 días post-firma o día siguiente del kickoff (lo que ocurra primero).</p>
       </div>
-
-      {/* Cargos recurrentes mensuales */}
-      <hr className="border-t border-[#E5E7EB] my-5" />
-      <div>
-        <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Cargos Recurrentes Mensuales</p>
-        <div className="flex items-stretch">
-          {/* Adquirencia como Servicio - left */}
-          <div className="flex-1 pr-4">
-            <p className="text-[14px] font-semibold text-[#0A0B0D] mb-3">Adquirencia como Servicio</p>
-            <div className="flex justify-between text-[11px] text-[#9CA3AF] mb-2 pb-2 border-b border-[#F3F4F6]">
-              <span>Rango de transacciones</span><span>Monto negociado</span>
-            </div>
-            {['0 – 200K','200K – 1M','1M – 3M','+3M'].map((r) => (
-              <div key={r} className="flex justify-between items-center py-2.5">
-                <span className="text-[13px] text-[#1F2937]">{r}</span>
-                <input type="text" placeholder="Ingresar monto" className="w-[120px] border border-[#E5E7EB] rounded-[6px] px-2 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white placeholder:text-[#9CA3AF]" />
-              </div>
-            ))}
-            <div className="flex justify-between items-center pt-3 mt-2 border-t border-[#E5E7EB]">
-              <span className="text-[13px] text-[#1F2937] font-semibold">Rango activo actual</span>
-              <input type="text" placeholder="Ingresar monto" className="w-[120px] border border-[#E5E7EB] rounded-[6px] px-2 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white placeholder:text-[#9CA3AF]" />
-            </div>
-          </div>
-
-          {/* Vertical divider */}
-          <div className="w-px bg-[#E5E7EB]" />
-          {/* Right column with dividers */}
-          <div className="flex-1 pl-4">
-            <p className="text-[14px] font-semibold text-[#0A0B0D] mb-3">Procesamiento Transaccional (Cloud)</p>
-            <div className="grid grid-cols-2 gap-3 mb-4">
-              <TextInput label="Mínimo mensual" placeholder="USD 6,000" />
-              <TextInput label="Exento hasta (auto)" placeholder="20/06/2026" />
-            </div>
-            <hr className="border-t border-[#E5E7EB] my-4" />
-            <p className="text-[14px] font-semibold text-[#0A0B0D] mb-3">Fees EASPBV + Tarifa de Intercambio</p>
-            <div className="grid grid-cols-2 gap-3 mb-4">
-              <TextInput label="Base" placeholder="Proporcional según MCC" />
-              <TextInput label="Adicional fijo" placeholder="+00.02%" />
-            </div>
-            <hr className="border-t border-[#E5E7EB] my-4" />
-            <div className="flex items-center gap-1 mb-3">
-              <span className="text-[14px] font-semibold text-[#0A0B0D]">Servicios adicionales</span>
-              <span className="relative group/sa shrink-0">
-                <Info size={14} className="text-[#9CA3AF] cursor-pointer" />
-                <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-[#1F2937] text-white text-[12px] rounded-[8px] w-[260px] whitespace-normal leading-relaxed opacity-0 group-hover/sa:opacity-100 transition-opacity pointer-events-none z-20">
-                  Mensual según tarifa vigente, activables desde el Dashboard
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-[#1F2937]" />
-                </div>
-              </span>
-            </div>
-            <div className="grid grid-cols-2 gap-3 mb-4">
-              <div>
-                <span className="text-[12px] text-[#374151] font-medium block mb-1">Tokenización</span>
-                <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none bg-white"><option>Inactivo</option><option>Activo</option></select>
-              </div>
-              <div>
-                <span className="text-[12px] text-[#374151] font-medium block mb-1">Análisis de fraude</span>
-                <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none bg-white"><option>Inactivo</option><option>Activo</option></select>
-              </div>
-            </div>
-            <hr className="border-t border-[#E5E7EB] my-4" />
-            <div>
-              <span className="text-[12px] text-[#374151] font-medium block mb-1">Compensación real time</span>
-              <select className="w-[calc(50%-6px)] border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none bg-white"><option>Inactivo</option><option>Activo</option></select>
-            </div>
-          </div>
-        </div>
+    </>
+  ) : (
+    <>
+      <div className="grid grid-cols-3 gap-x-6 gap-y-4">
+        <InfoField label="Monto" value="USD 15,000 + IVA" />
+        <InfoField label="Tipo de cambio" value="Pago único" />
+        <InfoField label="Estatus" value="Pendiente" />
       </div>
-
-      {/* CARGOS POR AUTENTICACIÓN 3DS */}
-      <hr className="border-t border-[#E5E7EB] my-5" />
-      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Cargos por Autenticación 3DS</p>
-      <div className="grid grid-cols-3 gap-x-4 gap-y-4 mb-4">
-        <TextInput label="Cargo" placeholder="USD $ 2,5000  + IVA" />
-        <TextInput label="Mantenimiento" placeholder="USD $500 + IVA" info tooltip="Exento primeros 3 meses" />
-        <TextInput label="Por transacción autenticada" placeholder="USD $0.029 + IVA" />
-      </div>
-
-      {/* FORMA DE PAGO */}
-      <hr className="border-t border-[#E5E7EB] my-5" />
-      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Forma de Pago</p>
-      <div className="grid grid-cols-3 gap-x-4 gap-y-4 mb-4">
-        <TextInput label="Mecanismo" placeholder="Retención sobre settlements" />
-        <TextInput label="Plazo dev. excedente" placeholder="8 días calendario" />
-        <TextInput label="Plazo pago déficit" placeholder="8 días" />
-      </div>
-
-      {/* DEPÓSITO EN GARANTÍA */}
-      <hr className="border-t border-[#E5E7EB] my-5" />
-      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Depósito en Garantía</p>
-      <div className="grid grid-cols-3 gap-x-4 gap-y-4 mb-3">
-        <TextInput label="Monto USD" placeholder="USD $15,000" />
-        <TextInput label="Equivalente COP (TRM día)" placeholder="A calcular" />
-        <div>
-          <span className="text-[12px] text-[#374151] font-medium block mb-1">Estado</span>
-          <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none bg-white"><option>Pendiente</option><option>Constituido</option></select>
-        </div>
-      </div>
-      <div className="grid grid-cols-3 gap-x-4 gap-y-4 mb-3">
-        <TextInput label="Fecha límite constitución (auto 24 hs)" placeholder="21/03/2025" />
-        <TextInput label="Vigencia post-terminación" placeholder="7 meses" />
-      </div>
-      <div className="flex items-start gap-2 bg-[#F9FAFB] rounded-[8px] p-3 mb-4">
+      <div className="flex items-start gap-2 bg-[#F9FAFB] rounded-[8px] p-3">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        <p className="text-[11px] text-[#6B7280]">Akua puede ajustarlo por riesgo, volumen o requerimiento de franquicias. Ejecución directa sin requerimiento judicial.</p>
+        <p className="text-[11px] text-[#6B7280]">Facturación: 30 días post-firma o día siguiente del kickoff (lo que ocurra primero).</p>
       </div>
+    </>
+  )
 
-      {/* ANEXOS */}
-      <hr className="border-t border-[#E5E7EB] my-5" />
-      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Anexos</p>
-      <div className="grid grid-cols-3 gap-x-4 gap-y-4 mb-3">
-        <TextInput label="Monto USD" placeholder="USD $15,000" />
-        <TextInput label="Equivalente COP (TRM día)" placeholder="A calcular" />
+  /* ── 3: Cargo recurrentes mensuales ── */
+  const cargoRec = editable ? (
+    <>
+      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide">INDICADORES COMO SERVICIO</p>
+      <div className="flex justify-between text-[11px] text-[#9CA3AF] pb-1 border-b border-[#F3F4F6]">
+        <span>Rango de transacciones</span><span>Monto mensual</span>
+      </div>
+      {['0 – 300K', '300K – 1M', '1M – 3M', '>3M'].map(r => (
+        <div key={r} className="flex justify-between items-center py-1.5">
+          <span className="text-[13px] text-[#1F2937]">{r}</span>
+          <input type="text" placeholder="Ingresar monto" className="w-[140px] border border-[#E5E7EB] rounded-[6px] px-2 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white placeholder:text-[#9CA3AF]" />
+        </div>
+      ))}
+      <TextInput label="Rango activo actual" placeholder="Ingresar monto" />
+      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mt-2">PROCESAMIENTO TRANSACCIONAL ESTÁNDAR</p>
+      <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+        <TextInput label="Monto mensual" placeholder="USD 6,000" />
+        <TextInput label="Corte hasta (julio)" placeholder="25/06/2026" />
+      </div>
+      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mt-2">FEES EJEMPLO + TARIFA DE INTERCAMBIO</p>
+      <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+        <TextInput label="Base" placeholder="Proporcional según MCC" />
+        <TextInput label="Adicional fijo" placeholder="+00.03%" />
+      </div>
+      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mt-2">SERVICIOS ADICIONALES</p>
+      <div className="grid grid-cols-3 gap-x-6 gap-y-4">
         <div>
-          <span className="text-[12px] text-[#374151] font-medium block mb-1">Estado</span>
-          <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none bg-white"><option>Pendiente</option></select>
+          <span className="text-[12px] text-[#374151] font-medium block mb-1">Tokenización</span>
+          <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white"><option>Inactivo</option><option>Activo</option></select>
+        </div>
+        <div>
+          <span className="text-[12px] text-[#374151] font-medium block mb-1">Análisis de fraude</span>
+          <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white"><option>Inactivo</option><option>Activo</option></select>
+        </div>
+        <div>
+          <span className="text-[12px] text-[#374151] font-medium block mb-1">Compensación real time</span>
+          <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white"><option>Inactivo</option><option>Activo</option></select>
         </div>
       </div>
-      <div className="grid grid-cols-3 gap-x-4 gap-y-4 mb-3">
-        <TextInput label="Fecha límite constitución (auto 24 hs)" placeholder="21/03/2025" />
-        <TextInput label="Vigencia post-terminación" placeholder="7 meses" />
+    </>
+  ) : (
+    <>
+      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide">INDICADORES COMO SERVICIO</p>
+      <div className="flex justify-between text-[11px] text-[#9CA3AF] pb-1 border-b border-[#F3F4F6]">
+        <span>Rango de transacciones</span><span>Monto mensual</span>
       </div>
+      {['0 – 300K', '300K – 1M', '1M – 3M', '>3M'].map(r => (
+        <div key={r} className="flex justify-between items-center py-1.5">
+          <span className="text-[13px] text-[#1F2937]">{r}</span>
+          <span className="text-[13px] text-[#0A0B0D] font-semibold">—</span>
+        </div>
+      ))}
+      <InfoField label="Rango activo actual" value="—" />
+      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mt-2">PROCESAMIENTO TRANSACCIONAL ESTÁNDAR</p>
+      <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+        <InfoField label="Monto mensual" value="USD 6,000" />
+        <InfoField label="Corte hasta (julio)" value="25/06/2026" />
+      </div>
+      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mt-2">FEES EJEMPLO + TARIFA DE INTERCAMBIO</p>
+      <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+        <InfoField label="Base" value="Proporcional según MCC" />
+        <InfoField label="Adicional fijo" value="+00.03%" />
+      </div>
+      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mt-2">SERVICIOS ADICIONALES</p>
+      <div className="grid grid-cols-3 gap-x-6 gap-y-4">
+        <InfoField label="Tokenización" value="Inactivo" />
+        <InfoField label="Análisis de fraude" value="Inactivo" />
+        <InfoField label="Compensación real time" value="Inactivo" />
+      </div>
+    </>
+  )
+
+  /* ── 4: Cargos 3DS ── */
+  const cargos3ds = editable ? (
+    <div className="grid grid-cols-3 gap-x-6 gap-y-4">
+      <TextInput label="Implementación" placeholder="USD $ 2,000 + IVA" />
+      <TextInput label="Mantenimiento" placeholder="US$ 250 + IVA" />
+      <TextInput label="Por transacción autenticada" placeholder="USD 50.85 + IVA" />
+    </div>
+  ) : (
+    <div className="grid grid-cols-3 gap-x-6 gap-y-4">
+      <InfoField label="Implementación" value="USD $ 2,000 + IVA" />
+      <InfoField label="Mantenimiento" value="US$ 250 + IVA" />
+      <InfoField label="Por transacción autenticada" value="USD 50.85 + IVA" />
     </div>
   )
-}
 
-function CargosCobroView() {
-  return (
-    <div className="border border-[#E5E7EB] rounded-[8px] p-4 bg-white mt-4">
-      <p className="text-[14px] font-semibold text-[#0A0B0D] mb-4">Cargos y formas de cobro</p>
-      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Cargo de Implementación</p>
-      <div className="grid grid-cols-3 gap-x-4 gap-y-4 mb-3">
-        <InfoField label="Monto" value="USD 15.000 + IVA" info />
-        <InfoField label="Tipo de cambio" value="Pago único" />
-        <InfoField label="Estado" value="Pendiente" />
+  /* ── 5: Forma de pago ── */
+  const formaPago = editable ? (
+    <>
+      <div className="grid grid-cols-3 gap-x-6 gap-y-4">
+        <TextInput label="Moneda/divisa" placeholder="" />
+        <TextInput label="Plazo para vencimiento" placeholder="6 días calendario" />
+        <TextInput label="Plazo pago déficit" placeholder="8 días" />
       </div>
-      <div className="flex items-start gap-2 bg-[#F9FAFB] rounded-[8px] p-3 mb-4">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        <p className="text-[11px] text-[#6B7280]">Facturación: 30 días post-firma o día siguiente del Kickoff (lo que ocurra primero).</p>
-      </div>
-
-      <hr className="border-t border-[#E5E7EB] my-5" />
-      <div>
-        <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Cargos Recurrentes Mensuales</p>
-        <div className="flex items-stretch">
-          {/* Adquirencia como Servicio - left */}
-          <div className="flex-1 pr-4">
-            <p className="text-[14px] font-semibold text-[#0A0B0D] mb-3">Adquirencia como Servicio</p>
-            <div className="flex justify-between text-[11px] text-[#9CA3AF] mb-2 pb-2 border-b border-[#F3F4F6]">
-              <span>Rango de transacciones</span><span>Monto negociado</span>
-            </div>
-            {[{r:'0 – 200K', v:'USD 1,500'},{r:'200K – 1M', v:'USD 2,000'},{r:'1M – 3M', v:'USD 3,000'},{r:'+3M', v:'USD 4,000'}].map((item) => (
-              <div key={item.r} className="flex justify-between items-center py-2.5">
-                <span className="text-[13px] text-[#1F2937]">{item.r}</span>
-                <span className="text-[13px] text-[#0A0B0D] font-semibold">{item.v}</span>
-              </div>
-            ))}
-            <div className="flex justify-between items-center pt-3 mt-2 border-t border-[#E5E7EB]">
-              <span className="text-[13px] text-[#1F2937]">Rango activo actual</span>
-              <span className="text-[13px] text-[#0A0B0D] font-semibold">0 - 200k</span>
-            </div>
-          </div>
-
-          {/* Vertical divider */}
-          <div className="w-px bg-[#E5E7EB]" />
-          {/* Right column with dividers */}
-          <div className="flex-1 pl-4">
-            <p className="text-[14px] font-semibold text-[#0A0B0D] mb-3">Procesamiento Transaccional (Cloud)</p>
-            <div className="grid grid-cols-2 gap-3 mb-4">
-              <InfoField label="Mínimo mensual" value="USD 6,000" />
-              <InfoField label="Exento hasta (auto)" value="20/06/2026" />
-            </div>
-            <hr className="border-t border-[#E5E7EB] my-4" />
-            <p className="text-[14px] font-semibold text-[#0A0B0D] mb-3">Fees EASPBV + Tarifa de Intercambio</p>
-            <div className="grid grid-cols-2 gap-3 mb-4">
-              <InfoField label="Base" value="Proporcional según MCC" />
-              <InfoField label="Adicional fijo" value="+00.02%" />
-            </div>
-            <hr className="border-t border-[#E5E7EB] my-4" />
-            <div className="flex items-center gap-1 mb-3">
-              <span className="text-[14px] font-semibold text-[#0A0B0D]">Servicios adicionales</span>
-              <span className="relative group/sav shrink-0">
-                <Info size={14} className="text-[#9CA3AF] cursor-pointer" />
-                <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-[#1F2937] text-white text-[12px] rounded-[8px] w-[260px] whitespace-normal leading-relaxed opacity-0 group-hover/sav:opacity-100 transition-opacity pointer-events-none z-20">
-                  Mensual según tarifa vigente, activables desde el Dashboard
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-[#1F2937]" />
-                </div>
-              </span>
-            </div>
-            <div className="grid grid-cols-2 gap-3 mb-4">
-              <InfoField label="Tokenización" value="Inactivo" />
-              <InfoField label="Análisis de fraude" value="Inactivo" />
-            </div>
-            <hr className="border-t border-[#E5E7EB] my-4" />
-            <InfoField label="Compensación real time" value="Inactivo" />
-          </div>
-        </div>
-      </div>
-
-      {/* CARGOS POR AUTENTICACIÓN 3DS */}
-      <hr className="border-t border-[#E5E7EB] my-5" />
-      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Cargos por Autenticación 3DS</p>
-      <div className="grid grid-cols-3 gap-x-4 gap-y-4 mb-4">
-        <InfoField label="Cargo" value="USD $ 2,5000 + IVA" />
-        <InfoField label="Mantenimiento" value="USD $500 + IVA" info tooltip="Exento primeros 3 meses" />
-        <InfoField label="Por transacción autenticada" value="USD $0.029 + IVA" />
-      </div>
-
-      {/* FORMA DE PAGO */}
-      <hr className="border-t border-[#E5E7EB] my-5" />
-      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Forma de Pago</p>
-      <div className="grid grid-cols-3 gap-x-4 gap-y-4 mb-4">
-        <InfoField label="Mecanismo" value="Retención sobre settlements" />
-        <InfoField label="Plazo dev. excedente" value="8 días calendario" />
+      <TextInput label="Retención sobre settlements" placeholder="6 días calendario" />
+    </>
+  ) : (
+    <>
+      <div className="grid grid-cols-3 gap-x-6 gap-y-4">
+        <InfoField label="Moneda/divisa" value="—" />
+        <InfoField label="Plazo para vencimiento" value="6 días calendario" />
         <InfoField label="Plazo pago déficit" value="8 días" />
       </div>
+      <InfoField label="Retención sobre settlements" value="6 días calendario" />
+    </>
+  )
 
-      {/* DEPÓSITO EN GARANTÍA */}
-      <hr className="border-t border-[#E5E7EB] my-5" />
-      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Depósito en Garantía</p>
-      <div className="grid grid-cols-3 gap-x-4 gap-y-4 mb-3">
-        <InfoField label="Monto USD" value="USD $15,000" />
-        <InfoField label="Equivalente COP (TRM día)" value="A calcular" />
-        <InfoField label="Estado" value="Pendiente" />
+  /* ── 6: Depósito de garantía ── */
+  const deposito = editable ? (
+    <>
+      <div className="grid grid-cols-3 gap-x-6 gap-y-4">
+        <TextInput label="Monto USD" placeholder="USD $1,000" />
+        <TextInput label="Equivalente COP (TRM día)" placeholder="A definir" />
+        <div>
+          <span className="text-[12px] text-[#374151] font-medium block mb-1">Estado</span>
+          <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white">
+            <option>Pendiente</option>
+            <option>Constituido</option>
+          </select>
+        </div>
       </div>
-      <div className="grid grid-cols-3 gap-x-4 gap-y-4 mb-3">
-        <InfoField label="Fecha límite constitución (auto 24 hs)" value="21/03/2025" />
-        <InfoField label="Vigencia post-terminación" value="7 meses" />
+      <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+        <TextInput label="Fecha límite constitución (auto 24 hs)" placeholder="25/02/2027" />
+        <TextInput label="Vigencia post-terminación" placeholder="1 meses" />
       </div>
-      <div className="flex items-start gap-2 bg-[#F9FAFB] rounded-[8px] p-3 mb-4">
+      <div className="flex items-start gap-2 bg-[#F9FAFB] rounded-[8px] p-3">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         <p className="text-[11px] text-[#6B7280]">Akua puede ajustarlo por riesgo, volumen o requerimiento de franquicias. Ejecución directa sin requerimiento judicial.</p>
       </div>
-
-      {/* ANEXOS */}
-      <hr className="border-t border-[#E5E7EB] my-5" />
-      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Anexos</p>
-      <div className="grid grid-cols-3 gap-x-4 gap-y-4 mb-3">
-        <InfoField label="Monto USD" value="USD $15,000" />
-        <InfoField label="Equivalente COP (TRM día)" value="A calcular" />
+    </>
+  ) : (
+    <>
+      <div className="grid grid-cols-3 gap-x-6 gap-y-4">
+        <InfoField label="Monto USD" value="USD $1,000" />
+        <InfoField label="Equivalente COP (TRM día)" value="A definir" />
         <InfoField label="Estado" value="Pendiente" />
       </div>
-      <div className="grid grid-cols-3 gap-x-4 gap-y-4 mb-3">
-        <InfoField label="Fecha límite constitución (auto 24 hs)" value="21/03/2025" />
-        <InfoField label="Vigencia post-terminación" value="7 meses" />
+      <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+        <InfoField label="Fecha límite constitución (auto 24 hs)" value="25/02/2027" />
+        <InfoField label="Vigencia post-terminación" value="1 meses" />
       </div>
-    </div>
+      <div className="flex items-start gap-2 bg-[#F9FAFB] rounded-[8px] p-3">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <p className="text-[11px] text-[#6B7280]">Akua puede ajustarlo por riesgo, volumen o requerimiento de franquicias. Ejecución directa sin requerimiento judicial.</p>
+      </div>
+    </>
+  )
+
+  return [
+    { content: contrato, subtitle: null },
+    { content: nda, subtitle: null },
+    { content: cargoImpl, subtitle: null },
+    { content: cargoRec, subtitle: null },
+    { content: cargos3ds, subtitle: null },
+    { content: formaPago, subtitle: null },
+    { content: deposito, subtitle: null },
+  ]
+}
+
+function LegalStatusBadge({ badge }) {
+  if (!badge) return null
+  const isAlert = badge.includes('VENCER') || badge.includes('SIN AVANCE') || badge.includes('BLOQUEADO')
+  return (
+    <span className={`text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full shrink-0 ${
+      isAlert ? 'bg-[#FFF7ED] text-[#C2410C] border border-[#FED7AA]' : 'bg-[#DBEAFE] text-[#1E40AF]'
+    }`}>
+      {badge}
+    </span>
   )
 }
 
 function LegalEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog }) {
-  const [openIdx, setOpenIdx] = useState(null)
+  const [openIdx, setOpenIdx] = useState(0)
+  const sections = LegalSections({ editable: true })
   return (
-    <>
-      <div className="flex gap-4">
-      {/* Left: checklist + Contrato + NDA */}
-      <div className="w-1/2 min-w-0 flex flex-col">
-        {LEGAL_CHECKLIST.map((label, i) => (
-          <ChecklistItemEdit
-            key={i} label={label}
-            checked={checkedItems.has(i)} waived={waivedItems.has(i)}
+    <div className="flex flex-col">
+      {LEGAL_CHECKLIST.map((item, i) => {
+        const sec = sections[i] || {}
+        return (
+          <SectionCard
+            key={i}
+            title={item.label}
+            subtitle={sec.subtitle}
+            headerBadge={item.badge}
+            checked={checkedItems.has(i)}
+            waived={waivedItems.has(i)}
             isOpen={openIdx === i}
-            onToggle={() => setOpenIdx(openIdx === i ? null : i)}
+            onToggle={() => setOpenIdx(prev => prev === i ? null : i)}
             onMarkDone={() => onCheck(i)}
             onWaive={() => onWaive(i)}
             addLog={addLog}
-          />
-        ))}
-
-        {/* Contrato */}
-        <div className="border border-[#E5E7EB] rounded-[8px] p-4 bg-white mt-2">
-          <div className="flex items-center gap-3 mb-4">
-            <p className="text-[14px] font-semibold text-[#0A0B0D]">Contrato</p>
-            <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#f5a623] bg-[rgba(245,166,35,0.1)] text-[#f5a623]">POR VENCER</span>
-          </div>
-          <div className="grid grid-cols-2 gap-x-4 gap-y-4">
-            <TextInput label="Fecha de firma" placeholder="20/03/2025" />
-            <TextInput label="Fecha de vencimiento" placeholder="20/03/2026" />
-            <div>
-              <span className="text-[12px] text-[#374151] font-medium block mb-1">Tipo de contrato</span>
-              <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white">
-                <option>Seleccionar</option>
-              </select>
-            </div>
-            <TextInput label="Contraparte" placeholder="Efecty S.A" />
-            <TextInput label="Entidad Akua" placeholder="Akua Colombia S.A" />
-            <div>
-              <span className="text-[12px] text-[#374151] font-medium block mb-1">País</span>
-              <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white">
-                <option>Seleccionar</option>
-                <option>Colombia</option>
-                <option>Argentina</option>
-                <option>Uruguay</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        {/* NDA */}
-        <div className="border border-[#E5E7EB] rounded-[8px] p-4 bg-white mt-4">
-          <div className="flex items-center gap-3 mb-4">
-            <p className="text-[14px] font-semibold text-[#0A0B0D]">NDA</p>
-            <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#fa5252] bg-[rgba(250,82,82,0.1)] text-[#fa5252]">SIN AVANCE · 12 DÍAS</span>
-          </div>
-          <div className="grid grid-cols-2 gap-x-4 gap-y-4">
-            <TextInput label="Fecha de entrada" placeholder="30/01/2026" />
-            <TextInput label="Nombre" placeholder="Escribir nombre" />
-            <div>
-              <span className="text-[12px] text-[#374151] font-medium block mb-1">Estado actual</span>
-              <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white">
-                <option>En negociación</option>
-                <option>En revisión</option>
-                <option>Firmado</option>
-                <option>En borrador</option>
-              </select>
-            </div>
-            <div>
-              <span className="text-[12px] text-[#374151] font-medium block mb-1">Desde</span>
-              <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white">
-                <option>01/03/2026</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Right: Docs */}
-      <div className="w-1/2 min-w-0 flex flex-col gap-4">
-        <LegalDocsPanel disabled={false} />
-      </div>
-      </div>
-
-      {/* Cargos y formas de cobro - full width below */}
-      <CargosCobroEdit />
-    </>
+            editable
+          >
+            {sec.content}
+          </SectionCard>
+        )
+      })}
+    </div>
   )
 }
 
 function LegalView({ checkedItems, waivedItems }) {
+  const sections = LegalSections({ editable: false })
+  const defaultOpen = new Set(LEGAL_CHECKLIST.map((_, i) => i).filter(i => sections[i]?.content !== null))
+  const [openSet, setOpenSet] = useState(defaultOpen)
+  const toggleIdx = (i) => setOpenSet(prev => {
+    const next = new Set(prev)
+    if (next.has(i)) next.delete(i); else next.add(i)
+    return next
+  })
   return (
-    <>
-      <div className="flex gap-4">
-      {/* Left: checklist + Contrato + NDA */}
-      <div className="w-1/2 min-w-0 flex flex-col">
-        {LEGAL_CHECKLIST.map((label, i) => (
-          <ChecklistItemView key={i} label={label} checked={checkedItems.has(i)} waived={waivedItems.has(i)} />
-        ))}
-
-        {/* Contrato */}
-        <div className="border border-[#E5E7EB] rounded-[8px] p-4 bg-white mt-2">
-          <div className="flex items-center gap-3 mb-4">
-            <p className="text-[14px] font-semibold text-[#0A0B0D]">Contrato</p>
-            <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#f5a623] bg-[rgba(245,166,35,0.1)] text-[#f5a623]">POR VENCER</span>
-          </div>
-          <div className="grid grid-cols-2 gap-x-4 gap-y-4">
-            <InfoField label="Fecha de firma" value="20/03/2025" />
-            <InfoField label="Fecha de vencimiento" value="20/03/2026" />
-            <InfoField label="Tipo de contrato" value="Contrato" />
-            <InfoField label="Contraparte" value="Efecty S.A" />
-            <InfoField label="Entidad Akua" value="Akua Colombia S.A" />
-            <InfoField label="País" value="Colombia" />
-          </div>
-        </div>
-
-        {/* NDA */}
-        <div className="border border-[#E5E7EB] rounded-[8px] p-4 bg-white mt-4">
-          <div className="flex items-center gap-3 mb-4">
-            <p className="text-[14px] font-semibold text-[#0A0B0D]">NDA</p>
-            <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#fa5252] bg-[rgba(250,82,82,0.1)] text-[#fa5252]">SIN AVANCE · 12 DÍAS</span>
-          </div>
-          <div className="grid grid-cols-2 gap-x-4 gap-y-4">
-            <InfoField label="Fecha de entrada" value="30/01/2026" />
-            <InfoField label="Nombre" value="Text" />
-            <InfoField label="Estado actual" value="En negociación" />
-            <InfoField label="Desde" value="01/03/2026" />
-          </div>
-        </div>
-      </div>
-
-      {/* Right: Docs */}
-      <div className="w-1/2 min-w-0 flex flex-col gap-4">
-        <LegalDocsPanel disabled={true} />
-      </div>
-      </div>
-
-      {/* Cargos y formas de cobro - full width below */}
-      <CargosCobroView />
-    </>
+    <div className="flex flex-col">
+      {LEGAL_CHECKLIST.map((item, i) => {
+        const sec = sections[i] || {}
+        return (
+          <SectionCard
+            key={i}
+            title={item.label}
+            subtitle={sec.subtitle}
+            headerBadge={item.badge}
+            checked={checkedItems.has(i)}
+            waived={waivedItems.has(i)}
+            isOpen={openSet.has(i)}
+            onToggle={() => toggleIdx(i)}
+            editable={false}
+            hideLinkNote
+          >
+            {sec.content}
+          </SectionCard>
+        )
+      })}
+    </div>
   )
 }
 
