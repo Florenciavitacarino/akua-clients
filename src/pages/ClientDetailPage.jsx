@@ -270,9 +270,9 @@ function SiNoPill({ value }) {
   const isSi = value.toLowerCase() === 'si' || value.toLowerCase() === 'sí'
   return (
     <span className={`inline-flex items-center justify-center min-w-[36px] h-[22px] px-2.5 rounded-full text-[12px] font-medium leading-none ${
-      isSi ? 'bg-[#d1fae5] text-[#047857]' : 'bg-[#fee2e2] text-[#dc2626]'
+      isSi ? 'bg-[#DBEAFE] text-[#1E40AF]' : 'bg-[#F3F4F6] text-[#374151]'
     }`}>
-      {isSi ? 'Sí' : 'No'}
+      {isSi ? 'Si' : 'No'}
     </span>
   )
 }
@@ -853,7 +853,7 @@ function SectionCard({
 /* ─── COMPLIANCE CONTENT ─── */
 const COMPLIANCE_STEPS = [
   {
-    title: '1 — KYB: revisión documental',
+    title: 'KYB: Revisión documental',
     subItems: [
       { label: 'Estatutos y modificaciones', pdfName: 'Estatutos y modificaciones.pdf', pdfSize: '2.4 MB' },
       { label: 'Certificado de existencia y representación', pdfName: 'Certificado de existencia y representación.pdf', pdfSize: '1.1 MB' },
@@ -863,7 +863,7 @@ const COMPLIANCE_STEPS = [
     ],
   },
   {
-    title: '2 — Estructura societaria y UBO',
+    title: 'Estructura societaria y UBO',
     subItems: [
       { label: 'Organigrama completo', pdfName: 'Organigrama completo.pdf', pdfSize: '1.8 MB' },
       { label: 'UBOs identificados', pdfName: 'UBOs identificados.pdf', pdfSize: '760 KB' },
@@ -872,7 +872,7 @@ const COMPLIANCE_STEPS = [
     ],
   },
   {
-    title: '3 — KYC de representantes y firmantes',
+    title: 'KYC de representantes y firmantes',
     subItems: [
       { label: 'Lista de firmantes/rep legales (nombre + rol)', pdfName: 'Lista de firmantes_rep legales (nombre + rol).pdf', pdfSize: '540 KB' },
       { label: 'ID foto frente — por persona', pdfName: 'ID foto frente — por persona.pdf', pdfSize: '1.2 MB' },
@@ -881,7 +881,7 @@ const COMPLIANCE_STEPS = [
     note: 'Si falta alguno → bloquea avance',
   },
   {
-    title: '4 — Screening listas restrictivas',
+    title: 'Screening en listas restrictivas',
     subItems: [
       { label: 'Empresa verificada', pdfName: 'Empresa verificada.pdf', pdfSize: '430 KB' },
       { label: 'Rep legal verificado', pdfName: 'Rep legal verificado.pdf', pdfSize: '390 KB' },
@@ -890,7 +890,7 @@ const COMPLIANCE_STEPS = [
     note: 'Futuro API Noto',
   },
   {
-    title: '5 — Evaluación del negocio',
+    title: 'Evaluación del negocio',
     subItems: [
       { label: 'Revisión sitio web con Ballerine', isLink: true },
       { label: 'MCC contrastado' },
@@ -898,11 +898,11 @@ const COMPLIANCE_STEPS = [
     ],
   },
   {
-    title: '6 — Perfil de riesgo',
+    title: 'Perfil de riesgo',
     special: 'risk_profile',
   },
   {
-    title: '7 — Programa de compliance',
+    title: 'Programa de compliance',
     subtitle: 'Solo Payfac/PSP/Fintech, no blocker',
     subItems: [
       { label: 'Políticas AML/KYC revisadas', pdfName: 'Políticas AML_KYC revisadas.pdf', pdfSize: '1.6 MB' },
@@ -911,11 +911,11 @@ const COMPLIANCE_STEPS = [
     ],
   },
   {
-    title: '8 — Final decision',
+    title: 'Final decision',
     special: 'final_decision',
   },
   {
-    title: '9 — Inscripción en franquicias',
+    title: 'Inscripción en franquicias',
     subtitle: 'Disponible post go-live',
     special: 'franchise_signup',
   },
