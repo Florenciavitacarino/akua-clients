@@ -1896,47 +1896,86 @@ function SalesEdit({ addLog }) {
   )
 }
 
-function SalesView() {
+function SalesViewConfigFields() {
   return (
-    <div className="flex gap-4">
-      {/* Left column: Información general + Configuración */}
-      <div className="w-1/2 min-w-0 flex flex-col gap-4">
-        <div className="border border-[#E5E7EB] rounded-[10px] p-4 bg-white">
-          <p className="text-[14px] font-semibold text-[#0A0B0D] mb-4">Información general</p>
-          <div className="flex flex-col gap-3">
-            <div className="grid grid-cols-2 gap-x-6">
-              <InfoField label="Nombre legal" value="Nombre" />
-              <InfoField label="Tenant" value="20/03/2026" />
-            </div>
-            <InfoField label="Website" value="www.hola.com" />
-          </div>
+    <div className="flex flex-col gap-4">
+      <div className="grid grid-cols-3 gap-x-6 gap-y-4">
+        <InfoField label="Deal Type" value="Processing" />
+        <InfoField label="3DS incluido" value="No" />
+        <InfoField label="Tap on Phone incluído" value="Si" />
+      </div>
+      <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+        <InfoField label="Set Up Fee" value="1000 USD" />
+        <InfoField label="Collteral" value="Depósito" />
+      </div>
+      <div className="bg-[#F9FAFB] rounded-[8px] p-3">
+        <p className="text-[11px] font-semibold text-[#6B7280] uppercase tracking-wide mb-2">Otros servicios</p>
+        <EmptyBadge />
+      </div>
+    </div>
+  )
+}
+
+function SalesDocPdf({ label }) {
+  return (
+    <div className="mb-4">
+      <p className="text-[12px] font-semibold text-[#1F2937] mb-1.5">{label}</p>
+      <div className="flex items-center gap-3">
+        <div className="w-[32px] h-[32px] rounded-[6px] bg-[#FEE2E2] flex items-center justify-center shrink-0">
+          <span className="text-[9px] font-bold text-[#DC2626]">PDF</span>
         </div>
-        <div className="border border-[#E5E7EB] rounded-[10px] p-4 bg-white">
-          <p className="text-[14px] font-semibold text-[#0A0B0D] mb-4">Configuración del servicio</p>
-          <div className="flex flex-col gap-3">
-            <InfoField label="Deal Type" value="Processing" />
-            <div className="grid grid-cols-2 gap-x-6 gap-y-3">
-              <InfoField label="3DS incluido" value="No" />
-              <InfoField label="Tap on Phone incluído" value="Si" />
-            </div>
-            <div className="grid grid-cols-2 gap-x-6 gap-y-3">
-              <InfoField label="Set Up Fee" value="1000 USD" />
-              <InfoField label="Collteral" value="Depósito" />
-            </div>
-            <div className="bg-[#F9FAFB] rounded-[8px] p-3">
-              <p className="text-[11px] font-semibold text-[#6B7280] uppercase tracking-wide mb-2">Otros servicios</p>
-              <EmptyBadge />
-            </div>
-          </div>
+        <div className="min-w-0">
+          <p className="text-[13px] text-[#0A0B0D] font-medium truncate">Extractos_bancarios_Q3_2023.pdf</p>
+          <p className="text-[11px] text-[#9CA3AF]">2.4 Mi</p>
         </div>
       </div>
-      {/* Right column: Documentación */}
-      <div className="w-1/2 min-w-0">
-        <div className="border border-[#E5E7EB] rounded-[10px] p-4 bg-white">
-          <p className="text-[14px] font-semibold text-[#0A0B0D] mb-4">Documentación</p>
-          {SALES_DOC_LABELS.map((label, i) => <DocLinkInput key={i} label={label} disabled />)}
-        </div>
-      </div>
+    </div>
+  )
+}
+
+function SalesView() {
+  const [openSet, setOpenSet] = useState(new Set([0, 1, 2]))
+  const toggle = (i) => setOpenSet(prev => {
+    const n = new Set(prev); if (n.has(i)) n.delete(i); else n.add(i); return n
+  })
+  return (
+    <div className="flex flex-col">
+      {/* Información general */}
+      <SectionCard
+        title="Información general"
+        checked={false}
+        isOpen={openSet.has(0)}
+        onToggle={() => toggle(0)}
+        editable={false}
+        hideLinkNote
+      >
+        <SalesViewConfigFields />
+      </SectionCard>
+
+      {/* Configuración del servicio */}
+      <SectionCard
+        title="Configuración del servicio"
+        checked={false}
+        isOpen={openSet.has(1)}
+        onToggle={() => toggle(1)}
+        editable={false}
+        hideLinkNote
+      >
+        <p className="text-[12px] text-[#6B7280] -mt-2 mb-2">Configuración del servicio</p>
+        <SalesViewConfigFields />
+      </SectionCard>
+
+      {/* Definición del colateral */}
+      <SectionCard
+        title="Definición del colateral"
+        checked={false}
+        isOpen={openSet.has(2)}
+        onToggle={() => toggle(2)}
+        editable={false}
+        hideLinkNote
+      >
+        {SALES_DOC_LABELS.map((label, i) => <SalesDocPdf key={i} label={label} />)}
+      </SectionCard>
     </div>
   )
 }
