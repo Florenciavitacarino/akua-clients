@@ -1353,9 +1353,9 @@ function FraudSections({ editable }) {
         <InfoField label="Ticket mínimo USD" value="400 usd" />
         <InfoField label="Ticket máximo USD" value="1000 usd" />
         <InfoField label="Mix estimado" value="Text" info tooltip="Tarjetas domésticas vs. internacionales" />
-      </div>
-      <div className="grid grid-cols-2 gap-x-6 gap-y-4">
-        <TagPills label="Países de origen de tarjetas frecuentes" values={['Perú', 'Chile', 'Brasil']} />
+        <div className="col-span-2">
+          <TagPills label="Países de origen de tarjetas frecuentes" values={['Perú', 'Chile', 'Brasil']} />
+        </div>
         <InfoField label="Monedas de transacción" value="Text" />
       </div>
     </>
