@@ -934,7 +934,7 @@ function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, o
   const isCheckboxOnly = !pdfName && !isLink && !editable
 
   return (
-    <div>
+    <div className="border-b border-[#F3F4F6] pb-3 mb-1">
       {/* Header row: checkbox + label + badges */}
       <div className="flex items-center gap-3 py-2.5">
         <div
