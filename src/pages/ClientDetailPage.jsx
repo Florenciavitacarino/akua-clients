@@ -319,6 +319,19 @@ function TagPills({ label, values = [] }) {
 }
 
 /* ─── Empty placeholder badge (when no info) ─── */
+/* ─── PDF file icon (Tabler-style) ─── */
+function PdfFileIcon() {
+  return (
+    <div className="w-[40px] h-[40px] rounded-[10px] bg-[#FEE2E2] flex items-center justify-center shrink-0 relative">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+      </svg>
+      <span className="absolute bottom-[5px] text-[7px] font-extrabold text-[#DC2626] leading-none">PDF</span>
+    </div>
+  )
+}
+
 function EmptyBadge() {
   return (
     <span className="inline-flex items-center justify-center min-w-[44px] h-[22px] px-2 rounded-full bg-[#E5E7EB] text-[#9CA3AF] text-[12px] font-medium leading-none">
@@ -944,9 +957,7 @@ function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, o
       {/* PDF preview row (only if pdfName is set) */}
       {pdfName && (
         <div className="mx-4 mb-2 flex items-center gap-3 bg-[#F9FAFB] rounded-[10px] px-3 py-2.5">
-          <div className="w-[36px] h-[36px] rounded-[8px] bg-[#FEE2E2] flex items-center justify-center shrink-0">
-            <span className="text-[10px] font-bold text-[#DC2626]">PDF</span>
-          </div>
+          <PdfFileIcon />
           <div className="min-w-0 flex-1">
             <p className="text-[13px] text-[#0A0B0D] font-medium truncate m-0">{pdfName}</p>
             {pdfSize && <p className="text-[11px] text-[#9CA3AF] m-0">{pdfSize}</p>}
@@ -1104,11 +1115,7 @@ function KycDocCard({ label, pdfName, pdfSize, onRequestSales }) {
   const hasPdf = !!pdfName
   return (
     <div className={`flex items-center gap-3 rounded-[10px] px-3 py-2.5 ${hasPdf ? 'bg-[#F9FAFB]' : 'bg-white border border-[#E5E7EB]'}`}>
-      {hasPdf && (
-        <div className="w-[36px] h-[36px] rounded-[8px] bg-[#FEE2E2] flex items-center justify-center shrink-0">
-          <span className="text-[10px] font-bold text-[#DC2626]">PDF</span>
-        </div>
-      )}
+      {hasPdf && <PdfFileIcon />}
       <div className="min-w-0 flex-1">
         <p className="text-[13px] text-[#0A0B0D] font-medium m-0">{label}</p>
         {hasPdf && pdfSize && <p className="text-[11px] text-[#9CA3AF] m-0">{pdfSize}</p>}
@@ -2019,9 +2026,7 @@ function SalesDocPdf({ label }) {
     <div className="mb-4">
       <p className="text-[12px] font-semibold text-[#1F2937] mb-1.5">{label}</p>
       <div className="flex items-center gap-3">
-        <div className="w-[32px] h-[32px] rounded-[6px] bg-[#FEE2E2] flex items-center justify-center shrink-0">
-          <span className="text-[9px] font-bold text-[#DC2626]">PDF</span>
-        </div>
+        <PdfFileIcon />
         <div className="min-w-0">
           <p className="text-[13px] text-[#0A0B0D] font-medium truncate">Extractos_bancarios_Q3_2023.pdf</p>
           <p className="text-[11px] text-[#9CA3AF]">2.4 Mi</p>
@@ -2151,9 +2156,7 @@ function LegalSections({ editable }) {
       <div>
         <p className="text-[13px] font-semibold text-[#0A0B0D] mb-2">Contrato V5 completo</p>
         <div className="flex items-center gap-3 bg-[#F9FAFB] rounded-[10px] px-3 py-2.5">
-          <div className="w-[36px] h-[36px] rounded-[8px] bg-[#FEE2E2] flex items-center justify-center shrink-0">
-            <span className="text-[10px] font-bold text-[#DC2626]">PDF</span>
-          </div>
+          <PdfFileIcon />
           <div className="min-w-0 flex-1">
             <p className="text-[13px] text-[#0A0B0D] font-medium m-0">name.pdf</p>
             <p className="text-[11px] text-[#9CA3AF] m-0">2.4 MB</p>
@@ -2170,9 +2173,7 @@ function LegalSections({ editable }) {
       <div>
         <p className="text-[13px] font-semibold text-[#0A0B0D] mb-2">Anexo II – SLA</p>
         <div className="flex items-center gap-3 bg-[#F9FAFB] rounded-[10px] px-3 py-2.5">
-          <div className="w-[36px] h-[36px] rounded-[8px] bg-[#FEE2E2] flex items-center justify-center shrink-0">
-            <span className="text-[10px] font-bold text-[#DC2626]">PDF</span>
-          </div>
+          <PdfFileIcon />
           <div className="min-w-0 flex-1">
             <p className="text-[13px] text-[#0A0B0D] font-medium m-0">name.pdf</p>
             <p className="text-[11px] text-[#9CA3AF] m-0">2.4 MB</p>
@@ -2222,9 +2223,7 @@ function LegalSections({ editable }) {
       <div>
         <p className="text-[13px] font-semibold text-[#0A0B0D] mb-2">NDA vigente</p>
         <div className="flex items-center gap-3 bg-[#F9FAFB] rounded-[10px] px-3 py-2.5">
-          <div className="w-[36px] h-[36px] rounded-[8px] bg-[#FEE2E2] flex items-center justify-center shrink-0">
-            <span className="text-[10px] font-bold text-[#DC2626]">PDF</span>
-          </div>
+          <PdfFileIcon />
           <div className="min-w-0 flex-1">
             <p className="text-[13px] text-[#0A0B0D] font-medium m-0">name.pdf</p>
             <p className="text-[11px] text-[#9CA3AF] m-0">2.4 MB</p>
