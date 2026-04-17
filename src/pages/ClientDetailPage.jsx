@@ -933,7 +933,7 @@ function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, o
   const isCheckboxOnly = !pdfName && !isLink && !editable
 
   return (
-    <div className={`${pdfName || isLink || showViewComment ? 'border-b border-[#F3F4F6] pb-4 mb-4' : 'pb-2 mb-2'}`}>
+    <div className={`${pdfName || isLink || showViewComment ? 'border-b border-[#F3F4F6] pb-2 mb-2' : 'pb-2 mb-2'}`}>
       {/* Header row: checkbox + label + badges */}
       <div className="flex items-center gap-3 py-2.5">
         <div
