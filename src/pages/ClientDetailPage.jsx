@@ -323,7 +323,14 @@ function TagPills({ label, values = [] }) {
 function PdfFileIcon() {
   return (
     <div className="w-[40px] h-[40px] rounded-[10px] bg-[#FEE2E2] flex items-center justify-center shrink-0">
-      <img src="/file-type-pdf.svg" alt="PDF" className="w-[24px] h-[24px]" />
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+        <path d="M5 12v-7a2 2 0 0 1 2 -2h7l5 5v4" />
+        <path d="M5 18h1.5a1.5 1.5 0 0 0 0 -3h-1.5v6" />
+        <path d="M17 18h2" />
+        <path d="M20 15h-3v6" />
+        <path d="M11 15v6h1a2 2 0 0 0 2 -2v-2a2 2 0 0 0 -2 -2h-1" />
+      </svg>
     </div>
   )
 }
