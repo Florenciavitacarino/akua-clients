@@ -1003,16 +1003,18 @@ function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, o
               className="w-full border border-[#E5E7EB] rounded-[10px] px-3.5 py-2.5 text-[13px] bg-white outline-none focus:border-[#5a6dd7] placeholder:text-[#9CA3AF] resize-none"
             />
           ) : showViewComment ? (
-            <div className="flex items-start gap-2">
-              <div className="w-[20px] h-[20px] rounded-full bg-[#10B981] flex items-center justify-center shrink-0 mt-0.5">
-                <span className="text-[8px] font-bold text-white">AR</span>
-              </div>
-              <div className="min-w-0">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[13px] font-medium text-[#0A0B0D]">Agustina Romagnoli</span>
-                  <span className="text-[12px] text-[#D1D5DB]">1 min ago</span>
+            <div className="border border-[#E5E7EB] rounded-[10px] p-2">
+              <div className="flex items-start gap-2">
+                <div className="w-[20px] h-[20px] rounded-full bg-[#10B981] flex items-center justify-center shrink-0 mt-0.5">
+                  <span className="text-[8px] font-bold text-white">AR</span>
                 </div>
-                <p className="text-[13px] text-[#6B7280] m-0 mt-0.5">Este es un comentario hecho por Agustina Romagnoli</p>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[13px] font-medium text-[#0A0B0D]">Agustina Romagnoli</span>
+                    <span className="text-[12px] text-[#D1D5DB]">1 min ago</span>
+                  </div>
+                  <p className="text-[13px] text-[#6B7280] m-0 mt-0.5">Este es un comentario hecho por Agustina Romagnoli</p>
+                </div>
               </div>
             </div>
           ) : null}
@@ -1054,7 +1056,7 @@ function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, subChecked, onSub
     : 0
   const checked = totalSubs > 0 && completedSubs === totalSubs
   return (
-    <div className={`border border-[#E5E7EB] rounded-[10px] mb-3 ${isOpen ? 'bg-[#F8F9FA]' : 'bg-white'}`}>
+    <div className="border border-[#E5E7EB] rounded-[10px] mb-3 bg-white">
       <div
         className={`flex items-center gap-3 cursor-pointer ${isOpen ? 'px-4 pt-4 pb-3' : 'px-4 py-3'}`}
         onClick={onToggle}
