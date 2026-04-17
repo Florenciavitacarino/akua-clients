@@ -865,7 +865,7 @@ const COMPLIANCE_STEPS = [
       { label: 'Certificado de existencia y representación', pdfName: 'Certificado de existencia y representación.pdf', pdfSize: '1.1 MB' },
       { label: 'Regularidad fiscal y laboral', pdfName: 'Regularidad fiscal y laboral.pdf', pdfSize: '890 KB' },
       { label: 'Licencias operativas', pdfName: 'Licencias operativas.pdf', pdfSize: '3.2 MB' },
-      { label: 'Estados financieros auditados', pdfName: '', pdfSize: '' },
+      { label: 'Estados financieros auditados', pdfName: 'Estados financieros auditados.pdf', pdfSize: '2.4 MB' },
     ],
   },
   {
