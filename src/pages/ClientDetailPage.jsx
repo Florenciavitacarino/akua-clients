@@ -889,7 +889,6 @@ const COMPLIANCE_STEPS = [
       { label: 'Rep legal verificado', pdfName: 'Rep legal verificado.pdf', pdfSize: '390 KB' },
       { label: 'UBOs verificados', pdfName: 'UBOs verificados.pdf', pdfSize: '410 KB' },
     ],
-    note: 'Futuro API Noto',
   },
   {
     title: 'Evaluación del negocio',
@@ -1196,39 +1195,45 @@ function RiskProfileFields({ editable }) {
   const [comment, setComment] = useState('')
   const RISK_LEVELS = ['Alto', 'Medio', 'Bajo']
   return (
-    <div className="flex flex-col gap-3 bg-white border border-[#E5E7EB] rounded-[8px] p-4">
-      {/* Pill segmented control */}
+    <div className="flex flex-col gap-3">
       <div>
         <span className="text-[12px] text-[#374151] font-medium block mb-2">Clasificación de riesgo</span>
-        <div className="flex gap-1 bg-[#F3F4F6] rounded-full p-1 w-fit">
-          {RISK_LEVELS.map(level => (
-            <button
-              key={level}
-              disabled={!editable}
-              onClick={() => editable && setRiskLevel(prev => prev === level ? '' : level)}
-              className={`flex items-center gap-1.5 text-[13px] font-medium px-4 py-1.5 rounded-full border-none transition-colors cursor-pointer disabled:cursor-default ${
-                riskLevel === level
-                  ? 'bg-white text-[#180047] shadow-[0_1px_3px_rgba(0,0,0,0.12)]'
-                  : 'bg-transparent text-[#6B7280] hover:text-[#374151]'
-              }`}
-            >
-              {riskLevel === level && <Check size={12} />}
-              {level}
-            </button>
-          ))}
+        <div className="flex gap-2">
+          {riskLevel && !editable ? (
+            <span className="flex items-center gap-1.5 text-[13px] font-medium text-[#180047] bg-[#E6E4EC] px-4 py-1.5 rounded-full">
+              <Check size={12} /> {riskLevel}
+            </span>
+          ) : (
+            RISK_LEVELS.map(level => {
+              if (riskLevel && riskLevel !== level) return null
+              const isSelected = riskLevel === level
+              return (
+                <button
+                  key={level}
+                  disabled={!editable}
+                  onClick={() => editable && setRiskLevel(prev => prev === level ? '' : level)}
+                  className={`flex items-center gap-1.5 text-[13px] font-medium px-4 py-1.5 rounded-full border transition-colors cursor-pointer disabled:cursor-default ${
+                    isSelected
+                      ? 'bg-[#E6E4EC] text-[#180047] border-[#E6E4EC]'
+                      : 'bg-white text-[#6B7280] border-[#E5E7EB] hover:border-[#9CA3AF]'
+                  }`}
+                >
+                  {isSelected && <Check size={12} />}
+                  {level}
+                </button>
+              )
+            })
+          )}
         </div>
       </div>
-      {/* Comment textarea */}
-      <div>
-        <textarea
-          value={comment}
-          onChange={e => setComment(e.target.value)}
-          placeholder="Agregar un comentario"
-          rows={3}
-          disabled={!editable}
-          className="w-full border border-[#E5E7EB] rounded-[10px] px-3.5 py-2.5 text-[13px] text-[#374151] outline-none focus:border-[#5a6dd7] bg-white resize-none placeholder:text-[#9CA3AF] disabled:cursor-default disabled:bg-[#F9FAFB]"
-        />
-      </div>
+      <textarea
+        value={comment}
+        onChange={e => setComment(e.target.value)}
+        placeholder="Agregar un comentario"
+        rows={3}
+        disabled={!editable}
+        className="w-full border border-[#E5E7EB] rounded-[10px] px-3.5 py-2.5 text-[13px] text-[#374151] outline-none focus:border-[#5a6dd7] bg-white resize-none placeholder:text-[#9CA3AF] disabled:cursor-default disabled:bg-[#F9FAFB]"
+      />
     </div>
   )
 }
