@@ -319,15 +319,11 @@ function TagPills({ label, values = [] }) {
 }
 
 /* ─── Empty placeholder badge (when no info) ─── */
-/* ─── PDF file icon (Tabler-style) ─── */
+/* ─── PDF file icon ─── */
 function PdfFileIcon() {
   return (
-    <div className="w-[40px] h-[40px] rounded-[10px] bg-[#FEE2E2] flex items-center justify-center shrink-0 relative">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-        <polyline points="14 2 14 8 20 8"/>
-      </svg>
-      <span className="absolute bottom-[5px] text-[7px] font-extrabold text-[#DC2626] leading-none">PDF</span>
+    <div className="w-[40px] h-[40px] rounded-[10px] bg-[#FEE2E2] flex items-center justify-center shrink-0">
+      <img src="/file-type-pdf.svg" alt="PDF" className="w-[24px] h-[24px]" />
     </div>
   )
 }
