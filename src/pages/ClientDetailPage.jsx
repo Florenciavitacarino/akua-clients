@@ -1205,7 +1205,6 @@ function RiskProfileFields({ editable }) {
             </span>
           ) : (
             RISK_LEVELS.map(level => {
-              if (riskLevel && riskLevel !== level) return null
               const isSelected = riskLevel === level
               return (
                 <button
