@@ -934,9 +934,9 @@ function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, o
   const isCheckboxOnly = !pdfName && !isLink && !editable
 
   return (
-    <div className="rounded-[8px] border border-[#E5E7EB] bg-white">
+    <div>
       {/* Header row: checkbox + label + badges */}
-      <div className="flex items-center gap-3 px-4 py-2.5">
+      <div className="flex items-center gap-3 py-2.5">
         <div
           className={`w-[18px] h-[18px] rounded-[4px] shrink-0 flex items-center justify-center ${
             waived
@@ -959,7 +959,7 @@ function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, o
 
       {/* PDF preview row (only if pdfName is set) */}
       {pdfName && (
-        <div className="mx-4 mb-2 flex items-center gap-3 bg-[#F9FAFB] rounded-[10px] px-3 py-2.5">
+        <div className="mb-2 flex items-center gap-3 bg-[#F9FAFB] rounded-[10px] px-3 py-2.5">
           <PdfFileIcon />
           <div className="min-w-0 flex-1">
             <p className="text-[13px] text-[#0A0B0D] font-medium truncate m-0">{pdfName}</p>
@@ -976,7 +976,7 @@ function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, o
 
       {/* Link input row (for step 5 first sub-item) */}
       {isLink && (
-        <div className="px-4 pb-2">
+        <div className="pb-2">
           <div className="flex items-center gap-2 border border-[#E5E7EB] rounded-full px-3.5 py-2 bg-white focus-within:border-[#5a6dd7] transition-colors">
             <Link2 size={14} className="text-[#9CA3AF] shrink-0" />
             <input
@@ -993,7 +993,7 @@ function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, o
 
       {/* Comment textarea + buttons (shown when has PDF, link, or editable with buttons) */}
       {(pdfName !== undefined || isLink) && (
-        <div className="px-4 pb-3 flex flex-col gap-2.5">
+        <div className="pb-3 flex flex-col gap-2.5">
           {editable ? (
             <textarea
               value={noteValue}
