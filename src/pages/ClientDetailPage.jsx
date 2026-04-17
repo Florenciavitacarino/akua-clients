@@ -926,8 +926,8 @@ const COMPLIANCE_STEPS = [
 const COMPLIANCE_CHECKLIST = COMPLIANCE_STEPS.map(s => ({ label: s.title }))
 
 /* ─── Compliance Sub-item (non-collapsible) ─── */
-function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, onMarkDone, onWaive, editable, onRequestSales, requestedToSales, showViewComment }) {
-  const [noteValue, setNoteValue] = useState('')
+function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, onMarkDone, onWaive, editable, onRequestSales, requestedToSales, showViewComment, defaultComment }) {
+  const [noteValue, setNoteValue] = useState(defaultComment || '')
   const [linkValue, setLinkValue] = useState('')
 
   // Checkbox-only items (step 5 non-link sub-items)
@@ -965,10 +965,11 @@ function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, o
             <p className="text-[13px] text-[#0A0B0D] font-medium truncate m-0">{pdfName}</p>
             {pdfSize && <p className="text-[11px] text-[#9CA3AF] m-0">{pdfSize}</p>}
           </div>
-          {!editable && (
-            <button className="flex items-center gap-1 text-[13px] font-medium text-[#374151] bg-transparent border-none cursor-pointer hover:text-[#180047] shrink-0">
-              Abrir <ExternalLink size={13} />
-            </button>
+          <button className="flex items-center gap-1 text-[13px] font-medium text-[#374151] bg-transparent border-none cursor-pointer hover:text-[#180047] shrink-0">
+            Abrir <ExternalLink size={13} />
+          </button>
+          {editable && (
+            <button className="text-[#9CA3AF] bg-transparent border-none cursor-pointer hover:text-[#DC2626] shrink-0"><Trash2 size={15} /></button>
           )}
         </div>
       )}
@@ -1003,8 +1004,8 @@ function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, o
             />
           ) : showViewComment ? (
             <div className="flex items-start gap-2">
-              <div className="w-[20px] h-[20px] rounded-full bg-[#F2EDF9] flex items-center justify-center shrink-0 mt-0.5">
-                <span className="text-[8px] font-bold text-[#180047]">AR</span>
+              <div className="w-[20px] h-[20px] rounded-full bg-[#10B981] flex items-center justify-center shrink-0 mt-0.5">
+                <span className="text-[8px] font-bold text-white">AR</span>
               </div>
               <div className="min-w-0">
                 <div className="flex items-center gap-1.5">
@@ -1105,7 +1106,8 @@ function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, subChecked, onSub
               editable={editable}
               onRequestSales={onRequestSales ? (label) => onRequestSales(stepIdx, j, label) : undefined}
               requestedToSales={salesRequested?.has?.(`${stepIdx}.${j}`)}
-              showViewComment={!editable && stepIdx === 0 && j === 0}
+              showViewComment={!editable && ((stepIdx === 0 && j === 0) || (stepIdx === 0 && j === 2))}
+              defaultComment={(stepIdx === 0 && j === 0) ? 'Este es un comentario hecho por Agustina Romagnoli' : ''}
             />
           ))}
 
