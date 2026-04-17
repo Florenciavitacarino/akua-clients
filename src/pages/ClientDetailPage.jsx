@@ -815,7 +815,7 @@ function SectionCard({
                 </button>
               ) : (
                 <button
-                  className="flex items-center gap-2 text-[13px] font-medium text-[#374151] bg-[#EDF0FF] px-5 py-2.5 rounded-full border-none cursor-pointer hover:bg-[#dde3ff]"
+                  className="flex items-center gap-2 text-[13px] font-medium text-[#374151] bg-[#E6E4EC] px-5 py-2.5 rounded-full border-none cursor-pointer hover:bg-[#d9d6e2]"
                   onClick={(e) => { e.stopPropagation(); onWaive?.() }}
                 >
                   <Ban size={14} /> Eximir
@@ -1001,7 +1001,7 @@ function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, o
                 <Check size={13} /> Guardar
               </button>
               <button
-                className="flex items-center gap-1.5 text-[13px] font-medium text-[#5a6dd7] bg-[#EDF0FF] px-4 py-2 rounded-full border-none cursor-pointer hover:bg-[#dde3ff] transition-colors"
+                className="flex items-center gap-1.5 text-[13px] font-medium text-[#180047] bg-[#E6E4EC] px-4 py-2 rounded-full border-none cursor-pointer hover:bg-[#d9d6e2] transition-colors"
                 onClick={() => onWaive()}
               >
                 <Ban size={13} /> Eximir
@@ -1030,7 +1030,7 @@ function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, subChecked, onSub
     : 0
   const checked = totalSubs > 0 && completedSubs === totalSubs
   return (
-    <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-[10px] mb-3">
+    <div className={`border border-[#E5E7EB] rounded-[10px] mb-3 ${isOpen ? 'bg-[#F8F9FA]' : 'bg-white'}`}>
       <div
         className={`flex items-center gap-3 cursor-pointer ${isOpen ? 'px-4 pt-4 pb-3' : 'px-4 py-3'}`}
         onClick={onToggle}
