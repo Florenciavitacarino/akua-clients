@@ -1002,8 +1002,17 @@ function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, o
               className="w-full border border-[#E5E7EB] rounded-[10px] px-3.5 py-2.5 text-[13px] bg-white outline-none focus:border-[#5a6dd7] placeholder:text-[#9CA3AF] resize-none"
             />
           ) : showViewComment ? (
-            <div className="bg-[#F3F4F6] rounded-[10px] px-4 py-3 text-[13px] text-[#0A0B0D]">
-              Este es un comentario
+            <div>
+              <div className="flex items-center gap-2 mb-1.5">
+                <div className="w-[24px] h-[24px] rounded-full bg-[#d1fae5] flex items-center justify-center shrink-0">
+                  <span className="text-[9px] font-bold text-[#047857]">AR</span>
+                </div>
+                <span className="text-[13px] font-semibold text-[#0A0B0D]">Agustina Romagnoli</span>
+                <span className="text-[12px] text-[#9CA3AF]">1 min ago</span>
+              </div>
+              <div className="bg-[#F3F4F6] rounded-[10px] px-4 py-3 text-[13px] text-[#0A0B0D]">
+                Este es un comentario hecho por Agustina Romagnoli
+              </div>
             </div>
           ) : null}
           {editable && (
