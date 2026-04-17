@@ -1242,7 +1242,7 @@ function FinalDecisionFields({ editable }) {
   const [responsible, setResponsible] = useState('')
   const [nextReview, setNextReview] = useState('')
   return (
-    <div className="grid grid-cols-3 gap-3 bg-white border border-[#E5E7EB] rounded-[8px] p-4">
+    <div className="grid grid-cols-3 gap-x-6">
       <div>
         <span className="text-[12px] text-[#374151] font-medium block mb-1">Decisión</span>
         {editable ? (
