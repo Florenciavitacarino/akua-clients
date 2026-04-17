@@ -992,7 +992,7 @@ function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, o
 
       {/* Comment textarea + buttons (shown when has PDF, link, or editable with buttons) */}
       {(pdfName !== undefined || isLink) && (
-        <div className="pb-3 flex flex-col gap-2.5">
+        <div className="pt-2 pb-3 flex flex-col gap-2.5">
           {editable ? (
             <textarea
               value={noteValue}
