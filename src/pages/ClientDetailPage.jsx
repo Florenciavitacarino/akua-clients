@@ -892,10 +892,11 @@ const COMPLIANCE_STEPS = [
   },
   {
     title: 'Evaluación del negocio',
+    showStepComment: true,
     subItems: [
       { label: 'Revisión sitio web con Ballerine', isLink: true },
       { label: 'MCC contrastado' },
-      { label: 'Actividades prohibidas verificadas' },
+      { label: 'Actividades prohibidas' },
     ],
   },
   {
