@@ -883,10 +883,11 @@ const COMPLIANCE_STEPS = [
   },
   {
     title: 'Screening en listas restrictivas',
+    showStepComment: true,
     subItems: [
-      { label: 'Empresa verificada', pdfName: 'Empresa verificada.pdf', pdfSize: '430 KB' },
-      { label: 'Rep legal verificado', pdfName: 'Rep legal verificado.pdf', pdfSize: '390 KB' },
-      { label: 'UBOs verificados', pdfName: 'UBOs verificados.pdf', pdfSize: '410 KB' },
+      { label: 'Empresa verificada' },
+      { label: 'Representante legal verificado' },
+      { label: 'UBOs verificados' },
     ],
   },
   {
@@ -1123,6 +1124,14 @@ function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, subChecked, onSub
 
           {step.note && (
             <p className="text-[12px] text-[#6B7280] italic mt-1">{step.note}</p>
+          )}
+
+          {step.showStepComment && editable && (
+            <textarea
+              placeholder="Dejar un comentario..."
+              rows={2}
+              className="w-full border border-[#E5E7EB] rounded-[10px] px-3.5 py-2.5 text-[13px] bg-white outline-none focus:border-[#5a6dd7] placeholder:text-[#9CA3AF] resize-none mt-2"
+            />
           )}
         </div>
       )}
