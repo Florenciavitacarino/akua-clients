@@ -880,7 +880,6 @@ const COMPLIANCE_STEPS = [
   {
     title: 'KYC de representantes y firmantes',
     special: 'kyc_firmantes',
-    badge: 'BLOQUEADO',
   },
   {
     title: 'Screening en listas restrictivas',
@@ -1131,66 +1130,82 @@ function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, subChecked, onSub
   )
 }
 
-function KycDocCard({ label, pdfName, pdfSize, onRequestSales }) {
-  const hasPdf = !!pdfName
+function KycDocCard({ label, pdfSize }) {
   return (
-    <div className={`flex items-center gap-3 rounded-[10px] px-3 py-2.5 ${hasPdf ? 'bg-[#F9FAFB]' : 'bg-white border border-[#E5E7EB]'}`}>
-      {hasPdf && <PdfFileIcon />}
+    <div className="flex items-center gap-2 border border-[#E5E7EB] rounded-[8px] px-3 py-2">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+      </svg>
       <div className="min-w-0 flex-1">
-        <p className="text-[13px] text-[#0A0B0D] font-medium m-0">{label}</p>
-        {hasPdf && pdfSize && <p className="text-[11px] text-[#9CA3AF] m-0">{pdfSize}</p>}
+        <p className="text-[12px] text-[#0A0B0D] font-medium m-0">{label}</p>
+        {pdfSize && <p className="text-[10px] text-[#9CA3AF] m-0">{pdfSize}</p>}
       </div>
-      {hasPdf ? (
-        <button className="flex items-center gap-1 text-[13px] font-medium text-[#374151] bg-transparent border-none cursor-pointer hover:text-[#180047] shrink-0">
-          Abrir <ExternalLink size={13} />
-        </button>
-      ) : onRequestSales ? (
-        <button
-          className="flex items-center gap-1 text-[13px] font-medium text-[#180047] bg-transparent border-none cursor-pointer hover:text-[#2a0066] shrink-0"
-          onClick={() => onRequestSales(label)}
-        >
-          Solicitar a sales <ArrowUpRight size={13} />
-        </button>
-      ) : null}
+      <button className="flex items-center gap-1 text-[11px] font-medium text-[#180047] bg-white px-2.5 py-0.5 rounded-full border border-[#180047] cursor-pointer hover:bg-[#F9FAFB] shrink-0">
+        Abrir <ExternalLink size={10} />
+      </button>
+      <button className="text-[#374151] bg-transparent border-none cursor-pointer hover:text-[#DC2626] shrink-0"><Trash2 size={13} /></button>
     </div>
   )
 }
 
-function KycFirmantesFields() {
+function KycFirmantesFields({ editable }) {
+  const [noteValue, setNoteValue] = useState('')
   return (
     <div className="flex flex-col gap-4">
-      {/* Warning banner */}
-      <div className="flex items-center gap-2 bg-[#F3F4F6] rounded-[8px] px-4 py-2.5">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
-          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-          <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
-        </svg>
-        <p className="text-[13px] text-[#0A0B0D] m-0">Falta completar al menos un firmante para poder avanzar</p>
+      {/* Organigrama completo checkbox */}
+      <div className="flex items-center gap-3 py-1">
+        <div className="w-[18px] h-[18px] rounded-[4px] shrink-0 flex items-center justify-center border-[1.5px] border-[#D1D5DB] bg-white cursor-pointer hover:opacity-80" />
+        <span className="text-[13px] text-[#1F2937]">Organigrama completo</span>
       </div>
 
       {/* Person 1 */}
       <div>
-        <p className="text-[14px] text-[#0A0B0D] m-0 mb-2">
+        <p className="text-[13px] text-[#0A0B0D] m-0 mb-2">
           <span className="font-semibold">Alan Juárex</span>
           <span className="text-[#9CA3AF] font-normal"> · Representante legal</span>
         </p>
         <div className="grid grid-cols-2 gap-3">
-          <KycDocCard label="ID frente" pdfName="ID_frente_alan.pdf" pdfSize="2.4 MB" />
-          <KycDocCard label="ID dorso" pdfName="ID_dorso_alan.pdf" pdfSize="2.4 MB" />
+          <KycDocCard label="ID frente" pdfSize="2.4 MB" />
+          <KycDocCard label="ID dorso" pdfSize="2.4 MB" />
         </div>
       </div>
 
       {/* Person 2 */}
       <div>
-        <p className="text-[14px] text-[#0A0B0D] m-0 mb-2">
+        <p className="text-[13px] text-[#0A0B0D] m-0 mb-2">
           <span className="font-semibold">María López</span>
           <span className="text-[#9CA3AF] font-normal"> · Firmante</span>
         </p>
         <div className="grid grid-cols-2 gap-3">
-          <KycDocCard label="ID frente" pdfName="ID_frente_maria.pdf" pdfSize="2.4 MB" />
-          <KycDocCard label="ID dorso" />
+          <KycDocCard label="ID frente" pdfSize="2.4 MB" />
+          <KycDocCard label="ID frente" pdfSize="2.4 MB" />
         </div>
       </div>
+
+      {/* Comment */}
+      <div className="flex items-start gap-2">
+        <div className="w-[20px] h-[20px] rounded-full bg-[#6EE7B7] flex items-center justify-center shrink-0 mt-0.5">
+          <span className="text-[8px] font-bold text-white">AR</span>
+        </div>
+        <div className="min-w-0">
+          <div className="flex items-center gap-1.5">
+            <span className="text-[13px] font-semibold text-[#0A0B0D]">Agustina Romagnoli</span>
+            <span className="text-[12px] text-[#9CA3AF]">1 min ago</span>
+          </div>
+          <p className="text-[13px] text-[#6B7280] m-0 mt-0.5">Este es un comentario hecho por Agustina Romagnoli</p>
+        </div>
+      </div>
+
+      {/* Comment input */}
+      {editable && (
+        <textarea
+          value={noteValue}
+          onChange={(e) => setNoteValue(e.target.value)}
+          placeholder="Dejar un comentario..."
+          rows={2}
+          className="w-full border border-[#E5E7EB] rounded-[10px] px-3.5 py-2.5 text-[13px] bg-white outline-none focus:border-[#5a6dd7] placeholder:text-[#9CA3AF] resize-none"
+        />
+      )}
     </div>
   )
 }
