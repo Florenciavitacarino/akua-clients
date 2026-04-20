@@ -932,9 +932,17 @@ function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, o
   // Checkbox-only items (step 5 non-link sub-items)
   const isCheckboxOnly = !pdfName && !isLink && !editable
 
+  const [menuOpen, setMenuOpen] = useState(false)
+  const mockComments = defaultComment ? [
+    { text: 'Este es el primer comentario hecho por Agustina Romagnoli', time: '1 min ago' },
+    { text: 'Este es el segundo comentario hecho por Agustina Romagnoli', time: '1 min ago' },
+  ] : showViewComment ? [
+    { text: 'Este es un comentario hecho por Agustina Romagnoli', time: '1 min ago' },
+  ] : []
+
   return (
-    <div className={`${pdfName || isLink || showViewComment ? 'border-b border-[#F3F4F6] pb-2 mb-2' : 'pb-2 mb-2'}`}>
-      {/* Header row: checkbox + label + badges */}
+    <div className={`${pdfName || isLink || showViewComment ? 'border-b border-[#F3F4F6] pb-2 mb-2' : 'pb-2 mb-2'} group/sub relative`}>
+      {/* Header row: checkbox + label + badges + three-dot menu */}
       <div className="flex items-center gap-3 py-2.5">
         <div
           className={`w-[18px] h-[18px] rounded-[4px] shrink-0 flex items-center justify-center ${
@@ -946,30 +954,55 @@ function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, o
         >
           {checked && !waived && <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
         </div>
-        <span className={`text-[13px] ${checked ? 'text-[#374151]' : 'text-[#1F2937]'}`}>{label}</span>
+        <span className={`text-[13px] flex-1 ${checked ? 'text-[#374151]' : 'text-[#1F2937]'}`}>{label}</span>
         {waived && (
           <span className="text-[10px] font-semibold text-[#5a6dd7] bg-[#EDF0FF] px-2 py-0.5 rounded-full uppercase tracking-wide">EXIMIDO</span>
         )}
         {requestedToSales && (
           <span className="text-[10px] font-semibold text-[#dc6038] bg-[#FFE9D9] px-2 py-0.5 rounded-full uppercase tracking-wide">SOLICITADO A SALES</span>
         )}
-        <span className="flex-1" />
+        {editable && (
+          <div className="relative">
+            <button
+              onClick={() => setMenuOpen(prev => !prev)}
+              className="opacity-0 group-hover/sub:opacity-100 text-[#9CA3AF] bg-transparent border-none cursor-pointer hover:text-[#374151] transition-opacity"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
+            </button>
+            {menuOpen && (
+              <>
+                <div className="fixed inset-0 z-20" onClick={() => setMenuOpen(false)} />
+                <div className="absolute right-0 top-full mt-1 bg-white border border-[#E5E7EB] rounded-[10px] shadow-[0_4px_16px_rgba(0,0,0,0.12)] py-1.5 z-30 min-w-[180px]">
+                  <button onClick={() => { setMenuOpen(false) }} className="flex items-center gap-2 w-full px-4 py-2 text-[13px] text-[#1F2937] bg-transparent border-none cursor-pointer hover:bg-[#F9FAFB] text-left">
+                    <FileText size={14} className="text-[#9CA3AF]" /> Adjuntar documento
+                  </button>
+                  <button onClick={() => { setMenuOpen(false); onRequestSales?.(label) }} className="flex items-center gap-2 w-full px-4 py-2 text-[13px] text-[#1F2937] bg-transparent border-none cursor-pointer hover:bg-[#F9FAFB] text-left">
+                    <ArrowUpRight size={14} className="text-[#9CA3AF]" /> Solicitar a sales
+                  </button>
+                  <button onClick={() => { setMenuOpen(false); onWaive() }} className="flex items-center gap-2 w-full px-4 py-2 text-[13px] text-[#1F2937] bg-transparent border-none cursor-pointer hover:bg-[#F9FAFB] text-left">
+                    <Ban size={14} className="text-[#9CA3AF]" /> Eximir
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        )}
       </div>
 
-      {/* PDF preview row (only if pdfName is set) */}
+      {/* PDF preview row */}
       {pdfName && (
-        <div className="flex items-center gap-3 bg-[#F9FAFB] rounded-[10px] px-3 py-2.5">
-          <PdfFileIcon />
+        <div className="flex items-center gap-3 py-2">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+          </svg>
           <div className="min-w-0 flex-1">
-            <p className="text-[13px] text-[#0A0B0D] font-medium truncate m-0">{pdfName}</p>
-            {pdfSize && <p className="text-[11px] text-[#9CA3AF] m-0">{pdfSize}</p>}
+            <p className="text-[13px] text-[#0A0B0D] font-medium truncate m-0">Documento_{label.replace(/\s+/g, '_')}</p>
+            <p className="text-[11px] text-[#9CA3AF] m-0">{pdfSize}</p>
           </div>
-          <button className="flex items-center gap-1 text-[13px] font-medium text-[#374151] bg-transparent border-none cursor-pointer hover:text-[#180047] shrink-0">
-            Abrir <ExternalLink size={13} />
+          <button className="flex items-center gap-1 text-[12px] font-medium text-[#374151] bg-white px-3 py-1 rounded-full border border-[#E5E7EB] cursor-pointer hover:bg-[#F9FAFB] shrink-0">
+            Abrir <ExternalLink size={12} />
           </button>
-          {editable && (
-            <button className="text-[#9CA3AF] bg-transparent border-none cursor-pointer hover:text-[#DC2626] shrink-0"><Trash2 size={15} /></button>
-          )}
+          <button className="text-[#D1D5DB] bg-transparent border-none cursor-pointer hover:text-[#DC2626] shrink-0"><Trash2 size={14} /></button>
         </div>
       )}
 
@@ -978,67 +1011,39 @@ function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, o
         <div className="pb-2">
           <div className="flex items-center gap-2 border border-[#E5E7EB] rounded-full px-3.5 py-2 bg-white focus-within:border-[#5a6dd7] transition-colors">
             <Link2 size={14} className="text-[#9CA3AF] shrink-0" />
-            <input
-              type="url"
-              value={linkValue}
-              onChange={(e) => setLinkValue(e.target.value)}
-              placeholder="Agregar link"
-              disabled={!editable}
-              className="flex-1 bg-transparent border-none outline-none text-[13px] text-[#374151] placeholder:text-[#9CA3AF] min-w-0 disabled:cursor-default"
-            />
+            <input type="url" value={linkValue} onChange={(e) => setLinkValue(e.target.value)} placeholder="Agregar link" disabled={!editable}
+              className="flex-1 bg-transparent border-none outline-none text-[13px] text-[#374151] placeholder:text-[#9CA3AF] min-w-0 disabled:cursor-default" />
           </div>
         </div>
       )}
 
-      {/* Comment textarea + buttons (shown when has PDF, link, or editable with buttons) */}
-      {(pdfName !== undefined || isLink) && (
-        <div className="pt-2 pb-3 flex flex-col gap-2.5">
-          {editable ? (
-            <textarea
-              value={noteValue}
-              onChange={(e) => setNoteValue(e.target.value)}
-              placeholder="Agregar un comentario"
-              rows={2}
-              className="w-full border border-[#E5E7EB] rounded-[10px] px-3.5 py-2.5 text-[13px] bg-white outline-none focus:border-[#5a6dd7] placeholder:text-[#9CA3AF] resize-none"
-            />
-          ) : showViewComment ? (
-            <div className="border border-[#E5E7EB] rounded-[10px] p-2">
-              <div className="flex items-start gap-2">
-                <div className="w-[20px] h-[20px] rounded-full bg-[#10B981] flex items-center justify-center shrink-0 mt-0.5">
-                  <span className="text-[8px] font-bold text-white">AR</span>
+      {/* Comments + input */}
+      {(pdfName || isLink || showViewComment) && (
+        <div className="flex flex-col gap-2 pt-1">
+          {/* Existing comments */}
+          {mockComments.map((c, i) => (
+            <div key={i} className="flex items-start gap-2">
+              <div className="w-[20px] h-[20px] rounded-full bg-[#10B981] flex items-center justify-center shrink-0 mt-0.5">
+                <span className="text-[8px] font-bold text-white">AR</span>
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[13px] font-medium text-[#0A0B0D]">Agustina Romagnoli</span>
+                  <span className="text-[12px] text-[#D1D5DB]">{c.time}</span>
                 </div>
-                <div className="min-w-0">
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[13px] font-medium text-[#0A0B0D]">Agustina Romagnoli</span>
-                    <span className="text-[12px] text-[#D1D5DB]">1 min ago</span>
-                  </div>
-                  <p className="text-[13px] text-[#6B7280] m-0 mt-0.5">Este es un comentario hecho por Agustina Romagnoli</p>
-                </div>
+                <p className="text-[13px] text-[#6B7280] m-0 mt-0.5">{c.text}</p>
               </div>
             </div>
-          ) : null}
+          ))}
+          {/* Comment input */}
           {editable && (
-            <div className="flex items-center gap-2">
-              <button
-                className="flex items-center gap-1.5 text-[13px] font-semibold text-white bg-[#180047] px-4 py-2 rounded-full border-none cursor-pointer hover:bg-[#2a0066] transition-colors"
-                onClick={() => onMarkDone()}
-              >
-                <Check size={13} /> Guardar
-              </button>
-              <button
-                className="flex items-center gap-1.5 text-[13px] font-medium text-[#180047] bg-[#E6E4EC] px-4 py-2 rounded-full border-none cursor-pointer hover:bg-[#d9d6e2] transition-colors"
-                onClick={() => onWaive()}
-              >
-                <Ban size={13} /> Eximir
-              </button>
-              <span className="flex-1" />
-              <button
-                className="flex items-center gap-1 text-[13px] font-medium text-[#180047] bg-transparent border-none cursor-pointer hover:text-[#2a0066]"
-                onClick={() => onRequestSales?.(label)}
-              >
-                Solicitar a sales <ArrowUpRight size={13} />
-              </button>
-            </div>
+            <input
+              type="text"
+              value={noteValue}
+              onChange={(e) => setNoteValue(e.target.value)}
+              placeholder="Dejar un comentario..."
+              className="w-full border border-[#E5E7EB] rounded-[10px] px-3.5 py-2.5 text-[13px] bg-white outline-none focus:border-[#5a6dd7] placeholder:text-[#9CA3AF]"
+            />
           )}
         </div>
       )}
