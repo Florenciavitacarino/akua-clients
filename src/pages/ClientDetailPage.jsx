@@ -939,9 +939,9 @@ function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, o
   ] : []
 
   return (
-    <div className="group/sub relative pb-3">
+    <div className="group/sub relative">
       {/* Header row: checkbox + label + badges + three-dot menu */}
-      <div className={`flex items-center gap-3 py-1.5 ${pdfName ? 'bg-[#F8F9FA] -mx-4 px-4' : ''}`}>
+      <div className={`flex items-center gap-3 py-[6px] ${pdfName ? 'bg-[#F8F9FA] -mx-4 px-4' : ''}`}>
         <div
           className={`w-[18px] h-[18px] rounded-[4px] shrink-0 flex items-center justify-center ${
             waived
@@ -1095,7 +1095,7 @@ function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, subChecked, onSub
       </div>
 
       {isOpen && (
-        <div className="px-4 pb-4 flex flex-col gap-2">
+        <div className="px-4 pb-4 flex flex-col">
           {step.subtitle && <p className="text-[12px] text-[#6B7280] italic -mt-1 mb-1">{step.subtitle}</p>}
 
           {step.subItems && step.subItems.map((sub, j) => (
