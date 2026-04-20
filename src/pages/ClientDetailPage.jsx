@@ -1063,7 +1063,7 @@ function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, subChecked, onSub
     : 0
   const checked = totalSubs > 0 && completedSubs === totalSubs
   return (
-    <div>
+    <div className="border border-[#E5E7EB] rounded-[10px] bg-white">
       <div
         className={`flex items-center gap-3 cursor-pointer ${isOpen ? 'px-4 pt-4 pb-3' : 'px-4 py-3'}`}
         onClick={onToggle}
@@ -1313,11 +1313,10 @@ function ComplianceEdit({ addLog, subChecked, subWaived, onSubCheck, onSubWaive,
   const [openStepIdx, setOpenStepIdx] = useState(0)
   const [requestModal, setRequestModal] = useState(null) // { stepIdx, subIdx, label }
   return (
-    <div className="flex flex-col">
-      <div className="border border-[#E5E7EB] rounded-[12px] bg-white overflow-hidden">
+    <div className="flex flex-col gap-3">
         {COMPLIANCE_STEPS.map((step, i) => (
-          <div key={i} className={i < COMPLIANCE_STEPS.length - 1 ? 'border-b border-[#F3F4F6]' : ''}>
             <ComplianceStepCard
+              key={i}
               step={step}
               stepIdx={i}
               isOpen={openStepIdx === i}
@@ -1332,9 +1331,7 @@ function ComplianceEdit({ addLog, subChecked, subWaived, onSubCheck, onSubWaive,
               addLog={addLog}
               editable
             />
-          </div>
         ))}
-      </div>
       {requestModal && (
         <RequestToSalesModal
           documentName={requestModal.label}
@@ -1352,11 +1349,10 @@ function ComplianceEdit({ addLog, subChecked, subWaived, onSubCheck, onSubWaive,
 function ComplianceView({ subChecked = {}, subWaived = {}, salesRequested }) {
   const [openStepIdx, setOpenStepIdx] = useState(null)
   return (
-    <div className="flex flex-col">
-      <div className="border border-[#E5E7EB] rounded-[12px] bg-white overflow-hidden">
+    <div className="flex flex-col gap-3">
         {COMPLIANCE_STEPS.map((step, i) => (
-          <div key={i} className={i < COMPLIANCE_STEPS.length - 1 ? 'border-b border-[#F3F4F6]' : ''}>
             <ComplianceStepCard
+              key={i}
               step={step}
               stepIdx={i}
               isOpen={openStepIdx === i}
@@ -1369,9 +1365,7 @@ function ComplianceView({ subChecked = {}, subWaived = {}, salesRequested }) {
               addLog={() => {}}
               editable={false}
             />
-          </div>
         ))}
-      </div>
     </div>
   )
 }
