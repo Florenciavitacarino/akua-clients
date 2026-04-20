@@ -943,7 +943,7 @@ function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, o
   return (
     <div className="pb-2 mb-2 group/sub relative">
       {/* Header row: checkbox + label + badges + three-dot menu */}
-      <div className="flex items-center gap-3 py-2.5">
+      <div className="flex items-center gap-3 py-2.5 bg-[#F8F9FA] -mx-4 px-4">
         <div
           className={`w-[18px] h-[18px] rounded-[4px] shrink-0 flex items-center justify-center ${
             waived
@@ -999,10 +999,10 @@ function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, o
             <p className="text-[13px] text-[#0A0B0D] font-medium truncate m-0">Documento_{label.replace(/\s+/g, '_')}</p>
             <p className="text-[11px] text-[#9CA3AF] m-0">{pdfSize}</p>
           </div>
-          <button className="flex items-center gap-1 text-[12px] font-medium text-[#374151] bg-white px-3 py-1 rounded-full border border-[#E5E7EB] cursor-pointer hover:bg-[#F9FAFB] shrink-0">
+          <button className="flex items-center gap-1 text-[12px] font-medium text-[#180047] bg-white px-3 py-1 rounded-full border border-[#180047] cursor-pointer hover:bg-[#F9FAFB] shrink-0">
             Abrir <ExternalLink size={12} />
           </button>
-          <button className="text-[#D1D5DB] bg-transparent border-none cursor-pointer hover:text-[#DC2626] shrink-0"><Trash2 size={14} /></button>
+          <button className="text-[#374151] bg-transparent border-none cursor-pointer hover:text-[#DC2626] shrink-0"><Trash2 size={14} /></button>
         </div>
       )}
 
@@ -1022,27 +1022,30 @@ function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, o
         <div className="flex flex-col gap-2 pt-1">
           {/* Existing comments */}
           {mockComments.map((c, i) => (
-            <div key={i} className="flex items-start gap-2">
-              <div className="w-[20px] h-[20px] rounded-full bg-[#10B981] flex items-center justify-center shrink-0 mt-0.5">
-                <span className="text-[8px] font-bold text-white">AR</span>
-              </div>
-              <div className="min-w-0">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[13px] font-medium text-[#0A0B0D]">Agustina Romagnoli</span>
-                  <span className="text-[12px] text-[#D1D5DB]">{c.time}</span>
+            <div key={i}>
+              {i > 0 && <hr className="border-t border-[#F3F4F6] m-0 mb-2" />}
+              <div className="flex items-start gap-2">
+                <div className="w-[20px] h-[20px] rounded-full bg-[#10B981] flex items-center justify-center shrink-0 mt-0.5">
+                  <span className="text-[8px] font-bold text-white">AR</span>
                 </div>
-                <p className="text-[13px] text-[#6B7280] m-0 mt-0.5">{c.text}</p>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[13px] font-semibold text-[#0A0B0D]">Agustina Romagnoli</span>
+                    <span className="text-[12px] text-[#9CA3AF]">{c.time}</span>
+                  </div>
+                  <p className="text-[13px] text-[#6B7280] m-0 mt-0.5">{c.text}</p>
+                </div>
               </div>
             </div>
           ))}
           {/* Comment input */}
           {editable && (
-            <input
-              type="text"
+            <textarea
               value={noteValue}
               onChange={(e) => setNoteValue(e.target.value)}
               placeholder="Dejar un comentario..."
-              className="w-full border border-[#E5E7EB] rounded-[10px] px-3.5 py-2.5 text-[13px] bg-white outline-none focus:border-[#5a6dd7] placeholder:text-[#9CA3AF]"
+              rows={2}
+              className="w-full border border-[#E5E7EB] rounded-[10px] px-3.5 py-2.5 text-[13px] bg-white outline-none focus:border-[#5a6dd7] placeholder:text-[#9CA3AF] resize-none"
             />
           )}
         </div>
