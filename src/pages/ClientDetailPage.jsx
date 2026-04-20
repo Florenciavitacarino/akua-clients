@@ -1316,7 +1316,7 @@ function ComplianceEdit({ addLog, subChecked, subWaived, onSubCheck, onSubWaive,
     <div className="flex flex-col">
       <div className="border border-[#E5E7EB] rounded-[12px] bg-white overflow-hidden">
         {COMPLIANCE_STEPS.map((step, i) => (
-          <div key={i} className={i < COMPLIANCE_STEPS.length - 1 && openStepIdx !== i ? 'border-b border-[#F3F4F6]' : ''}>
+          <div key={i} className={i < COMPLIANCE_STEPS.length - 1 ? 'border-b border-[#F3F4F6]' : ''}>
             <ComplianceStepCard
               step={step}
               stepIdx={i}
@@ -1355,7 +1355,7 @@ function ComplianceView({ subChecked = {}, subWaived = {}, salesRequested }) {
     <div className="flex flex-col">
       <div className="border border-[#E5E7EB] rounded-[12px] bg-white overflow-hidden">
         {COMPLIANCE_STEPS.map((step, i) => (
-          <div key={i} className={i < COMPLIANCE_STEPS.length - 1 && openStepIdx !== i ? 'border-b border-[#F3F4F6]' : ''}>
+          <div key={i} className={i < COMPLIANCE_STEPS.length - 1 ? 'border-b border-[#F3F4F6]' : ''}>
             <ComplianceStepCard
               step={step}
               stepIdx={i}
@@ -1705,7 +1705,7 @@ function FraudEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog, review
         {FRAUD_CHECKLIST.map((item, i) => {
           const sec = sections[i] || {}
           return (
-            <div key={i} className={i < FRAUD_CHECKLIST.length - 1 && openIdx !== i ? 'border-b border-[#F3F4F6]' : ''}>
+            <div key={i} className={i < FRAUD_CHECKLIST.length - 1 ? 'border-b border-[#F3F4F6]' : ''}>
               <FraudSectionRow
                 item={item}
                 secIdx={i}
@@ -1742,7 +1742,7 @@ function FraudView({ checkedItems, waivedItems, review }) {
         {FRAUD_CHECKLIST.map((item, i) => {
           const sec = sections[i] || {}
           return (
-            <div key={i} className={i < FRAUD_CHECKLIST.length - 1 && !openSet.has(i) ? 'border-b border-[#F3F4F6]' : ''}>
+            <div key={i} className={i < FRAUD_CHECKLIST.length - 1 ? 'border-b border-[#F3F4F6]' : ''}>
               <FraudSectionRow
                 item={item}
                 secIdx={i}
