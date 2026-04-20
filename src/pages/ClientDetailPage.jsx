@@ -1763,14 +1763,9 @@ function FraudView({ checkedItems, waivedItems, review }) {
 
 /* ─── FINANCES CONTENT ─── */
 const FINANCES_CHECKLIST = [
-  { label: "Text here" },
-  { label: "Text here" },
-  { label: "Text here" },
-  { label: "Text here" },
-  { label: "Text here" },
-  { label: "Text here" },
+  { label: "Información administrativa" },
   { label: "Perfil Transaccional Esperado", tag: "FRAUD", sharedId: "perfil_transaccional" },
-  { label: "Historial de Riesgo", tag: "FRAUD", sharedId: "historial_riesgo" },
+  { label: "Definición del colateral" },
 ]
 
 const FINANCES_DOC_LABELS = ['EEFF', 'Balance sheet', 'Income Statement', 'Histórico transaccional', 'Modelo transaccional']
@@ -1808,170 +1803,120 @@ function DocLinkInput({ label, disabled }) {
   )
 }
 
+function FinancesSections({ editable }) {
+  const infoAdmin = editable ? (
+    <TextInput label="Correo de facturación" placeholder="mail@mail.com" />
+  ) : (
+    <InfoField label="Correo de facturación" value="mail@mail.com" />
+  )
+
+  const perfilTransaccional = editable ? (
+    <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+      <TextInput label="Volumen mensual" placeholder="Text" info tooltip="Estimado por cantidad de transacciones" />
+      <TextInput label="Monto procesado mensual" placeholder="Text" info tooltip="Estimado en USD" />
+      <TextInput label="Ticket promedio USD" placeholder="1000 usd" />
+      <TextInput label="Ticket mínimo USD" placeholder="400 usd" />
+      <TextInput label="Ticket máximo USD" placeholder="1000 usd" />
+      <TextInput label="Mix estimado" placeholder="Text" info tooltip="Tarjetas domésticas vs. internacionales" />
+      <TextInput label="Países de origen de tarjetas frecuentes" placeholder="Text" />
+      <TextInput label="Monedas de transacción" placeholder="Text" />
+    </div>
+  ) : (
+    <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+      <InfoField label="Volumen mensual" value="Text" info tooltip="Estimado por cantidad de transacciones" />
+      <InfoField label="Monto procesado mensual" value="Text" info tooltip="Estimado en USD" />
+      <InfoField label="Ticket promedio USD" value="1000 usd" />
+      <InfoField label="Ticket mínimo USD" value="400 usd" />
+      <InfoField label="Ticket máximo USD" value="1000 usd" />
+      <InfoField label="Mix estimado" value="Text" info tooltip="Tarjetas domésticas vs. internacionales" />
+      <InfoField label="Países de origen de tarjetas frecuentes" value="Colombia" />
+      <InfoField label="Monedas de transacción" value="Text" />
+    </div>
+  )
+
+  const defColateral = editable ? (
+    <>
+      <DocLinkInput label="Certificado bancario" />
+      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mt-4 mb-2">Estados Financieros</p>
+      <DocLinkInput label="EEFF" />
+      <DocLinkInput label="Balance sheet" />
+      <DocLinkInput label="Income Statement" />
+      <hr className="border-t border-[#E5E7EB] my-3" />
+      <DocLinkInput label="Histórico transaccional" />
+      <DocLinkInput label="Contracargos" />
+    </>
+  ) : (
+    <>
+      <DocLinkInput label="Certificado bancario" disabled />
+      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mt-4 mb-2">Estados Financieros</p>
+      <DocLinkInput label="EEFF" disabled />
+      <DocLinkInput label="Balance sheet" disabled />
+      <DocLinkInput label="Income Statement" disabled />
+      <hr className="border-t border-[#E5E7EB] my-3" />
+      <DocLinkInput label="Histórico transaccional" disabled />
+      <DocLinkInput label="Contracargos" disabled />
+    </>
+  )
+
+  return [
+    { content: infoAdmin, subtitle: null },
+    { content: perfilTransaccional, subtitle: 'Esta sección permite calibrar los umbrales de monto y el mix de tarjetas.' },
+    { content: defColateral, subtitle: null },
+  ]
+}
+
 function FinancesEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog }) {
   const [openIdx, setOpenIdx] = useState(null)
+  const sections = FinancesSections({ editable: true })
   return (
-    <div className="flex gap-4">
-      {/* Left column: Checklist + Info administrativa (continuous) */}
-      <div className="w-1/2 min-w-0 flex flex-col">
-        {FINANCES_CHECKLIST.map((item, i) => (
-          <ChecklistItemEdit
-            key={i} label={item.label} tag={item.tag}
-            checked={checkedItems.has(i)} waived={waivedItems.has(i)}
+    <div className="flex flex-col gap-3">
+      {FINANCES_CHECKLIST.map((item, i) => {
+        const sec = sections[i] || {}
+        return (
+          <FraudSectionRow
+            key={i}
+            item={item}
+            secIdx={i}
+            sec={sec}
+            checked={checkedItems.has(i)}
+            waived={waivedItems.has(i)}
             isOpen={openIdx === i}
-            onToggle={() => setOpenIdx(openIdx === i ? null : i)}
-            onMarkDone={() => onCheck(i)}
+            onToggle={() => setOpenIdx(prev => prev === i ? null : i)}
+            onCheck={() => onCheck(i)}
             onWaive={() => onWaive(i)}
             addLog={addLog}
+            editable
           />
-        ))}
-
-        {/* Info administrativa right after checkboxes */}
-        <div className="border border-[#E5E7EB] rounded-[8px] p-4 bg-white mt-2">
-          <p className="text-[14px] font-semibold text-[#0A0B0D] mb-4">Información administrativa</p>
-          <TextInput label="Correo de facturación" placeholder="mail@mail.com" />
-        </div>
-
-        {/* Perfil Transaccional Esperado */}
-        <div className="border border-[#E5E7EB] rounded-[8px] p-4 bg-white mt-4">
-          <div className="flex items-center gap-2 mb-1">
-            <p className="text-[14px] font-semibold text-[#0A0B0D]">Perfil Transaccional Esperado</p>
-            <span className="relative group/ptef shrink-0">
-              <Info size={14} className="text-[#9CA3AF] cursor-pointer" />
-              <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-[#1F2937] text-white text-[12px] rounded-[8px] whitespace-nowrap opacity-0 group-hover/ptef:opacity-100 transition-opacity pointer-events-none z-20">
-                Estimado por cantidad de transacciones
-                <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-[#1F2937]" />
-              </div>
-            </span>
-          </div>
-          <p className="text-[12px] text-[#6B7280] mb-4">Esta sección permite calibrar los umbrales de monto y el mix de tarjetas.</p>
-          <div className="grid grid-cols-2 gap-x-6 gap-y-4">
-            <TextInput label="Volumen mensual" placeholder="Text" info tooltip="Estimado por cantidad de transacciones" />
-            <TextInput label="Monto procesado mensual" placeholder="Text" info tooltip="Estimado en USD" />
-            <TextInput label="Ticket promedio USD" placeholder="1000 usd" />
-            <TextInput label="Ticket mínimo USD" placeholder="400 usd" />
-            <TextInput label="Ticket máximo USD" placeholder="1000 usd" />
-            <TextInput label="Mix estimado" placeholder="Text" info tooltip="Tarjetas domésticas vs. internacionales" />
-            <TextInput label="Países de origen de tarjetas frecuentes" placeholder="Text" />
-            <TextInput label="Monedas de transacción" placeholder="Text" />
-          </div>
-        </div>
-
-        {/* Historial de Riesgo */}
-        <div className="border border-[#E5E7EB] rounded-[8px] p-4 bg-white mt-4">
-          <p className="text-[14px] font-semibold text-[#0A0B0D] mb-4">Historial de Riesgo</p>
-          <div className="grid grid-cols-2 gap-x-6 gap-y-5">
-            <RadioField label="Historial de procesamiento" />
-            <RadioField label="Tasa de chargebacks" info tooltip="Promedio (últimos 3 meses)" />
-            <RadioField label="Chargebacks > 0.9%" />
-          </div>
-          <div className="grid grid-cols-2 gap-x-6 gap-y-5 mt-5">
-            <TextInput label="Fecha" placeholder="Mes" />
-            <RadioField label="Participación de monitoreo" info tooltip="Entre Visa o Mastercard (VAMP, ECP, FMP)" />
-            <RadioField label="Incidentes de fraude" />
-          </div>
-          <div className="mt-5">
-            <TextInput label="Descripción del incidente" placeholder="Descripción del incidente" />
-          </div>
-        </div>
-      </div>
-
-      {/* Right column: Definición del colateral + Activity */}
-      <div className="w-1/2 min-w-0 flex flex-col gap-4">
-        <div className="bg-white border border-[#E5E7EB] rounded-[8px] p-4">
-          <p className="text-[14px] font-semibold text-[#0A0B0D] mb-3">Definición del colateral</p>
-          <DocLinkInput label="Certificado bancario" />
-          <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mt-4 mb-2">Estados Financieros</p>
-          <div className="flex items-start gap-2 bg-[#F9FAFB] rounded-[8px] p-3 mb-3">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            <p className="text-[12px] text-[#6B7280]">incluir Balance Sheet e Income Statement más recientes.</p>
-          </div>
-          <DocLinkInput label="EEFF" />
-          <DocLinkInput label="Balance sheet" />
-          <DocLinkInput label="Income Statement" />
-          <hr className="border-t border-[#E5E7EB] my-3" />
-          <DocLinkInput label="Histórico transaccional" />
-          <DocLinkInput label="Contracargos" />
-        </div>
-      </div>
+        )
+      })}
     </div>
   )
 }
 
 function FinancesView({ checkedItems, waivedItems }) {
+  const sections = FinancesSections({ editable: false })
+  const [openSet, setOpenSet] = useState(new Set(FINANCES_CHECKLIST.map((_, i) => i)))
+  const toggleIdx = (i) => setOpenSet(prev => {
+    const n = new Set(prev); if (n.has(i)) n.delete(i); else n.add(i); return n
+  })
   return (
-    <div className="flex gap-4">
-      {/* Left column: Checklist + Info administrativa (continuous) */}
-      <div className="w-1/2 min-w-0 flex flex-col">
-        {FINANCES_CHECKLIST.map((item, i) => (
-          <ChecklistItemView key={i} label={item.label} tag={item.tag} checked={checkedItems.has(i)} waived={waivedItems.has(i)} />
-        ))}
-
-        <div className="border border-[#E5E7EB] rounded-[8px] p-4 bg-white mt-2">
-          <p className="text-[14px] font-semibold text-[#0A0B0D] mb-4">Información administrativa</p>
-          <InfoField label="Correo de facturación" value="mail@mail.com" />
-        </div>
-
-        {/* Perfil Transaccional Esperado */}
-        <div className="border border-[#E5E7EB] rounded-[8px] p-4 bg-white mt-4">
-          <div className="flex items-center gap-2 mb-1">
-            <p className="text-[14px] font-semibold text-[#0A0B0D]">Perfil Transaccional Esperado</p>
-            <span className="relative group/ptefv shrink-0">
-              <Info size={14} className="text-[#9CA3AF] cursor-pointer" />
-              <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-[#1F2937] text-white text-[12px] rounded-[8px] whitespace-nowrap opacity-0 group-hover/ptefv:opacity-100 transition-opacity pointer-events-none z-20">
-                Estimado por cantidad de transacciones
-                <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-[#1F2937]" />
-              </div>
-            </span>
-          </div>
-          <p className="text-[12px] text-[#6B7280] mb-4">Esta sección permite calibrar los umbrales de monto y el mix de tarjetas.</p>
-          <div className="grid grid-cols-2 gap-x-6 gap-y-4">
-            <InfoField label="Volumen mensual" value="Text" info tooltip="Estimado por cantidad de transacciones" />
-            <InfoField label="Monto procesado mensual" value="Text" info tooltip="Estimado en USD" />
-            <InfoField label="Ticket promedio USD" value="1000 usd" />
-            <InfoField label="Ticket mínimo USD" value="400 usd" />
-            <InfoField label="Ticket máximo USD" value="1000 usd" />
-            <InfoField label="Mix estimado" value="Text" info tooltip="Tarjetas domésticas vs. internacionales" />
-            <InfoField label="Países de origen de tarjetas frecuentes" value="Colombia" />
-            <InfoField label="Monedas de transacción" value="Text" />
-          </div>
-        </div>
-
-        {/* Historial de Riesgo */}
-        <div className="border border-[#E5E7EB] rounded-[8px] p-4 bg-white mt-4">
-          <p className="text-[14px] font-semibold text-[#0A0B0D] mb-4">Historial de Riesgo</p>
-          <div className="grid grid-cols-2 gap-x-6 gap-y-4">
-            <InfoField label="Historial de procesamiento" value="Si" />
-            <InfoField label="Tasa de chargebacks" value="Si" info tooltip="Promedio (últimos 3 meses)" />
-            <InfoField label="Chargebacks > 0.9%" value="Si" />
-            <InfoField label="Fecha" value="01/12/2023" />
-            <InfoField label="Participación de monitoreo" value="Si" info tooltip="Entre Visa o Mastercard (VAMP, ECP, FMP)" />
-            <InfoField label="Incidentes de fraude" value="No" />
-          </div>
-          <div className="mt-4">
-            <InfoField label="Descripción del incidente" value="Descripción del incidente" />
-          </div>
-        </div>
-      </div>
-
-      {/* Right column: Definición del colateral + Activity */}
-      <div className="w-1/2 min-w-0 flex flex-col gap-4">
-        <div className="bg-white border border-[#E5E7EB] rounded-[8px] p-4">
-          <p className="text-[14px] font-semibold text-[#0A0B0D] mb-3">Definición del colateral</p>
-          <DocLinkInput label="Certificado bancario" disabled />
-          <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mt-4 mb-2">Estados Financieros</p>
-          <div className="flex items-start gap-2 bg-[#F9FAFB] rounded-[8px] p-3 mb-3">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            <p className="text-[12px] text-[#6B7280]">incluir Balance Sheet e Income Statement más recientes.</p>
-          </div>
-          <DocLinkInput label="EEFF" disabled />
-          <DocLinkInput label="Balance sheet" disabled />
-          <DocLinkInput label="Income Statement" disabled />
-          <hr className="border-t border-[#E5E7EB] my-3" />
-          <DocLinkInput label="Histórico transaccional" disabled />
-          <DocLinkInput label="Contracargos" disabled />
-        </div>
-      </div>
+    <div className="flex flex-col gap-3">
+      {FINANCES_CHECKLIST.map((item, i) => {
+        const sec = sections[i] || {}
+        return (
+          <FraudSectionRow
+            key={i}
+            item={item}
+            secIdx={i}
+            sec={sec}
+            checked={checkedItems.has(i)}
+            waived={waivedItems.has(i)}
+            isOpen={openSet.has(i)}
+            onToggle={() => toggleIdx(i)}
+            editable={false}
+          />
+        )
+      })}
     </div>
   )
 }
