@@ -1378,70 +1378,45 @@ function ComplianceView({ subChecked = {}, subWaived = {}, salesRequested }) {
 
 /* ─── FRAUD CONTENT ─── */
 const FRAUD_CHECKLIST = [
-  { label: "Datos de equipo de riesgo/prevención de fraude 1" },
-  { label: "Vertical de negocio" },
-  { label: "Perfil Transaccional Esperado", tag: "FINANCE", sharedId: "perfil_transaccional" },
-  { label: "Tipo de Operatoria" },
-  { label: "Historial de Riesgo", tag: "FINANCE", sharedId: "historial_riesgo" },
-  { label: "Apetito de Riesgo del Cliente" },
+  { label: 'Datos del cliente' },
+  { label: 'Vertical de negocio' },
+  { label: 'Perfil Transaccional Esperado', tag: 'FINANCE', sharedId: 'perfil_transaccional' },
+  { label: 'Tipo de Operatoria' },
+  { label: 'Historial de Riesgo', tag: 'FINANCE', sharedId: 'historial_riesgo' },
+  { label: 'Apetito de Riesgo del Cliente' },
+  { label: 'Próxima revisión' },
 ]
 
 const FRECUENCIA_OPTIONS = ['30 días', '60 días', '90 días', '180 días']
 const ALERTAR_OPTIONS = ['15 días', '20 días', '25 días']
 
-function ProximaRevision({ review, onReviewChange, editable }) {
-  if (editable) {
-    return (
-      <div className="mt-4 border border-[#E5E7EB] rounded-[8px] p-4 bg-white">
-        <p className="text-[14px] font-semibold text-[#0A0B0D] mb-1">Próxima revisión</p>
-        <p className="text-[12px] text-[#6B7280] mb-4">Define cuándo se debe revisar este departamento para este cliente</p>
-        <div className="grid grid-cols-3 gap-x-6">
-          <div>
-            <span className="text-[12px] text-[#374151] font-medium block mb-1">Frecuencia de revisión</span>
-            <select
-              value={review.frecuencia || ''}
-              onChange={e => onReviewChange({ ...review, frecuencia: e.target.value })}
-              className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white"
-            >
-              <option value="">Seleccionar</option>
-              {FRECUENCIA_OPTIONS.map(o => <option key={o}>{o}</option>)}
-            </select>
-          </div>
-          <div>
-            <span className="text-[12px] text-[#374151] font-medium block mb-1">Alertar con anticipación</span>
-            <select
-              value={review.alertar || ''}
-              onChange={e => onReviewChange({ ...review, alertar: e.target.value })}
-              className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white"
-            >
-              <option value="">Seleccionar</option>
-              {ALERTAR_OPTIONS.map(o => <option key={o}>{o}</option>)}
-            </select>
-          </div>
-        </div>
-        {review.alertar && (
-          <div className="flex items-center gap-2 mt-4 text-[12px] text-[#6B7280]">
-            <Info size={14} className="text-[#9CA3AF] shrink-0" />
-            Con la anticipación configurada, aparecerá un aviso para iniciar la nueva review
-          </div>
-        )}
+function FraudSections({ editable, review, onReviewChange }) {
+  const datosDelCliente = editable ? (
+    <>
+      <div className="grid grid-cols-3 gap-x-6 gap-y-4">
+        <TextInput label="Nombre" placeholder="Nombre del cliente" />
+        <TextInput label="Cliente ID" placeholder="text" />
+        <TextInput label="Fraud Prevention / Risk Manager" placeholder="Nombre" />
       </div>
-    )
-  }
-  return (
-    <div className="mt-4 border border-[#E5E7EB] rounded-[8px] p-4 bg-white">
-      <p className="text-[14px] font-semibold text-[#0A0B0D] mb-1">Próxima revisión</p>
-      <p className="text-[12px] text-[#6B7280] mb-4">Define cuándo se debe revisar este departamento para este cliente</p>
-      <div className="grid grid-cols-3 gap-x-6">
-        <InfoField label="Frecuencia de revisión" value={review.frecuencia} />
-        <InfoField label="Alertar con anticipación" value={review.alertar} />
+      <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+        <TextInput label="Fecha de solicitud" placeholder="Nombre" />
+        <TextInput label="Fecha estimada de Go-Live" placeholder="22/04/2026" />
       </div>
-    </div>
+    </>
+  ) : (
+    <>
+      <div className="grid grid-cols-3 gap-x-6 gap-y-4">
+        <InfoField label="Nombre" value="Este es el nombre del cliente" />
+        <InfoField label="Cliente ID" value="text" />
+        <InfoField label="Fraud Prevention / Risk Manager" value="Nombre" />
+      </div>
+      <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+        <InfoField label="Fecha de solicitud" value="Nombre" />
+        <InfoField label="Fecha estimada de Go-Live" value="22/04/2026" />
+      </div>
+    </>
   )
-}
 
-function FraudSections({ editable }) {
-  // Form contents per section, used as children of SectionCard
   const verticalDeNegocio = editable ? (
     <>
       <div className="grid grid-cols-2 gap-x-6 gap-y-4">
@@ -1604,58 +1579,157 @@ function FraudSections({ editable }) {
     </>
   )
 
-  // Section 0 (Datos de equipo) has no form — link/note/buttons only
-  const datosDeEquipo = null
+  const proximaRevision = editable ? (
+    <>
+      <div className="grid grid-cols-3 gap-x-6">
+        <div>
+          <span className="text-[12px] text-[#374151] font-medium block mb-1">Frecuencia de revisión</span>
+          <select
+            value={review?.frecuencia || ''}
+            onChange={e => onReviewChange?.({ ...review, frecuencia: e.target.value })}
+            className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white"
+          >
+            <option value="">Seleccionar</option>
+            {FRECUENCIA_OPTIONS.map(o => <option key={o}>{o}</option>)}
+          </select>
+        </div>
+        <div>
+          <span className="text-[12px] text-[#374151] font-medium block mb-1">Alertar con anticipación</span>
+          <select
+            value={review?.alertar || ''}
+            onChange={e => onReviewChange?.({ ...review, alertar: e.target.value })}
+            className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white"
+          >
+            <option value="">Seleccionar</option>
+            {ALERTAR_OPTIONS.map(o => <option key={o}>{o}</option>)}
+          </select>
+        </div>
+      </div>
+      {review?.alertar && (
+        <div className="flex items-center gap-2 text-[12px] text-[#6B7280]">
+          <Info size={14} className="text-[#9CA3AF] shrink-0" />
+          Con la anticipación configurada, aparecerá un aviso para iniciar la nueva review
+        </div>
+      )}
+    </>
+  ) : (
+    <div className="grid grid-cols-3 gap-x-6">
+      <InfoField label="Frecuencia de revisión" value={review?.frecuencia} />
+      <InfoField label="Alertar con anticipación" value={review?.alertar} />
+    </div>
+  )
 
   return [
-    { content: datosDeEquipo, subtitle: null },
+    { content: datosDelCliente, subtitle: null },
     { content: verticalDeNegocio, subtitle: 'Indicar el tipo de negocio principal del cliente. Esta información determina el nivel de riesgo base y los MCCs involucrados.' },
     { content: perfilTransaccional, subtitle: 'Esta sección permite calibrar los umbrales de monto y el mix de tarjetas.', info: true, tooltip: 'Estimado por cantidad de transacciones' },
     { content: tipoOperatoria, subtitle: 'Indicar cómo el cliente procesa sus pagos. Esta sección determina si aplica el Perfil D (recurrencia) y cómo se trata el primer cobro.' },
     { content: historialRiesgo, subtitle: 'Esta sección es obligatoria para clientes que migran desde otro procesador o que ya tienen operatoria previa.' },
-    { content: apetitoRiesgo, subtitle: 'Indicar cómo el cliente prioriza entre seguridad y conversión, el Perfil D (recurrencia) y cómo se trata el primer cobro.' },
+    { content: apetitoRiesgo, subtitle: 'Esta sección recoge la preferencia explícita del cliente respecto a la relación entre protección y tasa de aprobación.' },
+    { content: proximaRevision, subtitle: 'Define cuándo se debe revisar este departamento para este cliente' },
   ]
+}
+
+function FraudSectionRow({ item, secIdx, sec, checked, waived, isOpen, onToggle, onCheck, onWaive, addLog, editable }) {
+  return (
+    <div>
+      <div
+        className={`flex items-center gap-3 cursor-pointer ${isOpen ? 'px-4 pt-4 pb-3' : 'px-4 py-3'}`}
+        onClick={onToggle}
+      >
+        <div
+          className={`w-[20px] h-[20px] rounded-[5px] shrink-0 flex items-center justify-center ${
+            waived
+              ? 'border-[1.5px] border-[#E5E7EB] bg-[#F3F4F6] cursor-not-allowed opacity-50'
+              : editable ? 'cursor-pointer hover:opacity-80' : 'cursor-default'
+          } ${checked && !waived ? 'bg-[#180047]' : !waived ? 'border-[1.5px] border-[#D1D5DB] bg-white' : ''}`}
+          onClick={(e) => { e.stopPropagation(); if (editable && !waived) onCheck?.() }}
+        >
+          {checked && !waived && <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+        </div>
+        <div className="w-[20px] h-[20px] rounded-full bg-[#F2EDF9] shrink-0 flex items-center justify-center">
+          <span className="text-[10px] font-bold text-[#180047] leading-none">{secIdx + 1}</span>
+        </div>
+        <span className={`text-[14px] font-medium ${checked ? 'text-[#374151]' : 'text-[#0A0B0D]'}`}>{item.label}</span>
+        {item.tag && <DeptTag dept={item.tag} />}
+        {waived && (
+          <span className="text-[10px] font-semibold text-[#5a6dd7] bg-[#EDF0FF] px-2 py-0.5 rounded-full uppercase tracking-wide">EXIMIDO</span>
+        )}
+        <span className="flex-1" />
+        {isOpen
+          ? <ChevronUp size={18} className="text-[#374151] shrink-0" />
+          : <ChevronDown size={18} className="text-[#9CA3AF] shrink-0" />
+        }
+      </div>
+      {isOpen && (
+        <div className="px-4 pb-4 flex flex-col gap-4">
+          {sec.subtitle && <p className="text-[12px] text-[#6B7280] leading-relaxed -mt-1">{sec.subtitle}</p>}
+          {sec.content}
+          {editable && (
+            <div className="flex items-center gap-3">
+              <button
+                className="flex items-center gap-1.5 text-[13px] font-semibold text-white bg-[#180047] px-5 py-2.5 rounded-full border-none cursor-pointer hover:bg-[#2a0066] transition-colors"
+                onClick={(e) => { e.stopPropagation(); onCheck?.(); onToggle?.() }}
+              >
+                <Check size={14} strokeWidth={2.5} /> Guardar
+              </button>
+              {waived ? (
+                <button
+                  className="flex items-center gap-2 text-[13px] font-medium text-[#374151] bg-white px-5 py-2.5 rounded-full border border-[#E5E7EB] cursor-pointer hover:bg-[#F9FAFB]"
+                  onClick={(e) => { e.stopPropagation(); onWaive?.() }}
+                >
+                  <RefreshCw size={14} /> Deshacer
+                </button>
+              ) : (
+                <button
+                  className="flex items-center gap-2 text-[13px] font-medium text-[#374151] bg-[#E6E4EC] px-5 py-2.5 rounded-full border-none cursor-pointer hover:bg-[#d9d6e2]"
+                  onClick={(e) => { e.stopPropagation(); onWaive?.() }}
+                >
+                  <Ban size={14} /> Eximir
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )
 }
 
 function FraudEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog, review, onReviewChange }) {
   const [openIdx, setOpenIdx] = useState(null)
-  const sections = FraudSections({ editable: true })
+  const sections = FraudSections({ editable: true, review, onReviewChange })
   return (
-    <>
-      <div className="flex flex-col">
+    <div className="flex flex-col">
+      <div className="border border-[#E5E7EB] rounded-[12px] bg-white overflow-hidden">
         {FRAUD_CHECKLIST.map((item, i) => {
           const sec = sections[i] || {}
           return (
-            <SectionCard
-              key={i}
-              title={item.label}
-              tag={item.tag}
-              subtitle={sec.subtitle}
-              info={sec.info}
-              tooltip={sec.tooltip}
-              checked={checkedItems.has(i)}
-              waived={waivedItems.has(i)}
-              isOpen={openIdx === i}
-              onToggle={() => setOpenIdx(prev => prev === i ? null : i)}
-              onMarkDone={() => onCheck(i)}
-              onWaive={() => onWaive(i)}
-              addLog={addLog}
-              editable
-            >
-              {sec.content}
-            </SectionCard>
+            <div key={i} className={i < FRAUD_CHECKLIST.length - 1 && openIdx !== i ? 'border-b border-[#F3F4F6]' : ''}>
+              <FraudSectionRow
+                item={item}
+                secIdx={i}
+                sec={sec}
+                checked={checkedItems.has(i)}
+                waived={waivedItems.has(i)}
+                isOpen={openIdx === i}
+                onToggle={() => setOpenIdx(prev => prev === i ? null : i)}
+                onCheck={() => onCheck(i)}
+                onWaive={() => onWaive(i)}
+                addLog={addLog}
+                editable
+              />
+            </div>
           )
         })}
       </div>
-      <ProximaRevision review={review} onReviewChange={onReviewChange} editable />
-    </>
+    </div>
   )
 }
 
 function FraudView({ checkedItems, waivedItems, review }) {
-  // In view mode, all sections with content are expanded by default
-  const sections = FraudSections({ editable: false })
-  const defaultOpen = new Set(FRAUD_CHECKLIST.map((_, i) => i).filter(i => sections[i]?.content !== null))
+  const sections = FraudSections({ editable: false, review: review || {} })
+  const defaultOpen = new Set(FRAUD_CHECKLIST.map((_, i) => i))
   const [openSet, setOpenSet] = useState(defaultOpen)
   const toggleIdx = (i) => setOpenSet(prev => {
     const next = new Set(prev)
@@ -1663,32 +1737,27 @@ function FraudView({ checkedItems, waivedItems, review }) {
     return next
   })
   return (
-    <>
-      <div className="flex flex-col">
+    <div className="flex flex-col">
+      <div className="border border-[#E5E7EB] rounded-[12px] bg-white overflow-hidden">
         {FRAUD_CHECKLIST.map((item, i) => {
           const sec = sections[i] || {}
           return (
-            <SectionCard
-              key={i}
-              title={item.label}
-              tag={item.tag}
-              subtitle={sec.subtitle}
-              info={sec.info}
-              tooltip={sec.tooltip}
-              checked={checkedItems.has(i)}
-              waived={waivedItems.has(i)}
-              isOpen={openSet.has(i)}
-              onToggle={() => toggleIdx(i)}
-              editable={false}
-              hideLinkNote
-            >
-              {sec.content}
-            </SectionCard>
+            <div key={i} className={i < FRAUD_CHECKLIST.length - 1 && !openSet.has(i) ? 'border-b border-[#F3F4F6]' : ''}>
+              <FraudSectionRow
+                item={item}
+                secIdx={i}
+                sec={sec}
+                checked={checkedItems.has(i)}
+                waived={waivedItems.has(i)}
+                isOpen={openSet.has(i)}
+                onToggle={() => toggleIdx(i)}
+                editable={false}
+              />
+            </div>
           )
         })}
       </div>
-      <ProximaRevision review={review || {}} editable={false} />
-    </>
+    </div>
   )
 }
 
