@@ -939,9 +939,9 @@ function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, o
   ] : []
 
   return (
-    <div className="pb-2 mb-2 group/sub relative">
+    <div className={`group/sub relative ${pdfName ? 'pb-2 mb-2' : ''}`}>
       {/* Header row: checkbox + label + badges + three-dot menu */}
-      <div className="flex items-center gap-3 py-2.5 bg-[#F8F9FA] -mx-4 px-4">
+      <div className={`flex items-center gap-3 py-2 ${pdfName ? 'bg-[#F8F9FA] -mx-4 px-4' : ''}`}>
         <div
           className={`w-[18px] h-[18px] rounded-[4px] shrink-0 flex items-center justify-center ${
             waived
