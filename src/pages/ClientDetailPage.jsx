@@ -3066,7 +3066,7 @@ export default function ClientDetailPage() {
             </div>
 
             {/* Department content */}
-            <div className="flex-1 min-w-0 border border-[#E5E7EB] rounded-[12px] p-5">
+            <div className="flex-1 min-w-0 pt-2">
               {/* Header: Title | Right side (Edit + Status) */}
               <div className="flex items-start justify-between mb-3">
                 <h2 className="text-[18px] font-semibold text-[#0A0B0D] m-0">
