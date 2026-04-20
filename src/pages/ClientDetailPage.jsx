@@ -906,10 +906,11 @@ const COMPLIANCE_STEPS = [
   {
     title: 'Programa de compliance',
     badge: 'SOLO PAYFAC / PSP / FINTECH',
+    showStepComment: true,
     subItems: [
-      { label: 'Políticas AML/KYC revisadas', pdfName: 'Políticas AML_KYC revisadas.pdf', pdfSize: '1.6 MB' },
-      { label: 'Estructura interna de compliance revisada', pdfName: 'Estructura interna de compliance revisada.pdf', pdfSize: '2.0 MB' },
-      { label: 'Histórico regulatorio revisado', pdfName: 'Histórico regulatorio revisado.pdf', pdfSize: '970 KB' },
+      { label: 'Políticas AML/KYC revisadas' },
+      { label: 'Estructura interna de compliance revisada' },
+      { label: 'Histórico regulatorio revisado' },
     ],
   },
   {
