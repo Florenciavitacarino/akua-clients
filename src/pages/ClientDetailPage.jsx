@@ -1060,7 +1060,7 @@ function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, subChecked, onSub
     : 0
   const checked = totalSubs > 0 && completedSubs === totalSubs
   return (
-    <div className="border border-[#E5E7EB] rounded-[10px] mb-3 bg-white">
+    <div>
       <div
         className={`flex items-center gap-3 cursor-pointer ${isOpen ? 'px-4 pt-4 pb-3' : 'px-4 py-3'}`}
         onClick={onToggle}
@@ -1311,24 +1311,27 @@ function ComplianceEdit({ addLog, subChecked, subWaived, onSubCheck, onSubWaive,
   const [requestModal, setRequestModal] = useState(null) // { stepIdx, subIdx, label }
   return (
     <div className="flex flex-col">
-      {COMPLIANCE_STEPS.map((step, i) => (
-        <ComplianceStepCard
-          key={i}
-          step={step}
-          stepIdx={i}
-          isOpen={openStepIdx === i}
-          onToggle={() => setOpenStepIdx(openStepIdx === i ? null : i)}
-          subChecked={subChecked[i] || new Set()}
-          subWaived={subWaived[i] || new Set()}
-          onSubCheck={(j) => onSubCheck(i, j)}
-          onSubWaive={(j) => onSubWaive(i, j)}
-          onToggleAllSubs={(nextChecked) => onToggleAllSubs(i, nextChecked)}
-          onRequestSales={(stepIdx, subIdx, label) => setRequestModal({ stepIdx, subIdx, label })}
-          salesRequested={salesRequested}
-          addLog={addLog}
-          editable
-        />
-      ))}
+      <div className="border border-[#E5E7EB] rounded-[12px] bg-white overflow-hidden">
+        {COMPLIANCE_STEPS.map((step, i) => (
+          <div key={i} className={i < COMPLIANCE_STEPS.length - 1 && openStepIdx !== i ? 'border-b border-[#F3F4F6]' : ''}>
+            <ComplianceStepCard
+              step={step}
+              stepIdx={i}
+              isOpen={openStepIdx === i}
+              onToggle={() => setOpenStepIdx(openStepIdx === i ? null : i)}
+              subChecked={subChecked[i] || new Set()}
+              subWaived={subWaived[i] || new Set()}
+              onSubCheck={(j) => onSubCheck(i, j)}
+              onSubWaive={(j) => onSubWaive(i, j)}
+              onToggleAllSubs={(nextChecked) => onToggleAllSubs(i, nextChecked)}
+              onRequestSales={(stepIdx, subIdx, label) => setRequestModal({ stepIdx, subIdx, label })}
+              salesRequested={salesRequested}
+              addLog={addLog}
+              editable
+            />
+          </div>
+        ))}
+      </div>
       {requestModal && (
         <RequestToSalesModal
           documentName={requestModal.label}
@@ -1347,22 +1350,25 @@ function ComplianceView({ subChecked = {}, subWaived = {}, salesRequested }) {
   const [openStepIdx, setOpenStepIdx] = useState(null)
   return (
     <div className="flex flex-col">
-      {COMPLIANCE_STEPS.map((step, i) => (
-        <ComplianceStepCard
-          key={i}
-          step={step}
-          stepIdx={i}
-          isOpen={openStepIdx === i}
-          onToggle={() => setOpenStepIdx(openStepIdx === i ? null : i)}
-          subChecked={subChecked[i] || new Set()}
-          subWaived={subWaived[i] || new Set()}
-          onSubCheck={() => {}}
-          onSubWaive={() => {}}
-          salesRequested={salesRequested}
-          addLog={() => {}}
-          editable={false}
-        />
-      ))}
+      <div className="border border-[#E5E7EB] rounded-[12px] bg-white overflow-hidden">
+        {COMPLIANCE_STEPS.map((step, i) => (
+          <div key={i} className={i < COMPLIANCE_STEPS.length - 1 && openStepIdx !== i ? 'border-b border-[#F3F4F6]' : ''}>
+            <ComplianceStepCard
+              step={step}
+              stepIdx={i}
+              isOpen={openStepIdx === i}
+              onToggle={() => setOpenStepIdx(openStepIdx === i ? null : i)}
+              subChecked={subChecked[i] || new Set()}
+              subWaived={subWaived[i] || new Set()}
+              onSubCheck={() => {}}
+              onSubWaive={() => {}}
+              salesRequested={salesRequested}
+              addLog={() => {}}
+              editable={false}
+            />
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
