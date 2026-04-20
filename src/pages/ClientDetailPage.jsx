@@ -933,10 +933,7 @@ function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, o
   const isCheckboxOnly = !pdfName && !isLink && !editable
 
   const [menuOpen, setMenuOpen] = useState(false)
-  const mockComments = defaultComment ? [
-    { text: 'Este es el primer comentario hecho por Agustina Romagnoli', time: '1 min ago' },
-    { text: 'Este es el segundo comentario hecho por Agustina Romagnoli', time: '1 min ago' },
-  ] : pdfName ? [
+  const mockComments = (defaultComment || pdfName) ? [
     { text: 'Este es un comentario hecho por Agustina Romagnoli', time: '1 min ago' },
   ] : []
 
@@ -1025,7 +1022,7 @@ function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, o
             <div key={i}>
               {i > 0 && <hr className="border-t border-[#F3F4F6] m-0 mb-2" />}
               <div className="flex items-start gap-2">
-                <div className="w-[20px] h-[20px] rounded-full bg-[#10B981] flex items-center justify-center shrink-0 mt-0.5">
+                <div className="w-[20px] h-[20px] rounded-full bg-[#6EE7B7] flex items-center justify-center shrink-0 mt-0.5">
                   <span className="text-[8px] font-bold text-white">AR</span>
                 </div>
                 <div className="min-w-0">
