@@ -1225,7 +1225,7 @@ function RiskProfileFields({ editable }) {
   const [comment, setComment] = useState('')
   const RISK_LEVELS = ['Alto', 'Medio', 'Bajo']
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 mt-2">
       <div>
         <span className="text-[12px] text-[#374151] font-medium block mb-2">Clasificación de riesgo</span>
         <div className="flex gap-2">
@@ -1258,8 +1258,8 @@ function RiskProfileFields({ editable }) {
       <textarea
         value={comment}
         onChange={e => setComment(e.target.value)}
-        placeholder="Agregar un comentario"
-        rows={3}
+        placeholder="Dejar un comentario..."
+        rows={2}
         disabled={!editable}
         className="w-full border border-[#E5E7EB] rounded-[10px] px-3.5 py-2.5 text-[13px] text-[#374151] outline-none focus:border-[#5a6dd7] bg-white resize-none placeholder:text-[#9CA3AF] disabled:cursor-default disabled:bg-[#F9FAFB]"
       />
