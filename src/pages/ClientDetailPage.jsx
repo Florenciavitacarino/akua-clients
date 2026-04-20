@@ -936,12 +936,12 @@ function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, o
   const mockComments = defaultComment ? [
     { text: 'Este es el primer comentario hecho por Agustina Romagnoli', time: '1 min ago' },
     { text: 'Este es el segundo comentario hecho por Agustina Romagnoli', time: '1 min ago' },
-  ] : showViewComment ? [
+  ] : pdfName ? [
     { text: 'Este es un comentario hecho por Agustina Romagnoli', time: '1 min ago' },
   ] : []
 
   return (
-    <div className={`${pdfName || isLink || showViewComment ? 'border-b border-[#F3F4F6] pb-2 mb-2' : 'pb-2 mb-2'} group/sub relative`}>
+    <div className="pb-2 mb-2 group/sub relative">
       {/* Header row: checkbox + label + badges + three-dot menu */}
       <div className="flex items-center gap-3 py-2.5">
         <div
@@ -1018,7 +1018,7 @@ function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, o
       )}
 
       {/* Comments + input */}
-      {(pdfName || isLink || showViewComment) && (
+      {(pdfName || isLink) && (
         <div className="flex flex-col gap-2 pt-1">
           {/* Existing comments */}
           {mockComments.map((c, i) => (
