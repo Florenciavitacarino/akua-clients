@@ -993,7 +993,7 @@ function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, o
   return (
     <div className={`group/sub relative ${pdfName ? 'border-b border-[#DEE2E6] pb-3 -mx-[46px] px-[46px]' : ''}`}>
       {/* Header row: checkbox + label + badges + three-dot menu */}
-      <div className={`flex items-center gap-3 py-[6px] ${pdfName ? 'bg-[#F8F9FA] border-y border-[#DEE2E6] -mx-[46px] px-[46px]' : ''}`}>
+      <div className="flex items-center gap-3 py-[6px] bg-[#F8F9FA] border-y border-[#F3F4F6] -mx-[46px] px-[46px]">
         <div
           className={`w-[18px] h-[18px] rounded-[4px] shrink-0 flex items-center justify-center ${
             !editable
