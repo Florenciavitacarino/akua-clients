@@ -1425,13 +1425,13 @@ function EvaluacionNegocioFields({ editable }) {
       })()}
 
       {/* MCC contrastado */}
-      <div className="flex items-center gap-3 py-[6px] border-t border-[#F3F4F6]">
+      <div className="flex items-center gap-3 py-[6px] bg-[#F8F9FA] -mx-[46px] px-[46px] border-y border-[#F3F4F6]">
         <div className={`w-[18px] h-[18px] rounded-[4px] shrink-0 flex items-center justify-center ${editable ? 'border-[1.5px] border-[#D1D5DB] bg-white cursor-pointer' : 'border-[1.5px] border-[#E5E7EB] bg-[#F3F4F6]'}`} />
         <span className={`text-[13px] ${!editable ? 'text-[#9CA3AF]' : 'text-[#1F2937]'}`}>MCC contrastado</span>
       </div>
 
       {/* Actividades prohibidas */}
-      <div className="flex items-center gap-3 py-[6px]">
+      <div className="flex items-center gap-3 py-[6px] bg-[#F8F9FA] -mx-[46px] px-[46px] border-y border-[#F3F4F6]">
         <div className={`w-[18px] h-[18px] rounded-[4px] shrink-0 flex items-center justify-center ${editable ? 'border-[1.5px] border-[#D1D5DB] bg-white cursor-pointer' : 'border-[1.5px] border-[#E5E7EB] bg-[#F3F4F6]'}`} />
         <span className={`text-[13px] ${!editable ? 'text-[#9CA3AF]' : 'text-[#1F2937]'}`}>Actividades prohibidas</span>
       </div>
