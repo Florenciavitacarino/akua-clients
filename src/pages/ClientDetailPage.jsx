@@ -1404,16 +1404,6 @@ function EvaluacionNegocioFields({ editable }) {
         </table>
       </div>
 
-      {/* Note - always visible */}
-      <div className="bg-[#FEF3C7] rounded-[8px] px-4 py-2.5">
-        <p className="text-[13px] text-[#0A0B0D] m-0"><span className="font-semibold">Note</span> Agent reviewed: approved</p>
-      </div>
-
-      {/* Info box - always visible */}
-      <div className="bg-[#FFFBEB] border border-[#FDE68A] rounded-[8px] px-4 py-3">
-        <p className="text-[12px] text-[#374151] m-0 leading-relaxed">AML/CFT Screening (informational): Sanctions (OFAC, UN, EU, UK), PEPs, Adverse Media, Enforcement, Related Entities, SOE/FATCA-CRS. Public sources and specialized databases. Result: No matches found.</p>
-      </div>
-
       {/* AML Agent Analysis - collapsible card */}
       {(() => {
         const [amlOpen, setAmlOpen] = useState(false)
@@ -1444,6 +1434,16 @@ function EvaluacionNegocioFields({ editable }) {
           </div>
         )
       })()}
+
+      {/* Note - always visible */}
+      <div className="bg-[#FEF3C7] rounded-[8px] px-4 py-2.5">
+        <p className="text-[13px] text-[#0A0B0D] m-0"><span className="font-semibold">Note</span> Agent reviewed: approved</p>
+      </div>
+
+      {/* Info box - always visible */}
+      <div className="bg-[#FFFBEB] border border-[#FDE68A] rounded-[8px] px-4 py-3">
+        <p className="text-[12px] text-[#374151] m-0 leading-relaxed">AML/CFT Screening (informational): Sanctions (OFAC, UN, EU, UK), PEPs, Adverse Media, Enforcement, Related Entities, SOE/FATCA-CRS. Public sources and specialized databases. Result: No matches found.</p>
+      </div>
 
       <div className="-mb-3">
         <EvalCheckbox label="MCC contrastado" editable={editable} />
