@@ -1330,7 +1330,7 @@ function EvaluacionNegocioFields({ editable }) {
       </div>
 
       {/* Ballerine Table */}
-      <div className="border border-[#E5E7EB] rounded-[8px] overflow-hidden">
+      <div className="border border-[#E5E7EB] rounded-[8px]">
         <table className="w-full text-left">
           <thead>
             <tr className="border-b border-[#E5E7EB]">
@@ -1366,7 +1366,7 @@ function EvaluacionNegocioFields({ editable }) {
       </div>
 
       {/* NOTO Table */}
-      <div className="border border-[#E5E7EB] rounded-[8px] overflow-hidden">
+      <div className="border border-[#E5E7EB] rounded-[8px]">
         <table className="w-full text-left">
           <thead>
             <tr className="border-b border-[#E5E7EB]">
