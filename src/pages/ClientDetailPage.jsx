@@ -1404,29 +1404,40 @@ function EvaluacionNegocioFields({ editable }) {
         </table>
       </div>
 
-      {/* AML Agent Analysis - collapsible */}
+      {/* Note - always visible */}
+      <div className="bg-[#FEF3C7] rounded-[8px] px-4 py-2.5">
+        <p className="text-[13px] text-[#0A0B0D] m-0"><span className="font-semibold">Note</span> Agent reviewed: approved</p>
+      </div>
+
+      {/* Info box - always visible */}
+      <div className="bg-[#FFFBEB] border border-[#FDE68A] rounded-[8px] px-4 py-3">
+        <p className="text-[12px] text-[#374151] m-0 leading-relaxed">AML/CFT Screening (informational): Sanctions (OFAC, UN, EU, UK), PEPs, Adverse Media, Enforcement, Related Entities, SOE/FATCA-CRS. Public sources and specialized databases. Result: No matches found.</p>
+      </div>
+
+      {/* AML Agent Analysis - collapsible card */}
       {(() => {
         const [amlOpen, setAmlOpen] = useState(false)
         return (
-          <div>
+          <div className="border border-[#E5E7EB] rounded-[10px]">
             <button
               onClick={() => setAmlOpen(prev => !prev)}
-              className="flex items-center gap-2 bg-[#F3F4F6] rounded-full px-3 py-1.5 cursor-pointer border-none hover:bg-[#E5E7EB] transition-colors"
+              className="flex items-center gap-2 w-full px-4 py-3 cursor-pointer border-none bg-transparent hover:bg-[#F9FAFB] transition-colors rounded-[10px]"
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#374151" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-              <span className="text-[12px] font-medium text-[#0A0B0D]">AML Agent Analysis</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#374151" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <span className="text-[14px] font-semibold text-[#0A0B0D]">AML Agent Analysis</span>
+              <span className="flex-1" />
               {amlOpen
-                ? <ChevronUp size={12} className="text-[#374151]" />
-                : <ChevronDown size={12} className="text-[#9CA3AF]" />
+                ? <ChevronUp size={18} className="text-[#374151]" />
+                : <ChevronDown size={18} className="text-[#9CA3AF]" />
               }
             </button>
             {amlOpen && (
-              <div className="flex flex-col gap-3 mt-3">
-                <div className="bg-[#FEF3C7] rounded-[8px] px-4 py-2.5">
-                  <p className="text-[13px] text-[#0A0B0D] m-0"><span className="font-semibold">Note</span> Agent reviewed: approved</p>
-                </div>
-                <div className="bg-[#FFFBEB] border border-[#FDE68A] rounded-[8px] px-4 py-3">
-                  <p className="text-[12px] text-[#374151] m-0 leading-relaxed">AML/CFT Screening (informational): Sanctions (OFAC, UN, EU, UK), PEPs, Adverse Media, Enforcement, Related Entities, SOE/FATCA-CRS. Public sources and specialized databases. Result: No matches found.</p>
+              <div className="px-4 pb-4 flex flex-col gap-3">
+                <p className="text-[13px] text-[#0A0B0D] m-0">Approved</p>
+                <div className="text-[13px] text-[#374151] leading-relaxed">
+                  <p className="m-0 mb-3"><span className="font-bold">**STEP 1: COMPLIANCE DATA ANALYSIS**</span><br/>
+                  The compliance data from Noto AML screening shows zero matches: - entityPEPsCount: 0 - entitySanctionsCount: 0 - entityAdverseMediaCount: 0 - entityEnforcementsCount: 0 - matchScore: 0  No matches were found in any sanctions lists, PEP databases, adverse media sources, or enforcement records. This triggers the requirement to proceed to STEP 2 for internet research validation.</p>
+                  <p className="m-0"><span className="font-bold">**STEP 2: INTERNET RESEARCH**</span>  Two comprehensive searches were conducted: 1. "Luz Stella Forero Brito Colombia"</p>
                 </div>
               </div>
             )}
