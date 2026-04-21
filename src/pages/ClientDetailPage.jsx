@@ -3190,7 +3190,7 @@ export default function ClientDetailPage() {
   return (
     <>
       {/* Sticky breadcrumbs + tabs */}
-      <div className="sticky top-0 z-30 bg-[#F8F9FA] pb-2">
+      <div className="sticky top-0 z-30 bg-[#F8F9FA] pb-2 -mx-4 px-4 -mt-4 pt-4">
         <div className="flex items-center gap-1.5 mb-3 pt-2">
           <Link to="/clients" className="text-[14px] text-[#868e96] font-medium no-underline hover:underline">Clients</Link>
           <span className="text-[14px] text-[#dee2e6]">/</span>
