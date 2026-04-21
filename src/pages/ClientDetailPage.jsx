@@ -319,10 +319,12 @@ function TagPills({ label, values = [] }) {
 
 /* ─── Empty placeholder badge (when no info) ─── */
 /* ─── PDF file icon ─── */
-function DocMenuButton({ onDelete, onRequestSales, onAttach }) {
+function DocMenuButton({ onDelete, onRequestSales, onAttach, docName = '' }) {
   const [open, setOpen] = useState(false)
+  const [showSalesModal, setShowSalesModal] = useState(false)
   const btnRef = useRef(null)
   return (
+    <>
     <div className="relative shrink-0" ref={btnRef}>
       <button onClick={(e) => { e.stopPropagation(); setOpen(prev => !prev) }} className="w-[28px] h-[28px] rounded-full border border-[#180047] flex items-center justify-center bg-white cursor-pointer hover:bg-[#F9FAFB]">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="#180047"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
@@ -336,7 +338,7 @@ function DocMenuButton({ onDelete, onRequestSales, onAttach }) {
                 <Plus size={14} className="text-[#374151]" /> Agregar nuevo doc
               </button>
             )}
-            <button onClick={() => { setOpen(false); onRequestSales?.() }} className="flex items-center gap-2 w-full px-4 py-2 text-[13px] text-[#1F2937] bg-transparent border-none cursor-pointer hover:bg-[#F9FAFB] text-left">
+            <button onClick={() => { setOpen(false); setShowSalesModal(true) }} className="flex items-center gap-2 w-full px-4 py-2 text-[13px] text-[#1F2937] bg-transparent border-none cursor-pointer hover:bg-[#F9FAFB] text-left">
               <ArrowUpRight size={14} className="text-[#374151]" /> Solicitar a sales
             </button>
             {onDelete && (
@@ -348,7 +350,14 @@ function DocMenuButton({ onDelete, onRequestSales, onAttach }) {
         </>
       )}
     </div>
-  )
+    {showSalesModal && (
+      <RequestToSalesModal
+        documentName={docName}
+        onCancel={() => setShowSalesModal(false)}
+        onSend={() => {}}
+      />
+    )}
+    </>
 }
 
 function PdfFileIcon() {
