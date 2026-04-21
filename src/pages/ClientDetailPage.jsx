@@ -3189,8 +3189,8 @@ export default function ClientDetailPage() {
 
   return (
     <>
-      {/* Sticky breadcrumbs + tabs */}
-      <div className="sticky top-0 z-30 bg-[#F8F9FA] pb-2 -mx-4 px-4 -mt-4 pt-4">
+      {/* Breadcrumbs */}
+      <div className="pb-2">
         <div className="flex items-center gap-1.5 mb-3 pt-2">
           <Link to="/clients" className="text-[14px] text-[#868e96] font-medium no-underline hover:underline">Clients</Link>
           <span className="text-[14px] text-[#dee2e6]">/</span>
@@ -3201,7 +3201,7 @@ export default function ClientDetailPage() {
       {/* Main card */}
       <div className="bg-white border border-[#dee2e6] rounded-[16px] p-4">
         {/* Tabs row - segmented style */}
-        <div className="flex items-center mb-4 sticky top-[52px] z-20 bg-white pt-1 pb-2">
+        <div className="flex items-center mb-4">
           <div className="inline-flex items-center gap-0 bg-white border border-[#E5E7EB] rounded-[10px] p-1">
             {TABS.map((tab) => {
               const isActive = activeTab === tab
@@ -3225,7 +3225,7 @@ export default function ClientDetailPage() {
         {activeTab === 'Revisión por áreas' && (
           <div className="flex gap-4">
             {/* Department sidebar */}
-            <div className="w-[280px] shrink-0 self-start sticky top-[100px]">
+            <div className="w-[280px] shrink-0">
               <div className="flex flex-col">
                 {DEPARTMENTS.map((dept) => {
                   const isActive = activeDept === dept.key
@@ -3257,7 +3257,7 @@ export default function ClientDetailPage() {
             {/* Department content */}
             <div className="flex-1 min-w-0">
               {/* Sticky Header */}
-              <div className="sticky top-[100px] z-10 bg-white pt-2 pb-1">
+              <div className="pt-2 pb-1">
               {/* Header: Title | Right side (Edit + Status) */}
               <div className="flex items-start justify-between mb-3">
                 <h2 className="text-[18px] font-semibold text-[#0A0B0D] m-0">
