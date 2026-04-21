@@ -339,7 +339,7 @@ function DocMenuButton({ onDelete, onRequestSales, onAttach, docName = '' }) {
               </button>
             )}
             <button onClick={() => { setOpen(false); setShowSalesModal(true) }} className="flex items-center gap-2 w-full px-4 py-2 text-[13px] text-[#1F2937] bg-transparent border-none cursor-pointer hover:bg-[#F9FAFB] text-left">
-              <ArrowUpRight size={14} className="text-[#374151]" /> Solicitar a sales
+              <ArrowUpRight size={14} className="text-[#374151]" /> Solicitar documento
             </button>
             {onDelete && (
               <button onClick={() => { setOpen(false); onDelete() }} className="flex items-center gap-2 w-full px-4 py-2 text-[13px] text-[#DC2626] bg-transparent border-none cursor-pointer hover:bg-[#FEF2F2] text-left">
@@ -645,7 +645,7 @@ function RequestToSalesModal({ documentName = '', onCancel, onSend }) {
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
         <div className="bg-white rounded-[16px] w-[620px] max-w-[90vw] shadow-xl p-5 flex flex-col gap-6">
           <div className="flex items-center justify-between">
-            <h3 className="text-[20px] font-semibold text-[#0A0B0D] m-0 leading-tight">Solicitar documento a Sales</h3>
+            <h3 className="text-[20px] font-semibold text-[#0A0B0D] m-0 leading-tight">Solicitar documento</h3>
             <button onClick={onCancel} className="text-[#9CA3AF] hover:text-[#374151] bg-transparent border-none cursor-pointer"><X size={18} /></button>
           </div>
           <div className="flex flex-col items-center justify-center py-12 gap-6">
@@ -670,7 +670,7 @@ function RequestToSalesModal({ documentName = '', onCancel, onSend }) {
       <div className="bg-white rounded-[16px] w-[620px] max-w-[90vw] shadow-xl p-5 flex flex-col gap-6">
         <div>
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-[20px] font-semibold text-[#0A0B0D] m-0 leading-tight">Solicitar documento a Sales</h3>
+            <h3 className="text-[20px] font-semibold text-[#0A0B0D] m-0 leading-tight">Solicitar documento</h3>
             <button onClick={onCancel} className="text-[#9CA3AF] hover:text-[#374151] bg-transparent border-none cursor-pointer"><X size={18} /></button>
           </div>
           <p className="text-[14px] text-[#868e96] leading-[20px] m-0">
@@ -678,15 +678,32 @@ function RequestToSalesModal({ documentName = '', onCancel, onSend }) {
           </p>
         </div>
 
-        <div>
-          <label className="flex items-center text-[16px] font-semibold text-[#0A0B0D] mb-1">
-            Documento requerido <span className="text-[#fa5252] ml-0.5">*</span>
-          </label>
-          <input
-            value={doc}
-            onChange={e => setDoc(e.target.value)}
-            className="w-full border border-[#dee2e6] rounded-[4px] px-4 py-2 text-[14px] text-[#0A0B0D] outline-none focus:border-[#180047] bg-white"
-          />
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="flex items-center text-[16px] font-semibold text-[#0A0B0D] mb-1">
+              Documento requerido <span className="text-[#fa5252] ml-0.5">*</span>
+            </label>
+            <input
+              value={doc}
+              onChange={e => setDoc(e.target.value)}
+              className="w-full border border-[#dee2e6] rounded-[4px] px-4 py-2 text-[14px] text-[#0A0B0D] outline-none focus:border-[#180047] bg-white"
+            />
+          </div>
+          <div>
+            <label className="flex items-center text-[16px] font-semibold text-[#0A0B0D] mb-1">
+              Área <span className="text-[#fa5252] ml-0.5">*</span>
+            </label>
+            <select className="w-full border border-[#dee2e6] rounded-[4px] px-4 py-2 text-[14px] text-[#0A0B0D] outline-none focus:border-[#180047] bg-white">
+              <option value="">Seleccionar área</option>
+              <option>Compliance</option>
+              <option>Fraud</option>
+              <option>Finance</option>
+              <option>Sales</option>
+              <option>Legal and Contract</option>
+              <option>Kickoff & Integration</option>
+              <option>Go Live</option>
+            </select>
+          </div>
         </div>
 
         <div>
@@ -885,7 +902,7 @@ function SectionCard({
                     className="flex items-center gap-1 text-[13px] font-medium text-[#180047] bg-transparent border-none cursor-pointer hover:text-[#2a0066]"
                     onClick={(e) => { e.stopPropagation(); onRequestSales(title) }}
                   >
-                    Solicitar a sales <ArrowUpRight size={13} />
+                    Solicitar documento <ArrowUpRight size={13} />
                   </button>
                 </>
               )}
@@ -1029,7 +1046,7 @@ function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, o
                     <FileText size={14} className="text-[#9CA3AF]" /> Adjuntar documento
                   </button>
                   <button onClick={() => { setMenuOpen(false); onRequestSales?.(label) }} className="flex items-center gap-2 w-full px-4 py-2 text-[13px] text-[#1F2937] bg-transparent border-none cursor-pointer hover:bg-[#F9FAFB] text-left">
-                    <ArrowUpRight size={14} className="text-[#9CA3AF]" /> Solicitar a sales
+                    <ArrowUpRight size={14} className="text-[#9CA3AF]" /> Solicitar documento
                   </button>
                   <button onClick={() => { setMenuOpen(false); onWaive() }} className="flex items-center gap-2 w-full px-4 py-2 text-[13px] text-[#1F2937] bg-transparent border-none cursor-pointer hover:bg-[#F9FAFB] text-left">
                     <Ban size={14} className="text-[#9CA3AF]" /> Eximir
