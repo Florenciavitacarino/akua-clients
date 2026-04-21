@@ -1394,21 +1394,35 @@ function EvaluacionNegocioFields({ editable }) {
         </table>
       </div>
 
-      {/* AML Agent Analysis */}
-      <div className="flex items-center gap-2 bg-[#F3F4F6] rounded-full px-3 py-1.5 w-fit">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#374151" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        <span className="text-[12px] font-medium text-[#0A0B0D]">AML Agent Analysis</span>
-      </div>
-
-      {/* Note */}
-      <div className="bg-[#FEF3C7] rounded-[8px] px-4 py-2.5">
-        <p className="text-[13px] text-[#0A0B0D] m-0"><span className="font-semibold">Note</span> Agent reviewed: approved</p>
-      </div>
-
-      {/* Info box */}
-      <div className="bg-[#FFFBEB] border border-[#FDE68A] rounded-[8px] px-4 py-3">
-        <p className="text-[12px] text-[#374151] m-0 leading-relaxed">AML/CFT Screening (informational): Sanctions (OFAC, UN, EU, UK), PEPs, Adverse Media, Enforcement, Related Entities, SOE/FATCA-CRS. Public sources and specialized databases. Result: No matches found.</p>
-      </div>
+      {/* AML Agent Analysis - collapsible */}
+      {(() => {
+        const [amlOpen, setAmlOpen] = useState(false)
+        return (
+          <div>
+            <button
+              onClick={() => setAmlOpen(prev => !prev)}
+              className="flex items-center gap-2 bg-[#F3F4F6] rounded-full px-3 py-1.5 cursor-pointer border-none hover:bg-[#E5E7EB] transition-colors"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#374151" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <span className="text-[12px] font-medium text-[#0A0B0D]">AML Agent Analysis</span>
+              {amlOpen
+                ? <ChevronUp size={12} className="text-[#374151]" />
+                : <ChevronDown size={12} className="text-[#9CA3AF]" />
+              }
+            </button>
+            {amlOpen && (
+              <div className="flex flex-col gap-3 mt-3">
+                <div className="bg-[#FEF3C7] rounded-[8px] px-4 py-2.5">
+                  <p className="text-[13px] text-[#0A0B0D] m-0"><span className="font-semibold">Note</span> Agent reviewed: approved</p>
+                </div>
+                <div className="bg-[#FFFBEB] border border-[#FDE68A] rounded-[8px] px-4 py-3">
+                  <p className="text-[12px] text-[#374151] m-0 leading-relaxed">AML/CFT Screening (informational): Sanctions (OFAC, UN, EU, UK), PEPs, Adverse Media, Enforcement, Related Entities, SOE/FATCA-CRS. Public sources and specialized databases. Result: No matches found.</p>
+                </div>
+              </div>
+            )}
+          </div>
+        )
+      })()}
 
       {/* MCC contrastado */}
       <div className="flex items-center gap-3 py-[6px] border-t border-[#F3F4F6]">
