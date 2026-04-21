@@ -922,11 +922,7 @@ const COMPLIANCE_STEPS = [
   },
   {
     title: 'Evaluación del negocio',
-    subItems: [
-      { label: 'Revisión sitio web con Ballerine', isLink: true },
-      { label: 'MCC contrastado' },
-      { label: 'Actividades prohibidas' },
-    ],
+    special: 'evaluacion_negocio',
   },
   {
     title: 'Perfil de riesgo',
@@ -1192,6 +1188,7 @@ function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, subChecked, onSub
           ))}
 
           {step.special === 'kyc_firmantes' && <KycFirmantesFields editable={editable} />}
+          {step.special === 'evaluacion_negocio' && <EvaluacionNegocioFields editable={editable} />}
           {step.special === 'risk_profile' && <RiskProfileFields editable={editable} />}
           {step.special === 'final_decision' && <FinalDecisionFields editable={editable} />}
           {step.special === 'franchise_signup' && <FranchiseSignupFields editable={editable} />}
@@ -1293,6 +1290,149 @@ function KycFirmantesFields({ editable }) {
           rows={2}
           className="w-full border border-[#E5E7EB] rounded-[10px] px-3.5 py-2.5 text-[13px] bg-white outline-none focus:border-[#5a6dd7] placeholder:text-[#9CA3AF] resize-none"
         />
+        </>
+      )}
+    </div>
+  )
+}
+
+function SubcaseMenu({ items }) {
+  const [open, setOpen] = useState(false)
+  return (
+    <div className="relative shrink-0">
+      <button onClick={() => setOpen(prev => !prev)} className="w-[28px] h-[28px] rounded-full border border-[#180047] flex items-center justify-center bg-white cursor-pointer hover:bg-[#F9FAFB]">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="#180047"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+      </button>
+      {open && (
+        <>
+          <div className="fixed inset-0 z-20" onClick={() => setOpen(false)} />
+          <div className="absolute right-0 top-full mt-1 bg-white border border-[#E5E7EB] rounded-[10px] shadow-[0_4px_16px_rgba(0,0,0,0.12)] py-1.5 z-30 min-w-[180px]">
+            {items.map((item, i) => (
+              <button key={i} onClick={() => setOpen(false)} className="flex items-center gap-2 w-full px-4 py-2 text-[13px] text-[#1F2937] bg-transparent border-none cursor-pointer hover:bg-[#F9FAFB] text-left">
+                {item.icon} {item.label}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
+
+function EvaluacionNegocioFields({ editable }) {
+  const [noteValue, setNoteValue] = useState('')
+  return (
+    <div className="flex flex-col gap-3">
+      {/* Revisión sitio web con Ballerine */}
+      <div className="flex items-center gap-3 py-[6px]">
+        <div className={`w-[18px] h-[18px] rounded-[4px] shrink-0 flex items-center justify-center ${editable ? 'border-[1.5px] border-[#D1D5DB] bg-white cursor-pointer' : 'border-[1.5px] border-[#E5E7EB] bg-[#F3F4F6]'}`} />
+        <span className={`text-[13px] ${!editable ? 'text-[#9CA3AF]' : 'text-[#1F2937]'}`}>Revisión sitio web con Ballerine</span>
+      </div>
+
+      {/* Ballerine Table */}
+      <div className="border border-[#E5E7EB] rounded-[8px] overflow-hidden">
+        <table className="w-full text-left">
+          <thead>
+            <tr className="border-b border-[#E5E7EB]">
+              <th className="text-[12px] font-semibold text-[#0A0B0D] px-3 py-2">Status</th>
+              <th className="text-[12px] font-semibold text-[#0A0B0D] px-3 py-2">Website</th>
+              <th className="text-[12px] font-semibold text-[#0A0B0D] px-3 py-2">Risk Score</th>
+              <th className="text-[12px] font-semibold text-[#0A0B0D] px-3 py-2">Website Status</th>
+              <th className="text-[12px] font-semibold text-[#0A0B0D] px-3 py-2">Fecha</th>
+              <th className="px-3 py-2 w-[40px]" />
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td className="px-3 py-2.5"><span className="text-[10px] font-semibold text-[#047857] bg-[#d1fae5] px-2 py-0.5 rounded-full uppercase">Aprobado</span></td>
+              <td className="px-3 py-2.5 text-[13px] text-[#0A0B0D]">www.hola.com</td>
+              <td className="px-3 py-2.5 text-[13px] text-[#0A0B0D]">0/100</td>
+              <td className="px-3 py-2.5"><span className="text-[10px] font-semibold text-[#1E40AF] bg-[#DBEAFE] px-2 py-0.5 rounded-full uppercase">Online</span></td>
+              <td className="px-3 py-2.5 text-[13px] text-[#0A0B0D]">27/03/2026</td>
+              <td className="px-3 py-2.5">
+                <SubcaseMenu items={[
+                  { icon: <ArrowUpRight size={14} className="text-[#374151]" />, label: 'Descargar subcase' },
+                ]} />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      {/* Revisión NOTO */}
+      <div className="flex items-center gap-3 py-[6px] border-t border-[#F3F4F6] mt-1">
+        <div className={`w-[18px] h-[18px] rounded-[4px] shrink-0 flex items-center justify-center ${editable ? 'border-[1.5px] border-[#D1D5DB] bg-white cursor-pointer' : 'border-[1.5px] border-[#E5E7EB] bg-[#F3F4F6]'}`} />
+        <span className={`text-[13px] ${!editable ? 'text-[#9CA3AF]' : 'text-[#1F2937]'}`}>Revisión NOTO</span>
+      </div>
+
+      {/* NOTO Table */}
+      <div className="border border-[#E5E7EB] rounded-[8px] overflow-hidden">
+        <table className="w-full text-left">
+          <thead>
+            <tr className="border-b border-[#E5E7EB]">
+              <th className="text-[12px] font-semibold text-[#0A0B0D] px-3 py-2">Status</th>
+              <th className="text-[12px] font-semibold text-[#0A0B0D] px-3 py-2">Name</th>
+              <th className="text-[12px] font-semibold text-[#0A0B0D] px-3 py-2">Tipo individual</th>
+              <th className="text-[12px] font-semibold text-[#0A0B0D] px-3 py-2">Creado</th>
+              <th className="px-3 py-2 w-[40px]" />
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td className="px-3 py-2.5"><span className="text-[10px] font-semibold text-[#047857] bg-[#d1fae5] px-2 py-0.5 rounded-full uppercase">Aprobado</span></td>
+              <td className="px-3 py-2.5 text-[13px] text-[#0A0B0D]">Luz Stella Forero Brito</td>
+              <td className="px-3 py-2.5"><span className="text-[10px] font-semibold text-[#dc6038] bg-[#FFE9D9] px-2 py-0.5 rounded-full uppercase">Representante legal</span></td>
+              <td className="px-3 py-2.5 text-[13px] text-[#0A0B0D]">27/03/2026</td>
+              <td className="px-3 py-2.5">
+                <SubcaseMenu items={[
+                  { icon: <ArrowUpRight size={14} className="text-[#374151]" />, label: 'Descargar subcase' },
+                  { icon: <ExternalLink size={14} className="text-[#374151]" />, label: 'Ver subcase' },
+                ]} />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      {/* AML Agent Analysis */}
+      <div className="flex items-center gap-2 bg-[#F3F4F6] rounded-full px-3 py-1.5 w-fit">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#374151" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span className="text-[12px] font-medium text-[#0A0B0D]">AML Agent Analysis</span>
+      </div>
+
+      {/* Note */}
+      <div className="bg-[#FEF3C7] rounded-[8px] px-4 py-2.5">
+        <p className="text-[13px] text-[#0A0B0D] m-0"><span className="font-semibold">Note</span> Agent reviewed: approved</p>
+      </div>
+
+      {/* Info box */}
+      <div className="bg-[#FFFBEB] border border-[#FDE68A] rounded-[8px] px-4 py-3">
+        <p className="text-[12px] text-[#374151] m-0 leading-relaxed">AML/CFT Screening (informational): Sanctions (OFAC, UN, EU, UK), PEPs, Adverse Media, Enforcement, Related Entities, SOE/FATCA-CRS. Public sources and specialized databases. Result: No matches found.</p>
+      </div>
+
+      {/* MCC contrastado */}
+      <div className="flex items-center gap-3 py-[6px] border-t border-[#F3F4F6]">
+        <div className={`w-[18px] h-[18px] rounded-[4px] shrink-0 flex items-center justify-center ${editable ? 'border-[1.5px] border-[#D1D5DB] bg-white cursor-pointer' : 'border-[1.5px] border-[#E5E7EB] bg-[#F3F4F6]'}`} />
+        <span className={`text-[13px] ${!editable ? 'text-[#9CA3AF]' : 'text-[#1F2937]'}`}>MCC contrastado</span>
+      </div>
+
+      {/* Actividades prohibidas */}
+      <div className="flex items-center gap-3 py-[6px]">
+        <div className={`w-[18px] h-[18px] rounded-[4px] shrink-0 flex items-center justify-center ${editable ? 'border-[1.5px] border-[#D1D5DB] bg-white cursor-pointer' : 'border-[1.5px] border-[#E5E7EB] bg-[#F3F4F6]'}`} />
+        <span className={`text-[13px] ${!editable ? 'text-[#9CA3AF]' : 'text-[#1F2937]'}`}>Actividades prohibidas</span>
+      </div>
+
+      {/* Comment */}
+      {editable && (
+        <>
+          <hr className="border-t border-[#DEE2E6] m-0 -mx-[46px]" />
+          <textarea
+            value={noteValue}
+            onChange={(e) => setNoteValue(e.target.value)}
+            placeholder="Dejar un comentario..."
+            rows={2}
+            className="w-full border border-[#E5E7EB] rounded-[10px] px-3.5 py-2.5 text-[13px] bg-white outline-none focus:border-[#5a6dd7] placeholder:text-[#9CA3AF] resize-none"
+          />
         </>
       )}
     </div>
