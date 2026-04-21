@@ -29,7 +29,6 @@ const DEPARTMENTS = [
   { key: 'legal', name: 'Legal and Contract', status: 'complete' },
   { key: 'kickoff', name: 'Kickoff & Integration', status: 'complete' },
   { key: 'golive', name: 'Go Live', status: 'pending' },
-  { key: 'review', name: '1st Review', status: 'pending' },
 ]
 
 const TABS = ['Resumen', 'Revisión por áreas', 'Features', 'Contactos', 'Documentos', 'Timeline']
@@ -320,6 +319,38 @@ function TagPills({ label, values = [] }) {
 
 /* ─── Empty placeholder badge (when no info) ─── */
 /* ─── PDF file icon ─── */
+function DocMenuButton({ onDelete, onRequestSales, onAttach }) {
+  const [open, setOpen] = useState(false)
+  const btnRef = useRef(null)
+  return (
+    <div className="relative shrink-0" ref={btnRef}>
+      <button onClick={(e) => { e.stopPropagation(); setOpen(prev => !prev) }} className="w-[28px] h-[28px] rounded-full border border-[#180047] flex items-center justify-center bg-white cursor-pointer hover:bg-[#F9FAFB]">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="#180047"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+      </button>
+      {open && (
+        <>
+          <div className="fixed inset-0 z-20" onClick={() => setOpen(false)} />
+          <div className="absolute right-0 top-full mt-1 bg-white border border-[#E5E7EB] rounded-[10px] shadow-[0_4px_16px_rgba(0,0,0,0.12)] py-1.5 z-30 min-w-[180px]">
+            {onAttach && (
+              <button onClick={() => { setOpen(false); onAttach() }} className="flex items-center gap-2 w-full px-4 py-2 text-[13px] text-[#1F2937] bg-transparent border-none cursor-pointer hover:bg-[#F9FAFB] text-left">
+                <Plus size={14} className="text-[#374151]" /> Agregar nuevo doc
+              </button>
+            )}
+            <button onClick={() => { setOpen(false); onRequestSales?.() }} className="flex items-center gap-2 w-full px-4 py-2 text-[13px] text-[#1F2937] bg-transparent border-none cursor-pointer hover:bg-[#F9FAFB] text-left">
+              <ArrowUpRight size={14} className="text-[#374151]" /> Solicitar a sales
+            </button>
+            {onDelete && (
+              <button onClick={() => { setOpen(false); onDelete() }} className="flex items-center gap-2 w-full px-4 py-2 text-[13px] text-[#DC2626] bg-transparent border-none cursor-pointer hover:bg-[#FEF2F2] text-left">
+                <Trash2 size={14} className="text-[#DC2626]" /> Eliminar
+              </button>
+            )}
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
+
 function PdfFileIcon() {
   return (
     <div className="w-[40px] h-[40px] rounded-[10px] bg-[#FEE2E2] flex items-center justify-center shrink-0">
@@ -883,7 +914,6 @@ const COMPLIANCE_STEPS = [
   },
   {
     title: 'Screening en listas restrictivas',
-    showStepComment: true,
     subItems: [
       { label: 'Empresa verificada' },
       { label: 'Representante legal verificado' },
@@ -892,7 +922,6 @@ const COMPLIANCE_STEPS = [
   },
   {
     title: 'Evaluación del negocio',
-    showStepComment: true,
     subItems: [
       { label: 'Revisión sitio web con Ballerine', isLink: true },
       { label: 'MCC contrastado' },
@@ -922,6 +951,10 @@ const COMPLIANCE_STEPS = [
     badge: 'POST GO-LIVE',
     special: 'franchise_signup',
   },
+  {
+    title: 'Próxima revisión',
+    special: 'compliance_proxima_revision',
+  },
 ]
 
 const COMPLIANCE_CHECKLIST = COMPLIANCE_STEPS.map(s => ({ label: s.title }))
@@ -930,30 +963,44 @@ const COMPLIANCE_CHECKLIST = COMPLIANCE_STEPS.map(s => ({ label: s.title }))
 function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, onMarkDone, onWaive, editable, onRequestSales, requestedToSales, showViewComment, defaultComment }) {
   const [noteValue, setNoteValue] = useState(defaultComment || '')
   const [linkValue, setLinkValue] = useState('')
+  const [extraDocs, setExtraDocs] = useState([])
+  const fileInputRef = useRef(null)
+
+  const handleAttachDoc = (e) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setExtraDocs(prev => [...prev, { name: file.name, size: `${(file.size / 1024 / 1024).toFixed(1)} MB` }])
+    }
+    e.target.value = ''
+  }
 
   // Checkbox-only items (step 5 non-link sub-items)
   const isCheckboxOnly = !pdfName && !isLink && !editable
 
   const [menuOpen, setMenuOpen] = useState(false)
-  const mockComments = (defaultComment || pdfName) ? [
+  const mockComments = editable ? (pdfName ? [
     { text: 'Este es un comentario hecho por Agustina Romagnoli', time: '1 min ago' },
-  ] : []
+  ] : []) : (showViewComment ? [
+    { text: 'Este es un comentario hecho por Agustina Romagnoli', time: '1 min ago' },
+  ] : [])
 
   return (
-    <div className="group/sub relative">
+    <div className={`group/sub relative ${pdfName ? 'border-b border-[#DEE2E6] pb-3 -mx-[46px] px-[46px]' : ''}`}>
       {/* Header row: checkbox + label + badges + three-dot menu */}
-      <div className={`flex items-center gap-3 py-[6px] ${pdfName ? 'bg-[#F8F9FA] -mx-4 px-4' : ''}`}>
+      <div className={`flex items-center gap-3 py-[6px] ${pdfName ? 'bg-[#F8F9FA] border-y border-[#DEE2E6] -mx-[46px] px-[46px]' : ''}`}>
         <div
           className={`w-[18px] h-[18px] rounded-[4px] shrink-0 flex items-center justify-center ${
-            waived
-              ? 'border-[1.5px] border-[#E5E7EB] bg-[#F3F4F6] cursor-not-allowed opacity-50'
-              : editable ? 'cursor-pointer hover:opacity-80' : 'cursor-default'
-          } ${checked && !waived ? 'bg-[#180047]' : !waived ? 'border-[1.5px] border-[#D1D5DB] bg-white' : ''}`}
+            !editable
+              ? 'border-[1.5px] border-[#E5E7EB] bg-[#F3F4F6] cursor-default'
+              : waived
+                ? 'border-[1.5px] border-[#E5E7EB] bg-[#F3F4F6] cursor-not-allowed opacity-50'
+                : 'cursor-pointer hover:opacity-80'
+          } ${checked && !waived && editable ? 'bg-[#180047]' : !editable ? '' : !waived ? 'border-[1.5px] border-[#D1D5DB] bg-white' : ''}`}
           onClick={() => { if (editable && !waived) onMarkDone() }}
         >
-          {checked && !waived && <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+          {checked && !waived && editable && <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
         </div>
-        <span className={`text-[13px] flex-1 ${checked ? 'text-[#374151]' : 'text-[#1F2937]'}`}>{label}</span>
+        <span className={`text-[13px] flex-1 ${!editable ? 'text-[#9CA3AF]' : checked ? 'text-[#374151]' : 'text-[#1F2937]'}`}>{label}</span>
         {waived && (
           <span className="text-[10px] font-semibold text-[#5a6dd7] bg-[#EDF0FF] px-2 py-0.5 rounded-full uppercase tracking-wide">EXIMIDO</span>
         )}
@@ -972,7 +1019,7 @@ function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, o
               <>
                 <div className="fixed inset-0 z-20" onClick={() => setMenuOpen(false)} />
                 <div className="absolute right-0 top-full mt-1 bg-white border border-[#E5E7EB] rounded-[10px] shadow-[0_4px_16px_rgba(0,0,0,0.12)] py-1.5 z-30 min-w-[180px]">
-                  <button onClick={() => { setMenuOpen(false) }} className="flex items-center gap-2 w-full px-4 py-2 text-[13px] text-[#1F2937] bg-transparent border-none cursor-pointer hover:bg-[#F9FAFB] text-left">
+                  <button onClick={() => { setMenuOpen(false); fileInputRef.current?.click() }} className="flex items-center gap-2 w-full px-4 py-2 text-[13px] text-[#1F2937] bg-transparent border-none cursor-pointer hover:bg-[#F9FAFB] text-left">
                     <FileText size={14} className="text-[#9CA3AF]" /> Adjuntar documento
                   </button>
                   <button onClick={() => { setMenuOpen(false); onRequestSales?.(label) }} className="flex items-center gap-2 w-full px-4 py-2 text-[13px] text-[#1F2937] bg-transparent border-none cursor-pointer hover:bg-[#F9FAFB] text-left">
@@ -988,22 +1035,44 @@ function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, o
         )}
       </div>
 
+      {/* Hidden file input for attaching docs */}
+      <input ref={fileInputRef} type="file" className="hidden" onChange={handleAttachDoc} />
+
       {/* PDF preview row */}
       {pdfName && (
-        <div className="flex items-center gap-3 py-2.5 border-b border-[#F3F4F6]">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+        <div className={`flex items-center gap-3 py-3 ${!showViewComment && !editable ? '' : 'border-b border-[#DEE2E6] -mx-[46px] px-[46px]'}`}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#D1D5DB" stroke="#9CA3AF" strokeWidth="0.5" className="shrink-0">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/>
+            <path d="M14 2v6h6" fill="#E5E7EB" stroke="#9CA3AF" strokeWidth="0.5"/>
           </svg>
           <div className="min-w-0 flex-1">
-            <p className="text-[13px] text-[#0A0B0D] font-medium truncate m-0">Documento_{label.replace(/\s+/g, '_')}</p>
+            <p className="text-[13px] text-[#0A0B0D] font-medium truncate m-0">Documento_{(pdfName || label).replace(/\.pdf$/i, '').replace(/\s+/g, ' ')}</p>
             <p className="text-[11px] text-[#9CA3AF] m-0">{pdfSize}</p>
           </div>
           <button className="flex items-center gap-1 text-[12px] font-medium text-[#180047] bg-white px-3 py-1 rounded-full border border-[#180047] cursor-pointer hover:bg-[#F9FAFB] shrink-0">
             Abrir <ExternalLink size={12} />
           </button>
-          <button className="text-[#374151] bg-transparent border-none cursor-pointer hover:text-[#DC2626] shrink-0"><Trash2 size={14} /></button>
+          {editable && <DocMenuButton onAttach={() => fileInputRef.current?.click()} onDelete={() => {}} />}
         </div>
       )}
+
+      {/* Extra attached docs */}
+      {extraDocs.map((doc, i) => (
+        <div key={i} className={`flex items-center gap-3 py-3 -mx-[46px] px-[46px] ${i > 0 ? 'border-t border-[#DEE2E6]' : ''}`}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#D1D5DB" stroke="#9CA3AF" strokeWidth="0.5" className="shrink-0">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/>
+            <path d="M14 2v6h6" fill="#E5E7EB" stroke="#9CA3AF" strokeWidth="0.5"/>
+          </svg>
+          <div className="min-w-0 flex-1">
+            <p className="text-[13px] text-[#0A0B0D] font-medium truncate m-0">{doc.name}</p>
+            <p className="text-[11px] text-[#9CA3AF] m-0">{doc.size}</p>
+          </div>
+          <button className="flex items-center gap-1 text-[12px] font-medium text-[#180047] bg-white px-3 py-1 rounded-full border border-[#180047] cursor-pointer hover:bg-[#F9FAFB] shrink-0">
+            Abrir <ExternalLink size={12} />
+          </button>
+          <DocMenuButton onDelete={() => setExtraDocs(prev => prev.filter((_, idx) => idx !== i))} onAttach={() => fileInputRef.current?.click()} />
+        </div>
+      ))}
 
       {/* Link input row (for step 5 first sub-item) */}
       {isLink && (
@@ -1017,12 +1086,12 @@ function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, o
       )}
 
       {/* Comments + input */}
-      {(pdfName || isLink) && (
-        <div className="flex flex-col gap-2 pt-1">
+      {(pdfName || isLink || showViewComment) && (mockComments.length > 0 || editable) && (
+        <div className="flex flex-col gap-4 pt-3">
           {/* Existing comments */}
           {mockComments.map((c, i) => (
             <div key={i}>
-              {i > 0 && <hr className="border-t border-[#F3F4F6] m-0 mb-2" />}
+              {i > 0 && <hr className="border-t border-[#DEE2E6] m-0 mb-2 -mx-[46px]" />}
               <div className="flex items-start gap-2">
                 <div className="w-[20px] h-[20px] rounded-full bg-[#6EE7B7] flex items-center justify-center shrink-0 mt-0.5">
                   <span className="text-[8px] font-bold text-white">AR</span>
@@ -1039,13 +1108,16 @@ function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, o
           ))}
           {/* Comment input */}
           {editable && (
-            <textarea
-              value={noteValue}
-              onChange={(e) => setNoteValue(e.target.value)}
-              placeholder="Dejar un comentario..."
-              rows={2}
-              className="w-full border border-[#E5E7EB] rounded-[10px] px-3.5 py-2.5 text-[13px] bg-white outline-none focus:border-[#5a6dd7] placeholder:text-[#9CA3AF] resize-none"
-            />
+            <>
+              <hr className="border-t border-[#DEE2E6] m-0 -mx-[46px]" />
+              <textarea
+                value={noteValue}
+                onChange={(e) => setNoteValue(e.target.value)}
+                placeholder="Dejar un comentario..."
+                rows={2}
+                className="w-full border border-[#E5E7EB] rounded-[10px] px-3.5 py-2.5 text-[13px] bg-white outline-none focus:border-[#5a6dd7] placeholder:text-[#9CA3AF] resize-none"
+              />
+            </>
           )}
         </div>
       )}
@@ -1060,24 +1132,24 @@ function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, subChecked, onSub
   const completedSubs = totalSubs
     ? step.subItems.filter((_, j) => subChecked.has(j) || subWaived.has(j)).length
     : 0
-  const checked = totalSubs > 0 && completedSubs === totalSubs
+  const [localChecked, setLocalChecked] = useState(false)
+  const checked = totalSubs > 0 ? completedSubs === totalSubs : localChecked
   return (
-    <div className="border border-[#E5E7EB] rounded-[10px] bg-white">
+    <div className="border border-[#E5E7EB] rounded-[10px] bg-white overflow-x-hidden">
       <div
         className={`flex items-center gap-3 cursor-pointer ${isOpen ? 'px-4 pt-4 pb-3' : 'px-4 py-3'}`}
         onClick={onToggle}
       >
-        <div
-          className={`w-[20px] h-[20px] rounded-[5px] shrink-0 flex items-center justify-center ${
-            editable && totalSubs > 0 ? 'cursor-pointer hover:opacity-80' : 'cursor-default'
-          } ${checked ? 'bg-[#180047]' : 'border-[1.5px] border-[#D1D5DB] bg-white'}`}
+        {editable && <div
+          className={`w-[20px] h-[20px] rounded-[5px] shrink-0 flex items-center justify-center cursor-pointer hover:opacity-80 ${checked ? 'bg-[#180047]' : 'border-[1.5px] border-[#D1D5DB] bg-white'}`}
           onClick={(e) => {
             e.stopPropagation()
-            if (editable && totalSubs > 0 && onToggleAllSubs) onToggleAllSubs(!checked)
+            if (totalSubs > 0 && onToggleAllSubs) onToggleAllSubs(!checked)
+            else setLocalChecked(prev => !prev)
           }}
         >
           {checked && <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
-        </div>
+        </div>}
         {/* Green numbered circle */}
         <div className="w-[20px] h-[20px] rounded-full bg-[#F2EDF9] shrink-0 flex items-center justify-center">
           <span className="text-[10px] font-bold text-[#180047] leading-none">{stepIdx + 1}</span>
@@ -1096,7 +1168,7 @@ function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, subChecked, onSub
       </div>
 
       {isOpen && (
-        <div className="px-4 pb-4 flex flex-col">
+        <div className="px-4 pb-4 flex flex-col pl-[46px]">
           {step.subtitle && <p className="text-[12px] text-[#6B7280] italic -mt-1 mb-1">{step.subtitle}</p>}
 
           {step.subItems && step.subItems.map((sub, j) => (
@@ -1114,7 +1186,7 @@ function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, subChecked, onSub
               editable={editable}
               onRequestSales={onRequestSales ? (label) => onRequestSales(stepIdx, j, label) : undefined}
               requestedToSales={salesRequested?.has?.(`${stepIdx}.${j}`)}
-              showViewComment={!editable && ((stepIdx === 0 && j === 0) || (stepIdx === 0 && j === 2))}
+              showViewComment={!editable && stepIdx === 0 && j === 0}
               defaultComment={(stepIdx === 0 && j === 0) ? 'Este es un comentario hecho por Agustina Romagnoli' : ''}
             />
           ))}
@@ -1123,17 +1195,20 @@ function ComplianceStepCard({ step, stepIdx, isOpen, onToggle, subChecked, onSub
           {step.special === 'risk_profile' && <RiskProfileFields editable={editable} />}
           {step.special === 'final_decision' && <FinalDecisionFields editable={editable} />}
           {step.special === 'franchise_signup' && <FranchiseSignupFields editable={editable} />}
+          {step.special === 'compliance_proxima_revision' && <ComplianceProximaRevisionFields editable={editable} />}
 
           {step.note && (
             <p className="text-[12px] text-[#6B7280] italic mt-1">{step.note}</p>
           )}
 
           {step.showStepComment && editable && (
-            <textarea
-              placeholder="Dejar un comentario..."
-              rows={2}
-              className="w-full border border-[#E5E7EB] rounded-[10px] px-3.5 py-2.5 text-[13px] bg-white outline-none focus:border-[#5a6dd7] placeholder:text-[#9CA3AF] resize-none mt-2"
-            />
+            <div className="mt-2">
+              <textarea
+                placeholder="Dejar un comentario..."
+                rows={2}
+                className="w-full border border-[#E5E7EB] rounded-[10px] px-3.5 py-2.5 text-[13px] bg-white outline-none focus:border-[#5a6dd7] placeholder:text-[#9CA3AF] resize-none"
+              />
+            </div>
           )}
         </div>
       )}
@@ -1154,7 +1229,7 @@ function KycDocCard({ label, pdfSize }) {
       <button className="flex items-center gap-1 text-[11px] font-medium text-[#180047] bg-white px-2.5 py-0.5 rounded-full border border-[#180047] cursor-pointer hover:bg-[#F9FAFB] shrink-0">
         Abrir <ExternalLink size={10} />
       </button>
-      <button className="text-[#374151] bg-transparent border-none cursor-pointer hover:text-[#DC2626] shrink-0"><Trash2 size={13} /></button>
+      <DocMenuButton onDelete={() => {}} />
     </div>
   )
 }
@@ -1165,7 +1240,7 @@ function KycFirmantesFields({ editable }) {
     <div className="flex flex-col gap-4">
       {/* Organigrama completo checkbox */}
       <div className="flex items-center gap-3 py-1">
-        <div className="w-[18px] h-[18px] rounded-[4px] shrink-0 flex items-center justify-center border-[1.5px] border-[#D1D5DB] bg-white cursor-pointer hover:opacity-80" />
+        {editable && <div className="w-[18px] h-[18px] rounded-[4px] shrink-0 flex items-center justify-center border-[1.5px] border-[#D1D5DB] bg-white cursor-pointer hover:opacity-80" />}
         <span className="text-[13px] text-[#1F2937]">Organigrama completo</span>
       </div>
 
@@ -1209,6 +1284,8 @@ function KycFirmantesFields({ editable }) {
 
       {/* Comment input */}
       {editable && (
+        <>
+        <hr className="border-t border-[#DEE2E6] m-0 -mx-[46px]" />
         <textarea
           value={noteValue}
           onChange={(e) => setNoteValue(e.target.value)}
@@ -1216,6 +1293,7 @@ function KycFirmantesFields({ editable }) {
           rows={2}
           className="w-full border border-[#E5E7EB] rounded-[10px] px-3.5 py-2.5 text-[13px] bg-white outline-none focus:border-[#5a6dd7] placeholder:text-[#9CA3AF] resize-none"
         />
+        </>
       )}
     </div>
   )
@@ -1256,6 +1334,7 @@ function RiskProfileFields({ editable }) {
           )}
         </div>
       </div>
+      <hr className="border-t border-[#DEE2E6] m-0 -mx-[46px]" />
       <textarea
         value={comment}
         onChange={e => setComment(e.target.value)}
@@ -1328,6 +1407,51 @@ function FranchiseSignupFields({ editable }) {
     <div className="grid grid-cols-2 gap-x-6">
       <InfoField label="Inscripción Mastercard — ID de registro" value={mc} />
       <InfoField label="Inscripción Visa — ID de registro" value={visa} />
+    </div>
+  )
+}
+
+function ComplianceProximaRevisionFields({ editable }) {
+  const [frecuencia, setFrecuencia] = useState('60 días')
+  const [alertar, setAlertar] = useState('')
+  if (editable) {
+    return (
+      <div className="flex flex-col gap-3">
+        <p className="text-[12px] text-[#6B7280] m-0">Define cuándo se debe revisar este departamento para este cliente</p>
+        <div className="grid grid-cols-3 gap-x-6 gap-y-2">
+          <div>
+            <span className="text-[12px] text-[#374151] font-medium block mb-1">Frecuencia de revisión</span>
+            <select value={frecuencia} onChange={e => setFrecuencia(e.target.value)} className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white">
+              <option value="">Seleccionar</option>
+              {FRECUENCIA_OPTIONS.map(o => <option key={o}>{o}</option>)}
+            </select>
+          </div>
+          <div>
+            <span className="text-[12px] text-[#374151] font-medium block mb-1">Alertar con anticipación</span>
+            <select value={alertar} onChange={e => setAlertar(e.target.value)} className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white">
+              <option value="">Seleccionar</option>
+              {ALERTAR_OPTIONS.map(o => <option key={o}>{o}</option>)}
+            </select>
+          </div>
+          <div />
+        </div>
+        {alertar && (
+          <div className="flex items-center gap-2 text-[12px] text-[#6B7280]">
+            <Info size={14} className="text-[#9CA3AF] shrink-0" />
+            Con la anticipación configurada, aparecerá un aviso para iniciar la nueva review
+          </div>
+        )}
+      </div>
+    )
+  }
+  return (
+    <div className="flex flex-col gap-3">
+      <p className="text-[12px] text-[#6B7280] m-0">Define cuándo se debe revisar este departamento para este cliente</p>
+      <div className="grid grid-cols-3 gap-x-6">
+        <InfoField label="Frecuencia de revisión" value={frecuencia} />
+        <InfoField label="Alertar con anticipación" value={alertar || '—'} />
+        <div />
+      </div>
     </div>
   )
 }
@@ -1409,29 +1533,23 @@ const ALERTAR_OPTIONS = ['15 días', '20 días', '25 días']
 
 function FraudSections({ editable, review, onReviewChange }) {
   const datosDelCliente = editable ? (
-    <>
-      <div className="grid grid-cols-3 gap-x-6 gap-y-4">
-        <TextInput label="Nombre" placeholder="Nombre del cliente" />
-        <TextInput label="Cliente ID" placeholder="text" />
-        <TextInput label="Fraud Prevention / Risk Manager" placeholder="Nombre" />
-      </div>
-      <div className="grid grid-cols-2 gap-x-6 gap-y-4">
-        <TextInput label="Fecha de solicitud" placeholder="Nombre" />
-        <TextInput label="Fecha estimada de Go-Live" placeholder="22/04/2026" />
-      </div>
-    </>
+    <div className="grid grid-cols-3 gap-x-6 gap-y-4">
+      <TextInput label="Nombre" placeholder="Ingresar nombre" />
+      <TextInput label="Cliente ID" placeholder="Text" />
+      <TextInput label="Fraud Prevention / Risk Manager" placeholder="Text" />
+      <TextInput label="Fecha de solicitud" placeholder="Ingresar fecha" />
+      <TextInput label="Fecha estimada de Go-Live" placeholder="Ingresar fecha" />
+      <div className="invisible"><TextInput label="" placeholder="" /></div>
+    </div>
   ) : (
-    <>
-      <div className="grid grid-cols-3 gap-x-6 gap-y-4">
-        <InfoField label="Nombre" value="Este es el nombre del cliente" />
-        <InfoField label="Cliente ID" value="text" />
-        <InfoField label="Fraud Prevention / Risk Manager" value="Nombre" />
-      </div>
-      <div className="grid grid-cols-2 gap-x-6 gap-y-4">
-        <InfoField label="Fecha de solicitud" value="Nombre" />
-        <InfoField label="Fecha estimada de Go-Live" value="22/04/2026" />
-      </div>
-    </>
+    <div className="grid grid-cols-3 gap-x-6 gap-y-4">
+      <InfoField label="Nombre" value="Este es el nombre del cliente" />
+      <InfoField label="Cliente ID" value="text" />
+      <InfoField label="Fraud Prevention / Risk Manager" value="Nombre" />
+      <InfoField label="Fecha de solicitud" value="Nombre" />
+      <InfoField label="Fecha estimada de Go-Live" value="22/04/2026" />
+      <div />
+    </div>
   )
 
   const verticalDeNegocio = editable ? (
@@ -1453,45 +1571,39 @@ function FraudSections({ editable, review, onReviewChange }) {
   )
 
   const perfilTransaccional = editable ? (
-    <>
-      <div className="grid grid-cols-3 gap-x-6 gap-y-4">
-        <TextInput label="Volumen mensual" placeholder="Text" info tooltip="Estimado por cantidad de transacciones" />
-        <TextInput label="Monto procesado mensual" placeholder="Text" info tooltip="Estimado en USD" />
-        <TextInput label="Ticket promedio USD" placeholder="1000 usd" />
-        <TextInput label="Ticket mínimo USD" placeholder="400 usd" />
-        <TextInput label="Ticket máximo USD" placeholder="1000 usd" />
-        <TextInput label="Mix estimado" placeholder="Text" info tooltip="Tarjetas domésticas vs. internacionales" />
-      </div>
-      <div className="grid grid-cols-2 gap-x-6 gap-y-4">
-        <div>
-          <span className="text-[12px] text-[#374151] font-medium block mb-1">Países de origen de tarjetas frecuentes</span>
-          <div className="flex items-center gap-1 border border-[#D1D5DB] rounded-[6px] px-2 h-[28px] bg-white">
-            {['Perú', 'Chile', 'Brasil'].map(t => (
-              <span key={t} className="inline-flex items-center gap-1 text-[11px] bg-[#F3F4F6] text-[#374151] px-2 py-0.5 rounded-full">
-                {t} <X size={10} className="text-[#9CA3AF] cursor-pointer" />
-              </span>
-            ))}
-            <ChevronDown size={12} className="text-[#9CA3AF] ml-auto shrink-0" />
-          </div>
+    <div className="grid grid-cols-3 gap-x-6 gap-y-2">
+      <TextInput label="Volumen mensual" placeholder="Ingresar monto" info tooltip="Estimado por cantidad de transacciones" />
+      <TextInput label="Monto procesado mensual" placeholder="Ingresar monto" info tooltip="Estimado en USD" />
+      <TextInput label="Ticket promedio USD" placeholder="1000 usd" />
+      <TextInput label="Ticket mínimo USD" placeholder="400 usd" />
+      <TextInput label="Ticket máximo USD" placeholder="1000 usd" />
+      <TextInput label="Mix estimado" placeholder="Text" info tooltip="Tarjetas domésticas vs. internacionales" />
+      <div className="col-span-2">
+        <span className="text-[12px] text-[#374151] font-medium block mb-1">Países de origen tarjetas frecuentes</span>
+        <div className="flex items-center gap-1 border border-[#D1D5DB] rounded-[6px] px-2 h-[28px] bg-white">
+          {['Perú', 'Chile', 'Brasil'].map(t => (
+            <span key={t} className="inline-flex items-center gap-1 text-[11px] bg-[#F3F4F6] text-[#374151] px-2 py-0.5 rounded-full">
+              {t} <X size={10} className="text-[#9CA3AF] cursor-pointer" />
+            </span>
+          ))}
+          <ChevronDown size={12} className="text-[#9CA3AF] ml-auto shrink-0" />
         </div>
-        <TextInput label="Monedas de transacción" placeholder="Text" />
       </div>
-    </>
+      <TextInput label="Monedas de transacción" placeholder="Text" />
+    </div>
   ) : (
-    <>
-      <div className="grid grid-cols-3 gap-x-6 gap-y-4">
-        <InfoField label="Volumen mensual" value="Text" info tooltip="Estimado por cantidad de transacciones" />
-        <InfoField label="Monto procesado mensual" value="Text" info tooltip="Estimado en USD" />
-        <InfoField label="Ticket promedio USD" value="8000 usd" />
-        <InfoField label="Ticket mínimo USD" value="400 usd" />
-        <InfoField label="Ticket máximo USD" value="1000 usd" />
-        <InfoField label="Mix estimado" value="Text" info tooltip="Tarjetas domésticas vs. internacionales" />
-        <div className="col-span-2">
-          <TagPills label="Países de origen de tarjetas frecuentes" values={['Perú', 'Chile', 'Brasil']} />
-        </div>
-        <InfoField label="Monedas de transacción" value="Text" />
+    <div className="grid grid-cols-3 gap-x-6 gap-y-2">
+      <InfoField label="Volumen mensual" value="Text" info tooltip="Estimado por cantidad de transacciones" />
+      <InfoField label="Monto procesado mensual" value="Text" info tooltip="Estimado en USD" />
+      <InfoField label="Ticket promedio USD" value="8000 usd" />
+      <InfoField label="Ticket mínimo USD" value="400 usd" />
+      <InfoField label="Ticket máximo USD" value="1000 usd" />
+      <InfoField label="Mix estimado" value="Text" info tooltip="Tarjetas domésticas vs. internacionales" />
+      <div className="col-span-2">
+        <TagPills label="Países de origen tarjetas frecuentes" values={['Perú', 'Chile', 'Brasil']} />
       </div>
-    </>
+      <InfoField label="Monedas de transacción" value="Text" />
+    </div>
   )
 
   const tipoOperatoria = editable ? (
@@ -1649,18 +1761,15 @@ function FraudSections({ editable, review, onReviewChange }) {
 
 function FraudSectionRow({ item, secIdx, sec, checked, waived, isOpen, onToggle, onCheck, onWaive, addLog, editable }) {
   return (
-    <div>
+    <div className="border border-[#E5E7EB] rounded-[10px] bg-white overflow-x-hidden">
       <div
         className={`flex items-center gap-3 cursor-pointer ${isOpen ? 'px-4 pt-4 pb-3' : 'px-4 py-3'}`}
         onClick={onToggle}
       >
         <div
-          className={`w-[20px] h-[20px] rounded-[5px] shrink-0 flex items-center justify-center ${
-            waived
-              ? 'border-[1.5px] border-[#E5E7EB] bg-[#F3F4F6] cursor-not-allowed opacity-50'
-              : editable ? 'cursor-pointer hover:opacity-80' : 'cursor-default'
-          } ${checked && !waived ? 'bg-[#180047]' : !waived ? 'border-[1.5px] border-[#D1D5DB] bg-white' : ''}`}
+          className={`w-[20px] h-[20px] rounded-[5px] shrink-0 flex items-center justify-center cursor-pointer hover:opacity-80 ${checked && !waived ? 'bg-[#180047]' : !waived ? 'border-[1.5px] border-[#D1D5DB] bg-white' : 'border-[1.5px] border-[#E5E7EB] bg-[#F3F4F6] opacity-50'}`}
           onClick={(e) => { e.stopPropagation(); if (editable && !waived) onCheck?.() }}
+          style={!editable ? { display: 'none' } : {}}
         >
           {checked && !waived && <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
         </div>
@@ -1669,6 +1778,11 @@ function FraudSectionRow({ item, secIdx, sec, checked, waived, isOpen, onToggle,
         </div>
         <span className={`text-[14px] font-medium ${checked ? 'text-[#374151]' : 'text-[#0A0B0D]'}`}>{item.label}</span>
         {item.tag && <DeptTag dept={item.tag} />}
+        {item.badge && (
+          <span className={`text-[10px] font-semibold px-2.5 py-0.5 rounded-full uppercase tracking-wide ${
+            item.badge.includes('VENCER') || item.badge.includes('SIN AVANCE') ? 'text-[#DC2626] bg-[#FEE2E2]' : 'text-[#1E40AF] bg-[#DBEAFE]'
+          }`}>{item.badge}</span>
+        )}
         {waived && (
           <span className="text-[10px] font-semibold text-[#5a6dd7] bg-[#EDF0FF] px-2 py-0.5 rounded-full uppercase tracking-wide">EXIMIDO</span>
         )}
@@ -1679,35 +1793,23 @@ function FraudSectionRow({ item, secIdx, sec, checked, waived, isOpen, onToggle,
         }
       </div>
       {isOpen && (
-        <div className="px-4 pb-4 flex flex-col gap-4">
+        <>
+        <hr className="border-t border-[#DEE2E6] m-0" />
+        <div className="px-4 pb-4 flex flex-col gap-3 pl-[52px] pt-3">
           {sec.subtitle && <p className="text-[12px] text-[#6B7280] leading-relaxed -mt-1">{sec.subtitle}</p>}
           {sec.content}
           {editable && (
-            <div className="flex items-center gap-3">
-              <button
-                className="flex items-center gap-1.5 text-[13px] font-semibold text-white bg-[#180047] px-5 py-2.5 rounded-full border-none cursor-pointer hover:bg-[#2a0066] transition-colors"
-                onClick={(e) => { e.stopPropagation(); onCheck?.(); onToggle?.() }}
-              >
-                <Check size={14} strokeWidth={2.5} /> Guardar
-              </button>
-              {waived ? (
-                <button
-                  className="flex items-center gap-2 text-[13px] font-medium text-[#374151] bg-white px-5 py-2.5 rounded-full border border-[#E5E7EB] cursor-pointer hover:bg-[#F9FAFB]"
-                  onClick={(e) => { e.stopPropagation(); onWaive?.() }}
-                >
-                  <RefreshCw size={14} /> Deshacer
-                </button>
-              ) : (
-                <button
-                  className="flex items-center gap-2 text-[13px] font-medium text-[#374151] bg-[#E6E4EC] px-5 py-2.5 rounded-full border-none cursor-pointer hover:bg-[#d9d6e2]"
-                  onClick={(e) => { e.stopPropagation(); onWaive?.() }}
-                >
-                  <Ban size={14} /> Eximir
-                </button>
-              )}
-            </div>
+            <>
+              <hr className="border-t border-[#DEE2E6] m-0 -mx-[52px]" />
+              <textarea
+                placeholder="Dejar un comentario..."
+                rows={2}
+                className="w-full border border-[#E5E7EB] rounded-[10px] px-3.5 py-2.5 text-[13px] bg-white outline-none focus:border-[#5a6dd7] placeholder:text-[#9CA3AF] resize-none"
+              />
+            </>
           )}
         </div>
+        </>
       )}
     </div>
   )
@@ -1717,13 +1819,12 @@ function FraudEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog, review
   const [openIdx, setOpenIdx] = useState(null)
   const sections = FraudSections({ editable: true, review, onReviewChange })
   return (
-    <div className="flex flex-col">
-      <div className="border border-[#E5E7EB] rounded-[12px] bg-white overflow-hidden">
+    <div className="flex flex-col gap-3">
         {FRAUD_CHECKLIST.map((item, i) => {
           const sec = sections[i] || {}
           return (
-            <div key={i} className={i < FRAUD_CHECKLIST.length - 1 ? 'border-b border-[#F3F4F6]' : ''}>
               <FraudSectionRow
+                key={i}
                 item={item}
                 secIdx={i}
                 sec={sec}
@@ -1736,17 +1837,15 @@ function FraudEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog, review
                 addLog={addLog}
                 editable
               />
-            </div>
           )
         })}
-      </div>
     </div>
   )
 }
 
 function FraudView({ checkedItems, waivedItems, review }) {
   const sections = FraudSections({ editable: false, review: review || {} })
-  const defaultOpen = new Set(FRAUD_CHECKLIST.map((_, i) => i))
+  const defaultOpen = new Set()
   const [openSet, setOpenSet] = useState(defaultOpen)
   const toggleIdx = (i) => setOpenSet(prev => {
     const next = new Set(prev)
@@ -1754,13 +1853,12 @@ function FraudView({ checkedItems, waivedItems, review }) {
     return next
   })
   return (
-    <div className="flex flex-col">
-      <div className="border border-[#E5E7EB] rounded-[12px] bg-white overflow-hidden">
+    <div className="flex flex-col gap-3">
         {FRAUD_CHECKLIST.map((item, i) => {
           const sec = sections[i] || {}
           return (
-            <div key={i} className={i < FRAUD_CHECKLIST.length - 1 ? 'border-b border-[#F3F4F6]' : ''}>
               <FraudSectionRow
+                key={i}
                 item={item}
                 secIdx={i}
                 sec={sec}
@@ -1770,10 +1868,8 @@ function FraudView({ checkedItems, waivedItems, review }) {
                 onToggle={() => toggleIdx(i)}
                 editable={false}
               />
-            </div>
           )
         })}
-      </div>
     </div>
   )
 }
@@ -1822,7 +1918,13 @@ function DocLinkInput({ label, disabled }) {
 
 function FinancesSections({ editable }) {
   const infoAdmin = editable ? (
-    <TextInput label="Correo de facturación" placeholder="mail@mail.com" />
+    <div>
+      <span className="text-[12px] text-[#374151] font-medium block mb-1">Correo de facturación</span>
+      <div className="flex items-center gap-2 border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] bg-white focus-within:border-[#180047]">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        <input type="email" placeholder="mail@mail.com" className="flex-1 bg-transparent border-none outline-none text-[12px] text-[#374151] placeholder:text-[#9CA3AF] min-w-0" />
+      </div>
+    </div>
   ) : (
     <InfoField label="Correo de facturación" value="mail@mail.com" />
   )
@@ -1912,7 +2014,7 @@ function FinancesEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog }) {
 
 function FinancesView({ checkedItems, waivedItems }) {
   const sections = FinancesSections({ editable: false })
-  const [openSet, setOpenSet] = useState(new Set(FINANCES_CHECKLIST.map((_, i) => i)))
+  const [openSet, setOpenSet] = useState(new Set())
   const toggleIdx = (i) => setOpenSet(prev => {
     const n = new Set(prev); if (n.has(i)) n.delete(i); else n.add(i); return n
   })
@@ -1984,166 +2086,157 @@ function UploadZone({ label }) {
   )
 }
 
-function SalesEdit({ addLog }) {
-  const defaultSections = new Set([0, 1, 2])
-  const [openSet, setOpenSet] = useState(defaultSections)
-  const toggleSection = (i) => setOpenSet(prev => {
-    const next = new Set(prev)
-    if (next.has(i)) next.delete(i); else next.add(i)
-    return next
-  })
+const SALES_SECTIONS_LIST = [
+  { label: 'Información general' },
+  { label: 'Configuración de servicio' },
+  { label: 'Definición del colateral' },
+]
 
-  return (
-    <div className="flex flex-col">
-      {/* Información general */}
-      <SectionCard
-        title="Información general"
-        checked={false}
-        isOpen={openSet.has(0)}
-        onToggle={() => toggleSection(0)}
-        editable
-        hideLinkNote
-      >
-        <div className="grid grid-cols-2 gap-x-6 gap-y-4">
-          <TextInput label="Nombre legal" placeholder="Nombre" />
-          <TextInput label="Tenant" placeholder="20/03/2026" />
-        </div>
-        <TextInput label="Website" placeholder="www.hola.com" />
-      </SectionCard>
+function SalesSections({ editable }) {
+  const infoGeneral = editable ? (
+    <div className="grid grid-cols-3 gap-x-6 gap-y-2">
+      <TextInput label="Nombre legal" placeholder="Nombre" />
+      <TextInput label="Tenant" placeholder="20/03/2026" />
+      <TextInput label="Website" placeholder="www.hola.com" />
+    </div>
+  ) : (
+    <div className="grid grid-cols-3 gap-x-6 gap-y-2">
+      <InfoField label="Nombre legal" value="Nombre legal" />
+      <InfoField label="Tenant" value="Nombre Tenant" />
+      <InfoField label="Website" value="www.hola.com" />
+    </div>
+  )
 
-      {/* Documentación */}
-      <SectionCard
-        title="Documentación"
-        checked={false}
-        isOpen={openSet.has(1)}
-        onToggle={() => toggleSection(1)}
-        editable
-        hideLinkNote
-      >
-        {SALES_DOC_LABELS.map((label, i) => <UploadZone key={i} label={label} />)}
-      </SectionCard>
-
-      {/* Configuración del servicio */}
-      <SectionCard
-        title="Configuración del servicio"
-        checked={false}
-        isOpen={openSet.has(2)}
-        onToggle={() => toggleSection(2)}
-        editable
-        hideLinkNote
-      >
+  const configServicio = editable ? (
+    <>
+      <div className="grid grid-cols-3 gap-x-6 gap-y-2">
         <div>
           <span className="text-[12px] text-[#374151] font-medium block mb-1">Deal Type</span>
           <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white">
             <option>Processing</option><option>Acquiring</option><option>Issuing</option>
           </select>
         </div>
-        <div className="grid grid-cols-2 gap-x-6 gap-y-4">
-          <TextInput label="3DS incluido" placeholder="No" />
-          <TextInput label="Tap on Phone incluído" placeholder="Si" />
+        <TextInput label="3DS incluido" placeholder="No" />
+        <TextInput label="Tap on Phone incluído" placeholder="Si" />
+      </div>
+      <div className="grid grid-cols-3 gap-x-6 gap-y-2">
+        <TextInput label="Set Up Fee" placeholder="1000 USD" />
+        <div>
+          <span className="text-[12px] text-[#374151] font-medium block mb-1">Colateral</span>
+          <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white">
+            <option>Depósito</option><option>Garantía bancaria</option><option>Sin colateral</option>
+          </select>
         </div>
-        <div className="grid grid-cols-2 gap-x-6 gap-y-4">
-          <TextInput label="Set Up Fee" placeholder="1000 USD" />
-          <div>
-            <span className="text-[12px] text-[#374151] font-medium block mb-1">Collteral</span>
-            <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white">
-              <option>Depósito</option><option>Garantía bancaria</option><option>Sin colateral</option>
-            </select>
-          </div>
-        </div>
-        <div className="bg-[#F9FAFB] rounded-[8px] p-3">
-          <p className="text-[11px] font-semibold text-[#6B7280] uppercase tracking-wide mb-2">Otros servicios</p>
-          <div className="flex items-center gap-2">
-            <select className="flex-1 border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white">
-              <option>Seleccionar</option>
-              {SALES_OTROS_SERVICIOS.map(s => <option key={s}>{s}</option>)}
-            </select>
-            <button className="text-[12px] font-medium text-[#180047] bg-white px-3 py-1.5 rounded-full border border-[#180047] cursor-pointer hover:bg-[#F3F0FF] whitespace-nowrap shrink-0">+ Agregar otro</button>
-          </div>
-        </div>
-      </SectionCard>
-    </div>
-  )
-}
-
-function SalesViewConfigFields() {
-  return (
-    <div className="flex flex-col gap-4">
-      <div className="grid grid-cols-3 gap-x-6 gap-y-4">
+        <div className="invisible"><TextInput label="" placeholder="" /></div>
+      </div>
+      <div className="bg-[#F8F9FA] -mx-[52px] px-[52px] py-2 border-y border-[#F3F4F6]">
+        <p className="text-[13px] font-medium text-[#0A0B0D] m-0">Otros servicios</p>
+      </div>
+      <div className="flex items-center gap-2">
+        <select className="flex-1 border border-[#D1D5DB] rounded-[6px] px-3 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white">
+          <option>Seleccionar</option>
+          {SALES_OTROS_SERVICIOS.map(s => <option key={s}>{s}</option>)}
+        </select>
+        <button className="text-[12px] font-medium text-[#180047] bg-white px-3 py-1.5 rounded-full border border-[#180047] cursor-pointer hover:bg-[#F3F0FF] whitespace-nowrap shrink-0">+ Agregar otro</button>
+      </div>
+    </>
+  ) : (
+    <>
+      <div className="grid grid-cols-3 gap-x-6 gap-y-2">
         <InfoField label="Deal Type" value="Processing" />
-        <InfoField label="3DS incluido" value="No" />
-        <InfoField label="Tap on Phone incluído" value="Si" />
+        <InfoField label="3DS Incluido" value="No" />
+        <InfoField label="Tap on Phone incluido" value="Sí" />
       </div>
-      <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+      <div className="grid grid-cols-3 gap-x-6 gap-y-2">
         <InfoField label="Set Up Fee" value="1000 USD" />
-        <InfoField label="Collteral" value="Depósito" />
+        <InfoField label="Colateral" value="Depósito" />
+        <div />
       </div>
-      <div className="bg-[#F9FAFB] rounded-[8px] p-3">
-        <p className="text-[11px] font-semibold text-[#6B7280] uppercase tracking-wide mb-2">Otros servicios</p>
-        <EmptyBadge />
-      </div>
-    </div>
+    </>
   )
+
+  const docFilenames = { 'Contrato firmado': 'contrato_firmado.pdf', 'Pagos': 'pagos.pdf', 'Cargos de impuestos': 'cargos de impuestos.pdf', 'Depósito': 'documento_depósito.pdf' }
+  const documentacion = editable ? (
+    <>{SALES_DOC_LABELS.map((label, i) => <UploadZone key={i} label={label} />)}</>
+  ) : (
+    <>
+      {SALES_DOC_LABELS.map((label, i) => (
+        <div key={i}>
+          <div className="flex items-center gap-3 py-[6px] bg-[#F8F9FA] -mx-[52px] px-[52px] border-y border-[#F3F4F6]">
+            <span className="text-[13px] text-[#1F2937]">{label}</span>
+          </div>
+          <div className="flex items-center gap-3 py-3 border-b border-[#F3F4F6]">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#D1D5DB" stroke="#9CA3AF" strokeWidth="0.5" className="shrink-0">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/>
+              <path d="M14 2v6h6" fill="#E5E7EB" stroke="#9CA3AF" strokeWidth="0.5"/>
+            </svg>
+            <div className="min-w-0 flex-1">
+              <p className="text-[13px] text-[#0A0B0D] font-medium truncate m-0">{docFilenames[label] || `${label.toLowerCase()}.pdf`}</p>
+              <p className="text-[11px] text-[#9CA3AF] m-0">2.4 MB</p>
+            </div>
+            <button className="flex items-center gap-1 text-[12px] font-medium text-[#180047] bg-white px-3 py-1 rounded-full border border-[#180047] cursor-pointer hover:bg-[#F9FAFB] shrink-0">
+              Abrir <ExternalLink size={12} />
+            </button>
+          </div>
+        </div>
+      ))}
+    </>
+  )
+
+  return [
+    { content: infoGeneral, subtitle: null },
+    { content: configServicio, subtitle: null },
+    { content: documentacion, subtitle: null },
+  ]
 }
 
-function SalesDocPdf({ label }) {
+function SalesEdit({ addLog }) {
+  const [openIdx, setOpenIdx] = useState(null)
+  const sections = SalesSections({ editable: true })
   return (
-    <div className="mb-4">
-      <p className="text-[12px] font-semibold text-[#1F2937] mb-1.5">{label}</p>
-      <div className="flex items-center gap-3">
-        <PdfFileIcon />
-        <div className="min-w-0">
-          <p className="text-[13px] text-[#0A0B0D] font-medium truncate">Extractos_bancarios_Q3_2023.pdf</p>
-          <p className="text-[11px] text-[#9CA3AF]">2.4 Mi</p>
-        </div>
-      </div>
+    <div className="flex flex-col gap-3">
+      {SALES_SECTIONS_LIST.map((item, i) => {
+        const sec = sections[i] || {}
+        return (
+          <FraudSectionRow
+            key={i}
+            item={item}
+            secIdx={i}
+            sec={sec}
+            checked={false}
+            waived={false}
+            isOpen={openIdx === i}
+            onToggle={() => setOpenIdx(prev => prev === i ? null : i)}
+            addLog={addLog}
+            editable
+          />
+        )
+      })}
     </div>
   )
 }
 
 function SalesView() {
-  const [openSet, setOpenSet] = useState(new Set([0, 1, 2]))
-  const toggle = (i) => setOpenSet(prev => {
-    const n = new Set(prev); if (n.has(i)) n.delete(i); else n.add(i); return n
-  })
+  const [openIdx, setOpenIdx] = useState(null)
+  const sections = SalesSections({ editable: false })
   return (
-    <div className="flex flex-col">
-      {/* Información general */}
-      <SectionCard
-        title="Información general"
-        checked={false}
-        isOpen={openSet.has(0)}
-        onToggle={() => toggle(0)}
-        editable={false}
-        hideLinkNote
-      >
-        <SalesViewConfigFields />
-      </SectionCard>
-
-      {/* Configuración del servicio */}
-      <SectionCard
-        title="Configuración del servicio"
-        checked={false}
-        isOpen={openSet.has(1)}
-        onToggle={() => toggle(1)}
-        editable={false}
-        hideLinkNote
-      >
-        <p className="text-[12px] text-[#6B7280] -mt-2 mb-2">Configuración del servicio</p>
-        <SalesViewConfigFields />
-      </SectionCard>
-
-      {/* Definición del colateral */}
-      <SectionCard
-        title="Definición del colateral"
-        checked={false}
-        isOpen={openSet.has(2)}
-        onToggle={() => toggle(2)}
-        editable={false}
-        hideLinkNote
-      >
-        {SALES_DOC_LABELS.map((label, i) => <SalesDocPdf key={i} label={label} />)}
-      </SectionCard>
+    <div className="flex flex-col gap-3">
+      {SALES_SECTIONS_LIST.map((item, i) => {
+        const sec = sections[i] || {}
+        return (
+          <FraudSectionRow
+            key={i}
+            item={item}
+            secIdx={i}
+            sec={sec}
+            checked={false}
+            waived={false}
+            isOpen={openIdx === i}
+            onToggle={() => setOpenIdx(prev => prev === i ? null : i)}
+            editable={false}
+          />
+        )
+      })}
     </div>
   )
 }
@@ -2193,14 +2286,14 @@ function LegalSections({ editable }) {
       <UploadZone label="Contrato V5 completo" />
       <UploadZone label="Anexo I – Descripción técnica y alcance" />
       <div className="flex flex-wrap gap-1.5">
-        {['PCI CUMPLIMIENTO', 'DE AUTORIZACIÓN', 'VISA & MASTERCARD', 'PCI DSS · AML · KYC'].map(b => (
-          <span key={b} className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-[#DBEAFE] text-[#1E40AF]">{b}</span>
+        {['99% DISPONIBILIDAD', '<1S AUTORIZACIÓN', 'VISA & MASTERCARD', 'PCI DSS · AML · KYC'].map(b => (
+          <span key={b} className="text-[10px] font-medium uppercase px-2.5 py-1 rounded-full bg-[#F3F4F6] text-[#6B7280] border border-[#E5E7EB]">{b}</span>
         ))}
       </div>
       <UploadZone label="Anexo II – SLA" />
       <div className="flex flex-wrap gap-1.5">
         {['PENALIDAD MÁX. 30%', 'PROCESAMIENTO TRANSACCIONAL'].map(b => (
-          <span key={b} className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-[#DBEAFE] text-[#1E40AF]">{b}</span>
+          <span key={b} className="text-[10px] font-medium uppercase px-2.5 py-1 rounded-full bg-[#F3F4F6] text-[#6B7280] border border-[#E5E7EB]">{b}</span>
         ))}
       </div>
     </>
@@ -2218,36 +2311,36 @@ function LegalSections({ editable }) {
         <InfoField label="Entidad Akua" value="Akua Colombia S.A" />
         <InfoField label="País" value="Colombia" />
       </div>
-      <div>
-        <p className="text-[13px] font-semibold text-[#0A0B0D] mb-2">Contrato V5 completo</p>
-        <div className="flex items-center gap-3 bg-[#F9FAFB] rounded-[10px] px-3 py-2.5">
-          <PdfFileIcon />
-          <div className="min-w-0 flex-1">
-            <p className="text-[13px] text-[#0A0B0D] font-medium m-0">name.pdf</p>
-            <p className="text-[11px] text-[#9CA3AF] m-0">2.4 MB</p>
-          </div>
-          <button className="flex items-center gap-1 text-[13px] font-medium text-[#374151] bg-transparent border-none cursor-pointer hover:text-[#180047] shrink-0">Abrir <ExternalLink size={13} /></button>
-          <button className="text-[#9CA3AF] bg-transparent border-none cursor-pointer hover:text-[#DC2626] shrink-0"><Trash2 size={15} /></button>
-        </div>
+      <div className="bg-[#F8F9FA] -mx-[52px] px-[52px] py-2 border-y border-[#DEE2E6] mt-3">
+        <p className="text-[13px] font-medium text-[#0A0B0D] m-0">Contrato V5 completo</p>
       </div>
-      <div className="flex flex-wrap gap-1.5">
+      <div className="flex items-center gap-3 py-2.5 border-b border-[#F3F4F6]">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#D1D5DB" stroke="#9CA3AF" strokeWidth="0.5" className="shrink-0"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/><path d="M14 2v6h6" fill="#E5E7EB" stroke="#9CA3AF" strokeWidth="0.5"/></svg>
+        <div className="min-w-0 flex-1">
+          <p className="text-[13px] text-[#0A0B0D] font-medium m-0">Contrato V5 completo.pdf</p>
+          <p className="text-[11px] text-[#9CA3AF] m-0">2.4 MB</p>
+        </div>
+        <button className="flex items-center gap-1 text-[12px] font-medium text-[#180047] bg-white px-3 py-1 rounded-full border border-[#180047] cursor-pointer hover:bg-[#F9FAFB] shrink-0">Abrir <ExternalLink size={12} /></button>
+        <DocMenuButton onDelete={() => {}} />
+      </div>
+      <div className="flex flex-wrap gap-1.5 py-3 border-b border-[#F3F4F6]">
         {['99% DISPONIBILIDAD', '<1S AUTORIZACIÓN', 'VISA & MASTERCARD', 'PCI DSS · AML · KYC'].map(b => (
           <span key={b} className="text-[10px] font-medium uppercase px-2.5 py-1 rounded-full bg-[#F3F4F6] text-[#6B7280] border border-[#E5E7EB]">{b}</span>
         ))}
       </div>
-      <div>
-        <p className="text-[13px] font-semibold text-[#0A0B0D] mb-2">Anexo II – SLA</p>
-        <div className="flex items-center gap-3 bg-[#F9FAFB] rounded-[10px] px-3 py-2.5">
-          <PdfFileIcon />
-          <div className="min-w-0 flex-1">
-            <p className="text-[13px] text-[#0A0B0D] font-medium m-0">name.pdf</p>
-            <p className="text-[11px] text-[#9CA3AF] m-0">2.4 MB</p>
-          </div>
-          <button className="flex items-center gap-1 text-[13px] font-medium text-[#374151] bg-transparent border-none cursor-pointer hover:text-[#180047] shrink-0">Abrir <ExternalLink size={13} /></button>
-          <button className="text-[#9CA3AF] bg-transparent border-none cursor-pointer hover:text-[#DC2626] shrink-0"><Trash2 size={15} /></button>
-        </div>
+      <div className="bg-[#F8F9FA] -mx-[52px] px-[52px] py-2 border-y border-[#DEE2E6]">
+        <p className="text-[13px] font-medium text-[#0A0B0D] m-0">Anexo II – SLA</p>
       </div>
-      <div className="flex flex-wrap gap-1.5">
+      <div className="flex items-center gap-3 py-2.5 border-b border-[#F3F4F6]">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#D1D5DB" stroke="#9CA3AF" strokeWidth="0.5" className="shrink-0"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/><path d="M14 2v6h6" fill="#E5E7EB" stroke="#9CA3AF" strokeWidth="0.5"/></svg>
+        <div className="min-w-0 flex-1">
+          <p className="text-[13px] text-[#0A0B0D] font-medium m-0">Contrato V5 completo.pdf</p>
+          <p className="text-[11px] text-[#9CA3AF] m-0">2.4 MB</p>
+        </div>
+        <button className="flex items-center gap-1 text-[12px] font-medium text-[#180047] bg-white px-3 py-1 rounded-full border border-[#180047] cursor-pointer hover:bg-[#F9FAFB] shrink-0">Abrir <ExternalLink size={12} /></button>
+        <DocMenuButton onDelete={() => {}} />
+      </div>
+      <div className="flex flex-wrap gap-1.5 py-3">
         {['PENALIDAD MÁX. 30%', 'PROCESAMIENTO TRANSACCIONAL'].map(b => (
           <span key={b} className="text-[10px] font-medium uppercase px-2.5 py-1 rounded-full bg-[#F3F4F6] text-[#6B7280] border border-[#E5E7EB]">{b}</span>
         ))}
@@ -2273,7 +2366,23 @@ function LegalSections({ editable }) {
         </div>
         <TextInput label="Desde" placeholder="01/03/2024" />
       </div>
-      <UploadZone label="NDA vigente" />
+      <div className="bg-[#F8F9FA] -mx-[52px] px-[52px] py-2 border-y border-[#F3F4F6]">
+        <p className="text-[13px] font-medium text-[#0A0B0D] m-0">NDA Vigente</p>
+      </div>
+      <div className="flex items-center gap-3 py-3">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#D1D5DB" stroke="#9CA3AF" strokeWidth="0.5" className="shrink-0">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/>
+          <path d="M14 2v6h6" fill="#E5E7EB" stroke="#9CA3AF" strokeWidth="0.5"/>
+        </svg>
+        <div className="min-w-0 flex-1">
+          <p className="text-[13px] text-[#0A0B0D] font-medium truncate m-0">documenti.pdf</p>
+          <p className="text-[11px] text-[#9CA3AF] m-0">2.4 MB</p>
+        </div>
+        <button className="flex items-center gap-1 text-[12px] font-medium text-[#180047] bg-white px-3 py-1 rounded-full border border-[#180047] cursor-pointer hover:bg-[#F9FAFB] shrink-0">
+          Abrir <ExternalLink size={12} />
+        </button>
+        <DocMenuButton onDelete={() => {}} onAttach={() => {}} />
+      </div>
     </>
   ) : (
     <>
@@ -2285,17 +2394,17 @@ function LegalSections({ editable }) {
         <InfoField label="Estado actual" value="En negociación" />
         <InfoField label="Desde" value="01/03/2026" />
       </div>
-      <div>
-        <p className="text-[13px] font-semibold text-[#0A0B0D] mb-2">NDA vigente</p>
-        <div className="flex items-center gap-3 bg-[#F9FAFB] rounded-[10px] px-3 py-2.5">
-          <PdfFileIcon />
-          <div className="min-w-0 flex-1">
-            <p className="text-[13px] text-[#0A0B0D] font-medium m-0">name.pdf</p>
-            <p className="text-[11px] text-[#9CA3AF] m-0">2.4 MB</p>
-          </div>
-          <button className="flex items-center gap-1 text-[13px] font-medium text-[#374151] bg-transparent border-none cursor-pointer hover:text-[#180047] shrink-0">Abrir <ExternalLink size={13} /></button>
-          <button className="text-[#9CA3AF] bg-transparent border-none cursor-pointer hover:text-[#DC2626] shrink-0"><Trash2 size={15} /></button>
+      <div className="bg-[#F8F9FA] -mx-[52px] px-[52px] py-2 border-y border-[#DEE2E6] mt-3">
+        <p className="text-[13px] font-medium text-[#0A0B0D] m-0">NDA Vigente</p>
+      </div>
+      <div className="flex items-center gap-3 py-2.5">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#D1D5DB" stroke="#9CA3AF" strokeWidth="0.5" className="shrink-0"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/><path d="M14 2v6h6" fill="#E5E7EB" stroke="#9CA3AF" strokeWidth="0.5"/></svg>
+        <div className="min-w-0 flex-1">
+          <p className="text-[13px] text-[#0A0B0D] font-medium m-0">documenti.pdf</p>
+          <p className="text-[11px] text-[#9CA3AF] m-0">2.4 MB</p>
         </div>
+        <button className="flex items-center gap-1 text-[12px] font-medium text-[#180047] bg-white px-3 py-1 rounded-full border border-[#180047] cursor-pointer hover:bg-[#F9FAFB] shrink-0">Abrir <ExternalLink size={12} /></button>
+        <DocMenuButton onDelete={() => {}} />
       </div>
     </>
   )
@@ -2342,28 +2451,31 @@ function LegalSections({ editable }) {
   /* ── 3: Cargo recurrentes mensuales ── */
   const cargoRec = editable ? (
     <>
-      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide">INDICADORES COMO SERVICIO</p>
+      <div className="bg-[#F8F9FA] -mx-[52px] px-[52px] py-2 border-y border-[#F3F4F6]"><p className="text-[13px] font-medium text-[#0A0B0D] m-0">Adquirencia como Servicio</p></div>
       <div className="flex justify-between text-[11px] text-[#9CA3AF] pb-1 border-b border-[#F3F4F6]">
-        <span>Rango de transacciones</span><span>Monto mensual</span>
+        <span>Rango de transacciones</span><span>Monto negociado</span>
       </div>
-      {['0 – 300K', '300K – 1M', '1M – 3M', '>3M'].map(r => (
-        <div key={r} className="flex justify-between items-center py-1.5">
+      {['0 – 200K', '200K – 1M', '1M – 3M', '+3M'].map(r => (
+        <div key={r} className="flex justify-between items-center py-3 border-b border-[#F3F4F6]">
           <span className="text-[13px] text-[#1F2937]">{r}</span>
           <input type="text" placeholder="Ingresar monto" className="w-[140px] border border-[#E5E7EB] rounded-[6px] px-2 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white placeholder:text-[#9CA3AF]" />
         </div>
       ))}
-      <TextInput label="Rango activo actual" placeholder="Ingresar monto" />
-      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mt-2">PROCESAMIENTO TRANSACCIONAL ESTÁNDAR</p>
+      <div className="flex justify-between items-center py-3 border-b border-[#F3F4F6]">
+        <span className="text-[13px] text-[#1F2937] font-semibold">Rango activo actual</span>
+        <input type="text" placeholder="Ingresar monto" className="w-[140px] border border-[#E5E7EB] rounded-[6px] px-2 h-[28px] text-[12px] text-[#374151] outline-none focus:border-[#180047] bg-white placeholder:text-[#9CA3AF]" />
+      </div>
+      <div className="bg-[#F8F9FA] -mx-[52px] px-[52px] py-2 border-y border-[#F3F4F6] mt-2"><p className="text-[13px] font-medium text-[#0A0B0D] m-0">Procesamiento Transaccional (Cloud)</p></div>
       <div className="grid grid-cols-2 gap-x-6 gap-y-4">
         <TextInput label="Monto mensual" placeholder="USD 6,000" />
         <TextInput label="Corte hasta (julio)" placeholder="25/06/2026" />
       </div>
-      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mt-2">FEES EJEMPLO + TARIFA DE INTERCAMBIO</p>
+      <div className="bg-[#F8F9FA] -mx-[52px] px-[52px] py-2 border-y border-[#F3F4F6] mt-2"><p className="text-[13px] font-medium text-[#0A0B0D] m-0">Fees EASPBV + Tarifa de Intercambio</p></div>
       <div className="grid grid-cols-2 gap-x-6 gap-y-4">
         <TextInput label="Base" placeholder="Proporcional según MCC" />
         <TextInput label="Adicional fijo" placeholder="+00.03%" />
       </div>
-      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mt-2">SERVICIOS ADICIONALES</p>
+      <div className="bg-[#F8F9FA] -mx-[52px] px-[52px] py-2 border-y border-[#F3F4F6] mt-2"><p className="text-[13px] font-medium text-[#0A0B0D] m-0">Servicios adicionales</p></div>
       <div className="grid grid-cols-3 gap-x-6 gap-y-4">
         <div>
           <span className="text-[12px] text-[#374151] font-medium block mb-1">Tokenización</span>
@@ -2381,28 +2493,31 @@ function LegalSections({ editable }) {
     </>
   ) : (
     <>
-      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide">INDICADORES COMO SERVICIO</p>
+      <div className="bg-[#F8F9FA] -mx-[52px] px-[52px] py-2 border-y border-[#F3F4F6]"><p className="text-[13px] font-medium text-[#0A0B0D] m-0">Adquirencia como Servicio</p></div>
       <div className="flex justify-between text-[11px] text-[#9CA3AF] pb-1 border-b border-[#F3F4F6]">
-        <span>Rango de transacciones</span><span>Monto mensual</span>
+        <span>Rango de transacciones</span><span>Monto negociado</span>
       </div>
-      {['0 – 300K', '300K – 1M', '1M – 3M', '>3M'].map(r => (
-        <div key={r} className="flex justify-between items-center py-1.5">
+      {['0 – 200K', '200K – 1M', '1M – 3M', '+3M'].map(r => (
+        <div key={r} className="flex justify-between items-center py-3 border-b border-[#F3F4F6]">
           <span className="text-[13px] text-[#1F2937]">{r}</span>
           <span className="text-[13px] text-[#0A0B0D] font-semibold">—</span>
         </div>
       ))}
-      <InfoField label="Rango activo actual" value="—" />
-      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mt-2">PROCESAMIENTO TRANSACCIONAL ESTÁNDAR</p>
+      <div className="flex justify-between items-center py-3 border-b border-[#F3F4F6]">
+        <span className="text-[13px] text-[#1F2937] font-semibold">Rango activo actual</span>
+        <span className="text-[13px] text-[#0A0B0D] font-semibold">—</span>
+      </div>
+      <div className="bg-[#F8F9FA] -mx-[52px] px-[52px] py-2 border-y border-[#F3F4F6] mt-2"><p className="text-[13px] font-medium text-[#0A0B0D] m-0">Procesamiento Transaccional (Cloud)</p></div>
       <div className="grid grid-cols-2 gap-x-6 gap-y-4">
         <InfoField label="Monto mensual" value="USD 6,000" />
         <InfoField label="Corte hasta (julio)" value="25/06/2026" />
       </div>
-      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mt-2">FEES EJEMPLO + TARIFA DE INTERCAMBIO</p>
+      <div className="bg-[#F8F9FA] -mx-[52px] px-[52px] py-2 border-y border-[#F3F4F6] mt-2"><p className="text-[13px] font-medium text-[#0A0B0D] m-0">Fees EASPBV + Tarifa de Intercambio</p></div>
       <div className="grid grid-cols-2 gap-x-6 gap-y-4">
         <InfoField label="Base" value="Proporcional según MCC" />
         <InfoField label="Adicional fijo" value="+00.03%" />
       </div>
-      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mt-2">SERVICIOS ADICIONALES</p>
+      <div className="bg-[#F8F9FA] -mx-[52px] px-[52px] py-2 border-y border-[#F3F4F6] mt-2"><p className="text-[13px] font-medium text-[#0A0B0D] m-0">Servicios adicionales</p></div>
       <div className="grid grid-cols-3 gap-x-6 gap-y-4">
         <InfoField label="Tokenización" value="Inactivo" />
         <InfoField label="Análisis de fraude" value="Inactivo" />
@@ -2430,20 +2545,18 @@ function LegalSections({ editable }) {
   const formaPago = editable ? (
     <>
       <div className="grid grid-cols-3 gap-x-6 gap-y-4">
-        <TextInput label="Moneda/divisa" placeholder="" />
         <TextInput label="Plazo para vencimiento" placeholder="6 días calendario" />
         <TextInput label="Plazo pago déficit" placeholder="8 días" />
+        <TextInput label="Retención sobre settlements" placeholder="8 días calendario" />
       </div>
-      <TextInput label="Retención sobre settlements" placeholder="6 días calendario" />
     </>
   ) : (
     <>
       <div className="grid grid-cols-3 gap-x-6 gap-y-4">
-        <InfoField label="Moneda/divisa" value="—" />
-        <InfoField label="Plazo para vencimiento" value="6 días calendario" />
+        <InfoField label="Plazo para vencimiento" value="8 días calendario" />
         <InfoField label="Plazo pago déficit" value="8 días" />
+        <InfoField label="Retención sobre settlements" value="8 días calendario" />
       </div>
-      <InfoField label="Retención sobre settlements" value="6 días calendario" />
     </>
   )
 
@@ -2451,7 +2564,7 @@ function LegalSections({ editable }) {
   const deposito = editable ? (
     <>
       <div className="grid grid-cols-3 gap-x-6 gap-y-4">
-        <TextInput label="Monto USD" placeholder="USD $1,000" />
+        <TextInput label="Monto USD" placeholder="Ingresar monto en USD" />
         <TextInput label="Equivalente COP (TRM día)" placeholder="A definir" />
         <div>
           <span className="text-[12px] text-[#374151] font-medium block mb-1">Estado</span>
@@ -2461,9 +2574,10 @@ function LegalSections({ editable }) {
           </select>
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-x-6 gap-y-4">
-        <TextInput label="Fecha límite constitución (auto 24 hs)" placeholder="25/02/2027" />
+      <div className="grid grid-cols-3 gap-x-6 gap-y-4">
+        <TextInput label="Fecha límite constitución (auto 24 hs)" placeholder="Ingresar fecha límite" />
         <TextInput label="Vigencia post-terminación" placeholder="1 meses" />
+        <div className="invisible"><TextInput label="" placeholder="" /></div>
       </div>
       <div className="flex items-start gap-2 bg-[#F9FAFB] rounded-[8px] p-3">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -2477,9 +2591,10 @@ function LegalSections({ editable }) {
         <InfoField label="Equivalente COP (TRM día)" value="A definir" />
         <InfoField label="Estado" value="Pendiente" />
       </div>
-      <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+      <div className="grid grid-cols-3 gap-x-6 gap-y-4">
         <InfoField label="Fecha límite constitución (auto 24 hs)" value="25/02/2027" />
         <InfoField label="Vigencia post-terminación" value="1 meses" />
+        <div />
       </div>
       <div className="flex items-start gap-2 bg-[#F9FAFB] rounded-[8px] p-3">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -2512,29 +2627,27 @@ function LegalStatusBadge({ badge }) {
 }
 
 function LegalEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog }) {
-  const [openIdx, setOpenIdx] = useState(0)
+  const [openIdx, setOpenIdx] = useState(null)
   const sections = LegalSections({ editable: true })
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-3">
       {LEGAL_CHECKLIST.map((item, i) => {
         const sec = sections[i] || {}
         return (
-          <SectionCard
+          <FraudSectionRow
             key={i}
-            title={item.label}
-            subtitle={sec.subtitle}
-            headerBadge={item.badge}
+            item={item}
+            secIdx={i}
+            sec={sec}
             checked={checkedItems.has(i)}
             waived={waivedItems.has(i)}
             isOpen={openIdx === i}
             onToggle={() => setOpenIdx(prev => prev === i ? null : i)}
-            onMarkDone={() => onCheck(i)}
+            onCheck={() => onCheck(i)}
             onWaive={() => onWaive(i)}
             addLog={addLog}
             editable
-          >
-            {sec.content}
-          </SectionCard>
+          />
         )
       })}
     </div>
@@ -2543,7 +2656,7 @@ function LegalEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog }) {
 
 function LegalView({ checkedItems, waivedItems }) {
   const sections = LegalSections({ editable: false })
-  const defaultOpen = new Set(LEGAL_CHECKLIST.map((_, i) => i).filter(i => sections[i]?.content !== null))
+  const defaultOpen = new Set()
   const [openSet, setOpenSet] = useState(defaultOpen)
   const toggleIdx = (i) => setOpenSet(prev => {
     const next = new Set(prev)
@@ -2551,24 +2664,21 @@ function LegalView({ checkedItems, waivedItems }) {
     return next
   })
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-3">
       {LEGAL_CHECKLIST.map((item, i) => {
         const sec = sections[i] || {}
         return (
-          <SectionCard
+          <FraudSectionRow
             key={i}
-            title={item.label}
-            subtitle={sec.subtitle}
-            headerBadge={item.badge}
+            item={item}
+            secIdx={i}
+            sec={sec}
             checked={checkedItems.has(i)}
             waived={waivedItems.has(i)}
             isOpen={openSet.has(i)}
             onToggle={() => toggleIdx(i)}
             editable={false}
-            hideLinkNote
-          >
-            {sec.content}
-          </SectionCard>
+          />
         )
       })}
     </div>
@@ -2577,52 +2687,99 @@ function LegalView({ checkedItems, waivedItems }) {
 
 /* ─── KICKOFF & INTEGRATION CONTENT ─── */
 const KICKOFF_CHECKLIST = [
-  "Text here", "Text here", "Text here", "Text here", "Text here", "Text here",
+  { label: 'Documentación' },
 ]
 
 const KICKOFF_DOC_LABELS = ['Contrato firmado', 'Pagos', 'Cargos de impuestos', 'Depósito']
 
+function KickoffSections({ editable }) {
+  const documentacion = editable ? (
+    <>
+      {KICKOFF_DOC_LABELS.map((label, i) => (
+        <div key={i}>
+          <div className="flex items-center gap-3 py-[6px] bg-[#F8F9FA] -mx-[52px] px-[52px] border-y border-[#F3F4F6]">
+            <div className="w-[18px] h-[18px] rounded-[4px] shrink-0 border-[1.5px] border-[#D1D5DB] bg-white cursor-pointer hover:opacity-80" />
+            <span className="text-[13px] text-[#1F2937]">{label}</span>
+          </div>
+          <div className="py-2">
+            <UploadZone label="" />
+          </div>
+        </div>
+      ))}
+    </>
+  ) : (
+    <>
+      {KICKOFF_DOC_LABELS.map((label, i) => (
+        <div key={i}>
+          <div className="flex items-center gap-3 py-[6px] bg-[#F8F9FA] -mx-[52px] px-[52px] border-y border-[#F3F4F6]">
+            <span className="text-[13px] text-[#1F2937]">{label}</span>
+          </div>
+          <div className="flex flex-col items-center justify-center py-6 border border-[#E5E7EB] rounded-[8px] my-2">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#D1D5DB" stroke="#9CA3AF" strokeWidth="0.5" className="mb-2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/>
+              <path d="M14 2v6h6" fill="#E5E7EB" stroke="#9CA3AF" strokeWidth="0.5"/>
+            </svg>
+            <p className="text-[12px] text-[#9CA3AF] m-0">No existen archivos</p>
+          </div>
+        </div>
+      ))}
+    </>
+  )
+
+  return [
+    { content: documentacion, subtitle: null },
+  ]
+}
+
 function KickoffEdit({ checkedItems, onCheck, waivedItems, onWaive, addLog }) {
   const [openIdx, setOpenIdx] = useState(null)
+  const sections = KickoffSections({ editable: true })
   return (
-    <div className="flex gap-4">
-      <div className="w-1/2 min-w-0 flex flex-col">
-        {KICKOFF_CHECKLIST.map((label, i) => (
-          <ChecklistItemEdit
-            key={i} label={label}
-            checked={checkedItems.has(i)} waived={waivedItems.has(i)}
+    <div className="flex flex-col gap-3">
+      {KICKOFF_CHECKLIST.map((item, i) => {
+        const sec = sections[i] || {}
+        return (
+          <FraudSectionRow
+            key={i}
+            item={item}
+            secIdx={i}
+            sec={sec}
+            checked={checkedItems.has(i)}
+            waived={waivedItems.has(i)}
             isOpen={openIdx === i}
-            onToggle={() => setOpenIdx(openIdx === i ? null : i)}
-            onMarkDone={() => onCheck(i)}
+            onToggle={() => setOpenIdx(prev => prev === i ? null : i)}
+            onCheck={() => onCheck(i)}
             onWaive={() => onWaive(i)}
             addLog={addLog}
+            editable
           />
-        ))}
-      </div>
-      <div className="w-1/2 min-w-0 flex flex-col gap-4">
-        <div className="bg-white border border-[#E5E7EB] rounded-[8px] p-4">
-          <p className="text-[13px] font-semibold text-[#0A0B0D] mb-3">Documentación</p>
-          {KICKOFF_DOC_LABELS.map((label, i) => <DocLinkInput key={i} label={label} />)}
-        </div>
-      </div>
+        )
+      })}
     </div>
   )
 }
 
 function KickoffView({ checkedItems, waivedItems }) {
+  const [openIdx, setOpenIdx] = useState(null)
+  const sections = KickoffSections({ editable: false })
   return (
-    <div className="flex gap-4">
-      <div className="w-1/2 min-w-0 flex flex-col">
-        {KICKOFF_CHECKLIST.map((label, i) => (
-          <ChecklistItemView key={i} label={label} checked={checkedItems.has(i)} waived={waivedItems.has(i)} />
-        ))}
-      </div>
-      <div className="w-1/2 min-w-0 flex flex-col gap-4">
-        <div className="bg-white border border-[#E5E7EB] rounded-[8px] p-4">
-          <p className="text-[13px] font-semibold text-[#0A0B0D] mb-3">Documentación</p>
-          {KICKOFF_DOC_LABELS.map((label, i) => <DocLinkInput key={i} label={label} disabled />)}
-        </div>
-      </div>
+    <div className="flex flex-col gap-3">
+      {KICKOFF_CHECKLIST.map((item, i) => {
+        const sec = sections[i] || {}
+        return (
+          <FraudSectionRow
+            key={i}
+            item={item}
+            secIdx={i}
+            sec={sec}
+            checked={checkedItems.has(i)}
+            waived={waivedItems.has(i)}
+            isOpen={openIdx === i}
+            onToggle={() => setOpenIdx(prev => prev === i ? null : i)}
+            editable={false}
+          />
+        )
+      })}
     </div>
   )
 }
@@ -2844,10 +3001,9 @@ export default function ClientDetailPage() {
     legal: 'not_started',
     kickoff: 'not_started',
     golive: 'not_started',
-    review: 'not_started',
   })
   const [activityLogs, setActivityLogs] = useState({
-    compliance: [], fraud: [], finances: [], sales: [], legal: [], kickoff: [], golive: [], review: [],
+    compliance: [], fraud: [], finances: [], sales: [], legal: [], kickoff: [], golive: [],
   })
 
   // Compliance sub-items state: per-step Sets of sub-indices
@@ -3033,17 +3189,19 @@ export default function ClientDetailPage() {
 
   return (
     <>
-      {/* Breadcrumbs */}
-      <div className="flex items-center gap-1.5 mb-3">
-        <Link to="/clients" className="text-[14px] text-[#868e96] font-medium no-underline hover:underline">Clients</Link>
-        <span className="text-[14px] text-[#dee2e6]">/</span>
-        <span className="text-[14px] text-[#101828] font-medium">Efecty</span>
+      {/* Sticky breadcrumbs + tabs */}
+      <div className="sticky top-0 z-30 bg-[#F8F9FA] pb-2">
+        <div className="flex items-center gap-1.5 mb-3 pt-2">
+          <Link to="/clients" className="text-[14px] text-[#868e96] font-medium no-underline hover:underline">Clients</Link>
+          <span className="text-[14px] text-[#dee2e6]">/</span>
+          <span className="text-[14px] text-[#101828] font-medium">Efecty</span>
+        </div>
       </div>
 
       {/* Main card */}
       <div className="bg-white border border-[#dee2e6] rounded-[16px] p-4">
         {/* Tabs row - segmented style */}
-        <div className="flex items-center mb-4">
+        <div className="flex items-center mb-4 sticky top-[52px] z-20 bg-white pt-1 pb-2">
           <div className="inline-flex items-center gap-0 bg-white border border-[#E5E7EB] rounded-[10px] p-1">
             {TABS.map((tab) => {
               const isActive = activeTab === tab
@@ -3066,8 +3224,8 @@ export default function ClientDetailPage() {
 
         {activeTab === 'Revisión por áreas' && (
           <div className="flex gap-4">
-            {/* Department sidebar - 252px */}
-            <div className="w-[280px] shrink-0">
+            {/* Department sidebar */}
+            <div className="w-[280px] shrink-0 self-start sticky top-[100px]">
               <div className="flex flex-col">
                 {DEPARTMENTS.map((dept) => {
                   const isActive = activeDept === dept.key
@@ -3097,7 +3255,9 @@ export default function ClientDetailPage() {
             </div>
 
             {/* Department content */}
-            <div className="flex-1 min-w-0 pt-2">
+            <div className="flex-1 min-w-0">
+              {/* Sticky Header */}
+              <div className="sticky top-[100px] z-10 bg-white pt-2 pb-1">
               {/* Header: Title | Right side (Edit + Status) */}
               <div className="flex items-start justify-between mb-3">
                 <h2 className="text-[18px] font-semibold text-[#0A0B0D] m-0">
@@ -3166,6 +3326,7 @@ export default function ClientDetailPage() {
                   </button>
                 ))}
               </div>
+              </div>{/* end fixed header */}
 
               {/* Content based on inner tab */}
               {innerTab === 'information' && (
@@ -3255,7 +3416,7 @@ export default function ClientDetailPage() {
               <p className="text-[13px] text-[#9CA3AF]">Los datos aparecerán cuando el cliente esté activo</p>
             </div>
           )
-          const DEPT_LABELS = { compliance: 'Compliance', fraud: 'Fraud', finances: 'Finance', sales: 'Sales', legal: 'Legal and Contract', kickoff: 'Kickoff & Integration', golive: 'Go Live', review: '1st Review' }
+          const DEPT_LABELS = { compliance: 'Compliance', fraud: 'Fraud', finances: 'Finance', sales: 'Sales', legal: 'Legal and Contract', kickoff: 'Kickoff & Integration', golive: 'Go Live' }
           const conditionsToShow = Object.entries(deptConditions)
             .filter(([dept, list]) => list?.length > 0 && deptStatuses[dept] === 'completed_conditions')
           return (
