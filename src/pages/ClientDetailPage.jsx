@@ -1625,7 +1625,7 @@ function ComplianceProximaRevisionFields({ editable }) {
 }
 
 function ComplianceEdit({ addLog, subChecked, subWaived, onSubCheck, onSubWaive, onToggleAllSubs, salesRequested, onRequestSalesConfirm }) {
-  const [openStepIdx, setOpenStepIdx] = useState(0)
+  const [openStepIdx, setOpenStepIdx] = useState(null)
   const [requestModal, setRequestModal] = useState(null) // { stepIdx, subIdx, label }
   return (
     <div className="flex flex-col gap-3">
