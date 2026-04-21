@@ -358,6 +358,7 @@ function DocMenuButton({ onDelete, onRequestSales, onAttach, docName = '' }) {
       />
     )}
     </>
+  )
 }
 
 function PdfFileIcon() {
