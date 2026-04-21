@@ -1351,7 +1351,7 @@ function EvaluacionNegocioFields({ editable }) {
               <td className="px-3 py-2.5 text-[13px] text-[#0A0B0D]">27/03/2026</td>
               <td className="px-3 py-2.5">
                 <SubcaseMenu items={[
-                  { icon: <ArrowUpRight size={14} className="text-[#374151]" />, label: 'Descargar subcase' },
+                  { icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#374151" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>, label: 'Descargar subcase' },
                 ]} />
               </td>
             </tr>
@@ -1385,7 +1385,7 @@ function EvaluacionNegocioFields({ editable }) {
               <td className="px-3 py-2.5 text-[13px] text-[#0A0B0D]">27/03/2026</td>
               <td className="px-3 py-2.5">
                 <SubcaseMenu items={[
-                  { icon: <ArrowUpRight size={14} className="text-[#374151]" />, label: 'Descargar subcase' },
+                  { icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#374151" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>, label: 'Descargar subcase' },
                   { icon: <ExternalLink size={14} className="text-[#374151]" />, label: 'Ver subcase' },
                 ]} />
               </td>
@@ -1424,16 +1424,16 @@ function EvaluacionNegocioFields({ editable }) {
         )
       })()}
 
-      {/* MCC contrastado */}
-      <div className="flex items-center gap-3 py-[6px] bg-[#F8F9FA] -mx-[46px] px-[46px] border-y border-[#F3F4F6]">
-        <div className={`w-[18px] h-[18px] rounded-[4px] shrink-0 flex items-center justify-center ${editable ? 'border-[1.5px] border-[#D1D5DB] bg-white cursor-pointer' : 'border-[1.5px] border-[#E5E7EB] bg-[#F3F4F6]'}`} />
-        <span className={`text-[13px] ${!editable ? 'text-[#9CA3AF]' : 'text-[#1F2937]'}`}>MCC contrastado</span>
-      </div>
-
-      {/* Actividades prohibidas */}
-      <div className="flex items-center gap-3 py-[6px] bg-[#F8F9FA] -mx-[46px] px-[46px] border-y border-[#F3F4F6]">
-        <div className={`w-[18px] h-[18px] rounded-[4px] shrink-0 flex items-center justify-center ${editable ? 'border-[1.5px] border-[#D1D5DB] bg-white cursor-pointer' : 'border-[1.5px] border-[#E5E7EB] bg-[#F3F4F6]'}`} />
-        <span className={`text-[13px] ${!editable ? 'text-[#9CA3AF]' : 'text-[#1F2937]'}`}>Actividades prohibidas</span>
+      {/* MCC contrastado + Actividades prohibidas - no gap between them */}
+      <div className="-mb-3">
+        <div className="flex items-center gap-3 py-[6px] bg-[#F8F9FA] -mx-[46px] px-[46px] border-y border-[#F3F4F6]">
+          <div className={`w-[18px] h-[18px] rounded-[4px] shrink-0 flex items-center justify-center ${editable ? 'border-[1.5px] border-[#D1D5DB] bg-white cursor-pointer' : 'border-[1.5px] border-[#E5E7EB] bg-[#F3F4F6]'}`} />
+          <span className={`text-[13px] ${!editable ? 'text-[#9CA3AF]' : 'text-[#1F2937]'}`}>MCC contrastado</span>
+        </div>
+        <div className="flex items-center gap-3 py-[6px] bg-[#F8F9FA] -mx-[46px] px-[46px] border-b border-[#F3F4F6]">
+          <div className={`w-[18px] h-[18px] rounded-[4px] shrink-0 flex items-center justify-center ${editable ? 'border-[1.5px] border-[#D1D5DB] bg-white cursor-pointer' : 'border-[1.5px] border-[#E5E7EB] bg-[#F3F4F6]'}`} />
+          <span className={`text-[13px] ${!editable ? 'text-[#9CA3AF]' : 'text-[#1F2937]'}`}>Actividades prohibidas</span>
+        </div>
       </div>
 
       {/* Comment */}
