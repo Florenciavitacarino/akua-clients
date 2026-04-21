@@ -701,7 +701,6 @@ function RequestToSalesModal({ documentName = '', onCancel, onSend }) {
               <option>Sales</option>
               <option>Legal and Contract</option>
               <option>Kickoff & Integration</option>
-              <option>Go Live</option>
             </select>
           </div>
         </div>
