@@ -1319,15 +1319,29 @@ function SubcaseMenu({ items }) {
   )
 }
 
+function EvalCheckbox({ label, editable, grayBg = true, extraClass = '' }) {
+  const [checked, setChecked] = useState(false)
+  return (
+    <div className={`flex items-center gap-3 py-[6px] ${grayBg ? 'bg-[#F8F9FA] -mx-[46px] px-[46px] border-y border-[#F3F4F6]' : ''} ${extraClass}`}>
+      <div
+        className={`w-[18px] h-[18px] rounded-[4px] shrink-0 flex items-center justify-center ${
+          !editable ? 'border-[1.5px] border-[#E5E7EB] bg-[#F3F4F6] cursor-default'
+          : checked ? 'bg-[#180047] cursor-pointer' : 'border-[1.5px] border-[#D1D5DB] bg-white cursor-pointer hover:opacity-80'
+        }`}
+        onClick={() => editable && setChecked(prev => !prev)}
+      >
+        {checked && editable && <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+      </div>
+      <span className={`text-[13px] ${!editable ? 'text-[#9CA3AF]' : 'text-[#1F2937]'}`}>{label}</span>
+    </div>
+  )
+}
+
 function EvaluacionNegocioFields({ editable }) {
   const [noteValue, setNoteValue] = useState('')
   return (
     <div className="flex flex-col gap-3">
-      {/* Revisión sitio web con Ballerine */}
-      <div className="flex items-center gap-3 py-[6px] bg-[#F8F9FA] -mx-[46px] px-[46px] border-y border-[#F3F4F6]">
-        <div className={`w-[18px] h-[18px] rounded-[4px] shrink-0 flex items-center justify-center ${editable ? 'border-[1.5px] border-[#D1D5DB] bg-white cursor-pointer' : 'border-[1.5px] border-[#E5E7EB] bg-[#F3F4F6]'}`} />
-        <span className={`text-[13px] ${!editable ? 'text-[#9CA3AF]' : 'text-[#1F2937]'}`}>Revisión sitio web con Ballerine</span>
-      </div>
+      <EvalCheckbox label="Revisión sitio web con Ballerine" editable={editable} />
 
       {/* Ballerine Table */}
       <div className="border border-[#E5E7EB] rounded-[8px]">
@@ -1359,11 +1373,7 @@ function EvaluacionNegocioFields({ editable }) {
         </table>
       </div>
 
-      {/* Revisión NOTO */}
-      <div className="flex items-center gap-3 py-[6px] bg-[#F8F9FA] -mx-[46px] px-[46px] border-y border-[#F3F4F6] mt-1">
-        <div className={`w-[18px] h-[18px] rounded-[4px] shrink-0 flex items-center justify-center ${editable ? 'border-[1.5px] border-[#D1D5DB] bg-white cursor-pointer' : 'border-[1.5px] border-[#E5E7EB] bg-[#F3F4F6]'}`} />
-        <span className={`text-[13px] ${!editable ? 'text-[#9CA3AF]' : 'text-[#1F2937]'}`}>Revisión NOTO</span>
-      </div>
+      <EvalCheckbox label="Revisión NOTO" editable={editable} extraClass="mt-1" />
 
       {/* NOTO Table */}
       <div className="border border-[#E5E7EB] rounded-[8px]">
@@ -1424,16 +1434,9 @@ function EvaluacionNegocioFields({ editable }) {
         )
       })()}
 
-      {/* MCC contrastado + Actividades prohibidas - no gap between them */}
       <div className="-mb-3">
-        <div className="flex items-center gap-3 py-[6px] bg-[#F8F9FA] -mx-[46px] px-[46px] border-y border-[#F3F4F6]">
-          <div className={`w-[18px] h-[18px] rounded-[4px] shrink-0 flex items-center justify-center ${editable ? 'border-[1.5px] border-[#D1D5DB] bg-white cursor-pointer' : 'border-[1.5px] border-[#E5E7EB] bg-[#F3F4F6]'}`} />
-          <span className={`text-[13px] ${!editable ? 'text-[#9CA3AF]' : 'text-[#1F2937]'}`}>MCC contrastado</span>
-        </div>
-        <div className="flex items-center gap-3 py-[6px] bg-[#F8F9FA] -mx-[46px] px-[46px] border-b border-[#F3F4F6]">
-          <div className={`w-[18px] h-[18px] rounded-[4px] shrink-0 flex items-center justify-center ${editable ? 'border-[1.5px] border-[#D1D5DB] bg-white cursor-pointer' : 'border-[1.5px] border-[#E5E7EB] bg-[#F3F4F6]'}`} />
-          <span className={`text-[13px] ${!editable ? 'text-[#9CA3AF]' : 'text-[#1F2937]'}`}>Actividades prohibidas</span>
-        </div>
+        <EvalCheckbox label="MCC contrastado" editable={editable} />
+        <EvalCheckbox label="Actividades prohibidas" editable={editable} />
       </div>
 
       {/* Comment */}
