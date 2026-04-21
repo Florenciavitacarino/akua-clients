@@ -3356,9 +3356,9 @@ export default function ClientDetailPage() {
   const currentDept = DEPARTMENTS.find(d => d.key === activeDept)
 
   return (
-    <>
-      {/* Breadcrumbs */}
-      <div className="pb-2">
+    <div className="flex flex-col" style={{ height: 'calc(100vh - 32px)' }}>
+      {/* Breadcrumbs - fixed */}
+      <div className="shrink-0 pb-2">
         <div className="flex items-center gap-1.5 mb-3 pt-2">
           <Link to="/clients" className="text-[14px] text-[#868e96] font-medium no-underline hover:underline">Clients</Link>
           <span className="text-[14px] text-[#dee2e6]">/</span>
@@ -3367,9 +3367,9 @@ export default function ClientDetailPage() {
       </div>
 
       {/* Main card */}
-      <div className="bg-white border border-[#dee2e6] rounded-[16px] p-4">
-        {/* Tabs row - sticky */}
-        <div className="flex items-center mb-4 sticky top-0 z-30 bg-white pb-3 pt-1 -mt-1">
+      <div className="bg-white border border-[#dee2e6] rounded-[16px] flex flex-col flex-1 min-h-0">
+        {/* Tabs row - fixed */}
+        <div className="flex items-center p-4 pb-4 shrink-0">
           <div className="inline-flex items-center gap-0 bg-white border border-[#E5E7EB] rounded-[10px] p-1">
             {TABS.map((tab) => {
               const isActive = activeTab === tab
@@ -3390,10 +3390,12 @@ export default function ClientDetailPage() {
           </div>
         </div>
 
+        {/* Scrollable content */}
+        <div className="flex-1 overflow-y-auto min-h-0 p-4 pt-0">
         {activeTab === 'Revisión por áreas' && (
           <div className="flex gap-4">
             {/* Department sidebar - sticky */}
-            <div className="w-[280px] shrink-0 self-start sticky top-[56px]">
+            <div className="w-[280px] shrink-0 self-start sticky top-0">
               <div className="flex flex-col">
                 {DEPARTMENTS.map((dept) => {
                   const isActive = activeDept === dept.key
@@ -3425,7 +3427,7 @@ export default function ClientDetailPage() {
             {/* Department content */}
             <div className="flex-1 min-w-0">
               {/* Sticky Header */}
-              <div className="pt-2 pb-1 sticky top-[56px] z-10 bg-white">
+              <div className="pt-2 pb-1 sticky top-0 z-10 bg-white">
               {/* Header: Title | Right side (Edit + Status) */}
               <div className="flex items-start justify-between mb-3">
                 <h2 className="text-[18px] font-semibold text-[#0A0B0D] m-0">
@@ -3751,7 +3753,8 @@ export default function ClientDetailPage() {
             </div>
           )
         })()}
-      </div>
+      </div>{/* end scrollable content */}
+      </div>{/* end main card */}
 
       {conditionsModalDept && (
         <ConditionsModal
@@ -3760,6 +3763,6 @@ export default function ClientDetailPage() {
           onConfirm={handleConfirmConditions}
         />
       )}
-    </>
+    </div>
   )
 }
