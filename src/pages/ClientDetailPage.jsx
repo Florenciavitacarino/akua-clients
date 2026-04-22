@@ -1074,7 +1074,6 @@ function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, o
           <button className="flex items-center gap-1 text-[12px] font-medium text-[#180047] bg-white px-3 py-1 rounded-full border border-[#180047] cursor-pointer hover:bg-[#F9FAFB] shrink-0">
             Abrir <ExternalLink size={12} />
           </button>
-          {editable && <DocMenuButton onAttach={() => fileInputRef.current?.click()} onDelete={() => {}} />}
         </div>
       )}
 
@@ -1092,7 +1091,6 @@ function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, o
           <button className="flex items-center gap-1 text-[12px] font-medium text-[#180047] bg-white px-3 py-1 rounded-full border border-[#180047] cursor-pointer hover:bg-[#F9FAFB] shrink-0">
             Abrir <ExternalLink size={12} />
           </button>
-          <DocMenuButton onDelete={() => setExtraDocs(prev => prev.filter((_, idx) => idx !== i))} onAttach={() => fileInputRef.current?.click()} />
         </div>
       ))}
 
@@ -1252,7 +1250,6 @@ function KycDocCard({ label, pdfSize }) {
       <button className="flex items-center gap-1 text-[11px] font-medium text-[#180047] bg-white px-2.5 py-0.5 rounded-full border border-[#180047] cursor-pointer hover:bg-[#F9FAFB] shrink-0">
         Abrir <ExternalLink size={10} />
       </button>
-      <DocMenuButton onDelete={() => {}} />
     </div>
   )
 }
@@ -2515,7 +2512,6 @@ function LegalSections({ editable }) {
           <p className="text-[11px] text-[#9CA3AF] m-0">2.4 MB</p>
         </div>
         <button className="flex items-center gap-1 text-[12px] font-medium text-[#180047] bg-white px-3 py-1 rounded-full border border-[#180047] cursor-pointer hover:bg-[#F9FAFB] shrink-0">Abrir <ExternalLink size={12} /></button>
-        <DocMenuButton onDelete={() => {}} />
       </div>
       <div className="flex flex-wrap gap-1.5 py-3 border-b border-[#F3F4F6]">
         {['99% DISPONIBILIDAD', '<1S AUTORIZACIÓN', 'VISA & MASTERCARD', 'PCI DSS · AML · KYC'].map(b => (
@@ -2532,7 +2528,6 @@ function LegalSections({ editable }) {
           <p className="text-[11px] text-[#9CA3AF] m-0">2.4 MB</p>
         </div>
         <button className="flex items-center gap-1 text-[12px] font-medium text-[#180047] bg-white px-3 py-1 rounded-full border border-[#180047] cursor-pointer hover:bg-[#F9FAFB] shrink-0">Abrir <ExternalLink size={12} /></button>
-        <DocMenuButton onDelete={() => {}} />
       </div>
       <div className="flex flex-wrap gap-1.5 py-3">
         {['PENALIDAD MÁX. 30%', 'PROCESAMIENTO TRANSACCIONAL'].map(b => (
@@ -2575,7 +2570,6 @@ function LegalSections({ editable }) {
         <button className="flex items-center gap-1 text-[12px] font-medium text-[#180047] bg-white px-3 py-1 rounded-full border border-[#180047] cursor-pointer hover:bg-[#F9FAFB] shrink-0">
           Abrir <ExternalLink size={12} />
         </button>
-        <DocMenuButton onDelete={() => {}} onAttach={() => {}} />
       </div>
     </>
   ) : (
@@ -2598,7 +2592,6 @@ function LegalSections({ editable }) {
           <p className="text-[11px] text-[#9CA3AF] m-0">2.4 MB</p>
         </div>
         <button className="flex items-center gap-1 text-[12px] font-medium text-[#180047] bg-white px-3 py-1 rounded-full border border-[#180047] cursor-pointer hover:bg-[#F9FAFB] shrink-0">Abrir <ExternalLink size={12} /></button>
-        <DocMenuButton onDelete={() => {}} />
       </div>
     </>
   )
