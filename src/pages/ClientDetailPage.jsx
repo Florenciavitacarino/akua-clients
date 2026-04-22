@@ -1033,7 +1033,7 @@ function ComplianceSubItem({ label, pdfName, pdfSize, isLink, checked, waived, o
           <div className="relative">
             <button
               onClick={() => setMenuOpen(prev => !prev)}
-              className="opacity-0 group-hover/sub:opacity-100 text-[#9CA3AF] bg-transparent border-none cursor-pointer hover:text-[#374151] transition-opacity"
+              className="text-[#9CA3AF] bg-transparent border-none cursor-pointer hover:text-[#374151]"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
             </button>
